@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.trablock.domain.repository.IMemoRepository">
+ 
+	<insert id="createMemo" parameterType="Memo">
+		INSERT INTO Memo(party_id, date, description, isChecklist)
+		VALUES(#{partyId}, #{date}, #{description}, #{isChecklist})
+	</insert>
+	
+	<update id="updateMemo" parameterType="Memo">
+		UPDATE Memo 
+			SET description = #{description},
+				isChecklist = #{isChecklist}
+		WHERE party_id = #{partyId}
+			AND date = #{date}
+	</update>
+	
+	<delete id="deleteMemo"	parameterType="long">
+		DELETE FROM Memo WHERE id = #{memoId}
+	</delete>
+	
+	<select id="selectMemoByParty"	parameterType="long"	resultType="Memo">
+		SELECT id, party_id as 'partyId', date, description, isChecklist
+		FROM Memo 
+		WHERE party_id = #{partyId}
+	</select>
+	
+	<select id="selectMemoById"	parameterType="long"	resultType="Memo">
+		SELECT id, party_id as 'partyId', date, description, isChecklist
+		FROM Memo 
+		WHERE id = #{memoId}
+	</select>
+	
+	<select id="selectMemoByDate" parameterType="Memo" resultType="Memo">
+		SELECT id, party_id as 'partyId', date, description, isChecklist
+		FROM Memo
+		WHERE party_id = #{partyId}
+			AND date = #{date}
+	</select>
+	
+	<select id="isUserInParty"	parameterType="long"	resultType="int">
+		SELECT count(*) 
+		FROM PartyMember
+		WHERE 	user_id = #{userId}
+			AND	party_id = #{partyId} 
+	</select>
+	
+</mapper>
