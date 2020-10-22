@@ -3,7 +3,7 @@
     {
       "name": "spring.datasource",
       "type": "javax.sql.DataSource",
-      "sourceType": "com.trablock.DataSourceConfig",
+      "sourceType": "com.dolligo.DataSourceConfig",
       "sourceMethod": "public javax.sql.DataSource dataSource() "
     }
   ],
