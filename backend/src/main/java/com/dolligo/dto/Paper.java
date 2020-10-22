@@ -5,51 +5,84 @@ import java.util.List;
 
 import lombok.Data;
 
+//전단지
 @Data
 public class Paper {
-    private long id;
-    private String nickname;
-    private String email;
-    private String password;
-    private LocalDateTime createdAt;
+    private int id;					//pk
+    private int aid;				//fk  광고주아이디(advertiserId)
+    private int mtid;				//fk  상권종류 아이디(marketTypeId)
+    private String image;			//이미지 url
+    private String video;			//비디오 url
+    private String qrcode;			//qr코드
+    private int point;				//포인트
+    private boolean check;			//전단지 승인 여부
+    private String coupon;			//쿠폰 내용
     
-    
-	public long getId() {
+	public int getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
-	public String getNickname() {
-		return nickname;
+	public int getAid() {
+		return aid;
 	}
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
+	public void setAid(int aid) {
+		this.aid = aid;
 	}
-	public String getEmail() {
-		return email;
+	public int getMtid() {
+		return mtid;
 	}
-	public void setEmail(String email) {
-		this.email = email;
+	public void setMtid(int mtid) {
+		this.mtid = mtid;
 	}
-	public String getPassword() {
-		return password;
+	public String getImage() {
+		return image;
 	}
-	public void setPassword(String password) {
-		this.password = password;
+	public void setImage(String image) {
+		this.image = image;
 	}
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
+	public String getVideo() {
+		return video;
 	}
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
+	public void setVideo(String video) {
+		this.video = video;
 	}
-
+	public String getQrcode() {
+		return qrcode;
+	}
+	public void setQrcode(String qrcode) {
+		this.qrcode = qrcode;
+	}
+	public int getPoint() {
+		return point;
+	}
+	public void setPoint(int point) {
+		this.point = point;
+	}
+	public boolean isCheck() {
+		return check;
+	}
+	public void setCheck(boolean check) {
+		this.check = check;
+	}
+	
+	
+	public String getCoupon() {
+		return coupon;
+	}
+	public void setCoupon(String coupon) {
+		this.coupon = coupon;
+	}
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", nickname=" + nickname + ", email=" + email + ", password=" + password + ", createdAt="
-				+ createdAt + "]";
+		return "Paper [id=" + id + ", aid=" + aid + ", mtid=" + mtid + ", image=" + image + ", video=" + video
+				+ ", qrcode=" + qrcode + ", point=" + point + ", check=" + check + ", coupon=" + coupon + "]";
 	}
+	
+	
+    
+    
     
     
 }

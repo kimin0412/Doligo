@@ -1,5 +1,6 @@
 package com.dolligo.dto;
 
+//로그인
 public class Login {
 	private String email;
 	private String password;

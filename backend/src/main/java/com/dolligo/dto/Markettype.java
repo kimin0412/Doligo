@@ -5,51 +5,36 @@ import java.util.List;
 
 import lombok.Data;
 
+//상권종류
 @Data
 public class Markettype {
-    private long id;
-    private String nickname;
-    private String email;
-    private String password;
-    private LocalDateTime createdAt;
-    
-    
-	public long getId() {
+	private int id;			//pk
+	private String type1;	//대분류
+	private String type2;	//중분류
+	
+	public int getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
-	public String getNickname() {
-		return nickname;
+	public String getType1() {
+		return type1;
 	}
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
+	public void setType1(String type1) {
+		this.type1 = type1;
 	}
-	public String getEmail() {
-		return email;
+	public String getType2() {
+		return type2;
 	}
-	public void setEmail(String email) {
-		this.email = email;
+	public void setType2(String type2) {
+		this.type2 = type2;
 	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
-
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", nickname=" + nickname + ", email=" + email + ", password=" + password + ", createdAt="
-				+ createdAt + "]";
+		return "Markettype [id=" + id + ", type1=" + type1 + ", type2=" + type2 + "]";
 	}
-    
+	
+	
     
 }

@@ -230,7 +230,7 @@ public class UserController {
 	      	String token = request.getHeader("Authorization").split(" ")[1];
 	
 	  		Map<String, Object> claims = jwtService.get(token);
-	  		user.setId(Long.parseLong((String)claims.get("uid")));
+//	  		user.setId(Long.parseLong((String)claims.get("uid")));
 	  		
 	  		userService.update(user);
 	  		map.put("result", "success");

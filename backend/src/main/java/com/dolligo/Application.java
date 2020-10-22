@@ -9,7 +9,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 
 @ServletComponentScan//filter사용
 @SpringBootApplication
-@MapperScan(value = "com.trablock.domain.repository")
+@MapperScan(value = "com.dolligo.repository")
 public class Application extends SpringBootServletInitializer{
 
 	public static void main(String[] args) {
