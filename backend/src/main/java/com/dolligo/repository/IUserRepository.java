@@ -6,7 +6,6 @@ import org.mapstruct.Mapper;
 
 import com.dolligo.dto.User;
 
-@Mapper
 public interface IUserRepository {
     List<User> list();//전체 유저 리스트(유저 검색할때)
     
