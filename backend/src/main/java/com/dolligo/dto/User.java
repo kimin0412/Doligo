@@ -1,30 +1,22 @@
 package com.dolligo.dto;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import lombok.Data;
 
+//일반 유저
 @Data
 public class User {
-    private long id;
-    private String nickname;
-    private String email;
-    private String password;
-    private LocalDateTime createdAt;
+    private int id;				//pk
+    private String email;		//이메일
+    private String password;	//비밀번호
+    private boolean gender;		//성별 => 여 : 0, 남 : 1
+    private int age;			//나이 => 년생으로(뒤에 숫자 두개)
+    private int point;			//포인트
     
-    
-	public long getId() {
+	public int getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
-	}
-	public String getNickname() {
-		return nickname;
-	}
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
 	}
 	public String getEmail() {
 		return email;
@@ -38,18 +30,35 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
+	public boolean isGender() {
+		return gender;
 	}
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
+	public void setGender(boolean gender) {
+		this.gender = gender;
 	}
-
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", nickname=" + nickname + ", email=" + email + ", password=" + password + ", createdAt="
-				+ createdAt + "]";
+	public int getAge() {
+		return age;
 	}
+	public void setAge(int age) {
+		this.age = age;
+	}
+	public int getPoint() {
+		return point;
+	}
+	public void setPoint(int point) {
+		this.point = point;
+	}
+	public User(int id, String email, String password, boolean gender, int age, int point) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.gender = gender;
+		this.age = age;
+		this.point = point;
+	}
+    
+    
     
     
 }

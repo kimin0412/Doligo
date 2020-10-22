@@ -5,51 +5,42 @@ import java.util.List;
 
 import lombok.Data;
 
+//선호도
 @Data
 public class Preference {
-    private long id;
-    private String nickname;
-    private String email;
-    private String password;
-    private LocalDateTime createdAt;
-    
-    
-	public long getId() {
+    private int id;				//pk
+    private int uid;			//fk  일반유저 아이디(userId)
+    private int mid;			//fk  상권종류 아이디(marketTypeId)
+    private boolean isprefer;	//선호여부	=> 0 : 비선호, 1 : 선호
+	public int getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(int id) {
 		this.id = id;
 	}
-	public String getNickname() {
-		return nickname;
+	public int getUid() {
+		return uid;
 	}
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
+	public void setUid(int uid) {
+		this.uid = uid;
 	}
-	public String getEmail() {
-		return email;
+	public int getMid() {
+		return mid;
 	}
-	public void setEmail(String email) {
-		this.email = email;
+	public void setMid(int mid) {
+		this.mid = mid;
 	}
-	public String getPassword() {
-		return password;
+	public boolean isIsprefer() {
+		return isprefer;
 	}
-	public void setPassword(String password) {
-		this.password = password;
+	public void setIsprefer(boolean isprefer) {
+		this.isprefer = isprefer;
 	}
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
-
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", nickname=" + nickname + ", email=" + email + ", password=" + password + ", createdAt="
-				+ createdAt + "]";
+		return "Preference [id=" + id + ", uid=" + uid + ", mid=" + mid + ", isprefer=" + isprefer + "]";
 	}
+    
     
     
 }

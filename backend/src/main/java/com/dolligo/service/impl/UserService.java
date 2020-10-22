@@ -82,8 +82,6 @@ public class UserService implements IUserService {
 
         if(user.getId() == 0)
             user.setId(found.getId());
-        if(user.getNickname() == null || user.getNickname().equals(""))
-            user.setNickname(found.getNickname());
         
         if(user.getPassword() == null || user.getPassword().equals(""))
             user.setPassword(found.getPassword());
