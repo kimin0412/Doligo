@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.trablock.domain.repository.IPartyWalletRepository">
+
+    <!--  Create  -->
+    <insert id="create" parameterType="PartyWallet">
+        insert into PartyWallet(
+        party_id, address, balance
+        )
+        values(
+        #{partyId}, #{address}, #{balance}
+        )
+    </insert>
+    <!--  Create  -->
+
+    <!--  Read  -->
+    <select id="getPartyWalletByPartyId" parameterType="long" resultType="PartyWallet">
+        select *
+        from PartyWallet
+        where party_id = #{partyId}
+    </select>
+
+    <select id="getPartyWalletByAddress" parameterType="String" resultType="PartyWallet">
+        select *
+        from PartyWallet
+        where address = #{address}
+    </select>
+    <!--  Read  -->
+
+    <!--  Update  -->
+    <update id="update" parameterType="PartyWallet">
+        update PartyWallet
+        set
+        party_id = #{partyId},
+        address = #{address},
+        balance = #{balance}
+        where id = #{id}
+    </update>
+    <!--  Update  -->
+
+    <!--  Delete  -->
+    <delete id="delete" parameterType="long">
+        delete
+        from PartyWallet
+        where party_id = #{partyId}
+    </delete>
+    <!--  Delete  -->
+
+
+</mapper>

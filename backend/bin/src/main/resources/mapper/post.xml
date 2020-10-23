@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.trablock.domain.repository.IPostRepository">
+	
+	<!-- 포스팅 작성 -->
+	<insert id="createPost"	parameterType="Post">
+		INSERT 	INTO Post(user_id, party_id, title, description, created, target, used_price, destination)
+				VALUES(#{userId}, #{partyId}, #{title}, #{description}, now(), #{target}, #{usedPrice}, #{destination});
+	</insert>
+	
+	
+	<!-- id로 포스팅 조회 -->
+	<select id="selectPostById"	parameterType="string"	resultType="Post">
+		SELECT 	id, user_id as userId, party_id as partyId
+				, title, description, created, target
+				, used_price as usedPrice, destination 
+		FROM Post 
+		WHERE id = #{postId}
+	</select>
+	
+	<!-- 포스팅 목록 검색 -->
+	<select id="selectPosts"	parameterType="string"	resultType="Post">
+		SELECT 	id, user_id as userId, party_id as partyId
+				, title, description, created, target
+				, used_price as usedPrice, destination
+		FROM 	Post
+		WHERE 	1=1
+				<if test="title != null and title != ''">
+					AND title like CONCAT('%', #{title}, '%')
+				</if>
+				<if test="destination != null and destination != ''">
+					AND destination like CONCAT('%', #{destination}, '%')
+				</if>
+				<if test="range_start != null and range_start != ''">
+					AND target &gt; #{range_start}
+				</if>
+				<if test="range_end != null and range_end != ''">
+					AND target &lt; #{range_end}
+				</if>
+				<choose>
+					<when test="type == 1"><!-- 1. 내가 쓴 포스팅 -->
+						AND user_id = #{userId}
+					</when>
+					<when test="type == 2"><!-- 2. 내 모임 포스팅 -->
+						AND party_id in (SELECT party_id 
+										FROM 	PartyMember
+										WHERE 	user_id = #{userId})
+					</when>
+				</choose>
+		ORDER BY created desc
+	</select>
+
+	<!-- 포스팅 수정 -->
+	<update id="updatePost"	parameterType="Post">
+		UPDATE Post 
+			SET title = #{title}
+				, description = #{description}
+				, target = #{target}
+				, used_price = #{usedPrice}
+				, destination = #{destination}
+		WHERE id = #{id} and user_id = #{userId}
+	</update>
+    
+	<!-- 포스팅 삭제 -->
+	<delete id="deletePost"	parameterType="string">
+		DELETE FROM Post WHERE id = #{postId} and user_id = #{userId}
+	</delete>
+</mapper>
