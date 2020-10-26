@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:http/http.dart' as http;
@@ -21,10 +22,31 @@ class _LeafletPageState extends State<LeafletPage> {
   Set<Marker> _markers = Set();
   GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
 
-  CameraPosition _initialCameraPosition = CameraPosition(
-    target: LatLng(37.382782, 127.1189054),
-    zoom: 14,
-  );
+  LatLng currentPostion;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 나중에 적립 포인트 가져오는 부분도 여기서 구현한다!!
+    //
+    //
+    //
+    //
+
+    // 현재 위치를 얻어와 초기화 한다.
+
+    _getUserLocation();
+
+  }
+
+  void _getUserLocation() async {
+    var position = await GeolocatorPlatform.instance.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+    setState(() {
+      currentPostion = LatLng(position.latitude, position.longitude);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +119,10 @@ class _LeafletPageState extends State<LeafletPage> {
                       children: [
                         GoogleMap(
                           mapType: _googleMapType,
-                          initialCameraPosition: _initialCameraPosition,
+                          initialCameraPosition: CameraPosition(
+                            target: currentPostion,
+                            zoom: 14,
+                          ),
                           onMapCreated: _onMapCreated,
                           myLocationEnabled: true,
                           markers: _markers,
@@ -116,8 +141,11 @@ class _LeafletPageState extends State<LeafletPage> {
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
+    setState(() {
+      _controller.complete(controller);
+    });
   }
+
 }
 
 
