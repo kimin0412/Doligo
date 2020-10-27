@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.trablock.domain.repository.IWalletRepository">
+
+    <!--  Read  -->
+    <select id="list" resultType="Wallet">
+        select id, owner_id as 'ownerId', address, balance
+        from Wallet
+    </select>
+
+    <select id="getWalletByOwnerId" parameterType="long" resultType="Wallet">
+        select id, owner_id as 'ownerId', address, balance
+        from Wallet
+        where owner_id = #{ownerId}
+    </select>
+
+    <select id="getWalletByWAddress" parameterType="String" resultType="Wallet">
+        select id, owner_id as 'ownerId', address, balance
+        from Wallet
+        where address = #{wAddress}
+    </select>
+    <!--  Read  -->
+
+    <!-- Create   -->
+    <insert id="create" parameterType="Wallet" useGeneratedKeys="true" keyProperty="id">
+        insert into Wallet(
+            owner_id, address, balance
+        ) values (
+            #{ownerId}, #{address}, #{balance}
+        )
+    </insert>
+    <!-- Create   -->
+
+    <!-- Update    -->
+    <update id="update" parameterType="Wallet">
+        update Wallet
+        set
+            owner_id = #{ownerId},
+            address = #{address},
+            balance = #{balance}
+        where id = #{id}
+    </update>
+    <!-- Update    -->
+
+    <!-- Delete    -->
+    <delete id="delete" parameterType="long">
+        delete
+        from Wallet
+        where id = #{id}
+    </delete>
+    <!-- Delete    -->
+
+</mapper>
