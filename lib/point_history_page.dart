@@ -51,6 +51,8 @@ class _PointHistoryPage extends State<PointHistoryPage> {
   }
 
   _buildBody() {
+    String dropdownValue = '전체';
+
     return Center(
         child: Column(
           children: <Widget>[
@@ -89,6 +91,26 @@ class _PointHistoryPage extends State<PointHistoryPage> {
             Container(
               height: 20,
               color: Colors.black12,
+            ),
+            Container(
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.fromLTRB(20, 2, 2, 2),
+              child: DropdownButton<String>(
+                value: dropdownValue,
+                icon: Icon(Icons.keyboard_arrow_down),
+                onChanged: (String newValue) {
+                  setState(() {
+                    dropdownValue = newValue;
+                  });
+                },
+                items: <String>['전체', '10월', '9월', '8월']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value, style: TextStyle(fontWeight: FontWeight.bold)),
+                  );
+                }).toList(),
+              ),
             ),
             Expanded(
               child: ListView.builder(
