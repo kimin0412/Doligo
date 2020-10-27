@@ -1,10 +1,29 @@
 package com.dolligo.dto;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 //일반 유저
+@Entity
+@Getter
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class User {
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+	@Column
     private int id;				//pk
     private String email;		//이메일
     private String password;	//비밀번호
@@ -48,16 +67,12 @@ public class User {
 	public void setPoint(int point) {
 		this.point = point;
 	}
-	public User(int id, String email, String password, boolean gender, int age, int point) {
-		super();
-		this.id = id;
-		this.email = email;
-		this.password = password;
-		this.gender = gender;
-		this.age = age;
-		this.point = point;
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", email=" + email + ", password=" + password + ", gender=" + gender + ", age=" + age
+				+ ", point=" + point + "]";
 	}
-    
+	
     
     
     

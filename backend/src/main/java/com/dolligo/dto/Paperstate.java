@@ -3,11 +3,30 @@ package com.dolligo.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 //전단지 상태(일반유저의 로그 데이터)
+@Entity
+@Getter
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class Paperstate {
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+	@Column
     private int id;					//pk  전단지상태 아이디
     private int uid;				//fk  일반 유저 아이디(userId)
     private int pid;				//fk  전단지 아이디(paperId)

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.dolligo.repository.IDataInsertRepository">
+ 
+	<insert id="insertMarket" parameterType="MarketType">
+		INSERT INTO Markettype(largecode, largename, mediumcode, mediumname)
+		VALUES(#{largecode}, #{largename}, #{mediumcode}, #{mediumname})
+	</insert>
+	
+	<insert id="insertUser" useGeneratedKeys="true"	keyProperty="id"	parameterType="User">
+		INSERT INTO User(gender, age, point)
+		VALUES(#{gender}, #{age}, #{point})
+	</insert>
+	
+	<insert id="insertPreference"	parameterType="Preference">
+		INSERT INTO Preference(uid, mid, isprefer)
+		VALUES(#{uid}, (select id from Markettype where mediumname = #{mname}), #{isprefer})
+	</insert>
+	
+	<insert id="insertAdvertiser"	parameterType="Advertiser">
+		INSERT INTO Advertiser(mtid, marketname, marketbranch, marketaddress, lat, lon)
+		VALUES((select id from Markettype where mediumcode = #{mediumcode}), #{marketname}, #{marketbranch}, #{marketaddress}, #{lat}, #{lon})
+	</insert>
+</mapper>

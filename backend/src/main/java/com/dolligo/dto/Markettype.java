@@ -3,14 +3,35 @@ package com.dolligo.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 //상권종류
+@Entity
+@Getter
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class Markettype {
-	private int id;			//pk
-	private String type1;	//대분류
-	private String type2;	//중분류
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+	@Column
+	private int id;				//pk
+	private String largecode;	//대분류코드
+	private String largename;	//대분류이름
+	private String mediumcode;	//중분류코드
+	private String mediumname;	//중분류이름
 	
 	public int getId() {
 		return id;
@@ -18,21 +39,34 @@ public class Markettype {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getType1() {
-		return type1;
+	public String getLargecode() {
+		return largecode;
 	}
-	public void setType1(String type1) {
-		this.type1 = type1;
+	public void setLargecode(String largecode) {
+		this.largecode = largecode;
 	}
-	public String getType2() {
-		return type2;
+	public String getLargename() {
+		return largename;
 	}
-	public void setType2(String type2) {
-		this.type2 = type2;
+	public void setLargename(String largename) {
+		this.largename = largename;
+	}
+	public String getMediumcode() {
+		return mediumcode;
+	}
+	public void setMediumcode(String mediumcode) {
+		this.mediumcode = mediumcode;
+	}
+	public String getMediumname() {
+		return mediumname;
+	}
+	public void setMediumname(String mediumname) {
+		this.mediumname = mediumname;
 	}
 	@Override
 	public String toString() {
-		return "Markettype [id=" + id + ", type1=" + type1 + ", type2=" + type2 + "]";
+		return "Markettype [id=" + id + ", largecode=" + largecode + ", largename=" + largename + ", mediumcode="
+				+ mediumcode + ", mediumname=" + mediumname + "]";
 	}
 	
 	
