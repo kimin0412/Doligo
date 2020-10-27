@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/leaflet_detail_page.dart';
 import 'package:frontend/root_page.dart';
 
 void main() {
@@ -18,6 +19,12 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: RootPage(),
+      routes: {
+        LeafletDetailPage.routeName:(context) => LeafletDetailPage()
+      },
     );
   }
+
 }
+
+
