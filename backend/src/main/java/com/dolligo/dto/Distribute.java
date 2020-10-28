@@ -1,10 +1,29 @@
 package com.dolligo.dto;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 //전단지 등록 + 배포
+@Entity
+@Getter
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class Distribute {
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+	@Column
 	private int id;				//pk
 	private int pid;			//fk  전단지 아이디(paperId)
 	private int aid;			//fk  광고주 아이디(advertiserId)
