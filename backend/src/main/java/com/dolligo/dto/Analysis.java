@@ -3,11 +3,30 @@ package com.dolligo.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 //분석결과
+@Entity
+@Getter
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class Analysis {
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+	@Column
 	private int id;					//pk
 	private boolean type;			//상권인지 전단지인지
 	private int targetid;			//상권/ 전단지 아이디

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd" >
+<configuration>
+	<!--  settings 태그가 맨먼저 위치해야 한다.	-->
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+	</settings>
+
+	<typeAliases>
+		<package name="com.dolligo.dto"/>
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="mapper/data.xml"/>
+	</mappers>
+</configuration>
