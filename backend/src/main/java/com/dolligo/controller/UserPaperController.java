@@ -28,12 +28,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dolligo.dto.Login;
+import com.dolligo.dto.Paper;
 import com.dolligo.dto.TempKey;
 import com.dolligo.dto.User;
 import com.dolligo.exception.BadRequestException;
 import com.dolligo.exception.EmptyListException;
 import com.dolligo.exception.NotFoundException;
 import com.dolligo.service.IJwtService;
+import com.dolligo.service.IUserPaperService;
 import com.dolligo.service.IUserService;
 import com.dolligo.util.SHA256;
 
@@ -43,7 +45,21 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/api")
 public class UserPaperController {
-    public static final Logger logger = LoggerFactory.getLogger(UserPaperController.class);
+	public static final Logger logger = LoggerFactory.getLogger(UserPaperController.class);
 
+	private IUserPaperService upaperService;
 
+	@Autowired
+	public UserPaperController(IUserPaperService upaperService) {
+		Assert.notNull(upaperService, "userPaperService 개체가 반드시 필요!");
+		this.upaperService = upaperService;
+	}
+
+	// 회원정보 조회(광고 선호도 정보 같이 조회)
+	@ApiOperation(value = "모든 전단지 가져오기")
+	@GetMapping("/paper")
+	public List<Paper> getAllPaper() throws Exception {
+		List<Paper> papers = upaperService.getPaperList();
+		return papers;
+	}
 }

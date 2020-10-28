@@ -27,81 +27,85 @@ public class Paper {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	@Column
-    private int id;					//pk
-    private int aid;				//fk  광고주아이디(advertiserId)
-    private int mtid;				//fk  상권종류 아이디(marketTypeId)
-    private String image;			//이미지 url
-    private String video;			//비디오 url
-    private String qrcode;			//qr코드
-    private int point;				//포인트
-    private boolean check;			//전단지 승인 여부
-    private String coupon;			//쿠폰 내용
-    
-	public int getId() {
-		return id;
+    private int p_id;					//pk
+    private int p_aid;				//fk  광고주아이디(advertiserId)
+    private int p_mtid;				//fk  상권종류 아이디(marketTypeId)
+    private String p_image;			//이미지 url
+    private String p_video;			//비디오 url
+    private String p_qrcode;			//qr코드
+    private int p_point;				//포인트
+    private boolean p_check;			//전단지 승인 여부
+    private String p_coupon;			//쿠폰 내용
+	public int getP_id() {
+		return p_id;
 	}
-	public void setId(int id) {
-		this.id = id;
+	public void setP_id(int p_id) {
+		this.p_id = p_id;
 	}
-	public int getAid() {
-		return aid;
+	public int getP_aid() {
+		return p_aid;
 	}
-	public void setAid(int aid) {
-		this.aid = aid;
+	public void setP_aid(int p_aid) {
+		this.p_aid = p_aid;
 	}
-	public int getMtid() {
-		return mtid;
+	public int getP_mtid() {
+		return p_mtid;
 	}
-	public void setMtid(int mtid) {
-		this.mtid = mtid;
+	public void setP_mtid(int p_mtid) {
+		this.p_mtid = p_mtid;
 	}
-	public String getImage() {
-		return image;
+	public String getP_image() {
+		return p_image;
 	}
-	public void setImage(String image) {
-		this.image = image;
+	public void setP_image(String p_image) {
+		this.p_image = p_image;
 	}
-	public String getVideo() {
-		return video;
+	public String getP_video() {
+		return p_video;
 	}
-	public void setVideo(String video) {
-		this.video = video;
+	public void setP_video(String p_video) {
+		this.p_video = p_video;
 	}
-	public String getQrcode() {
-		return qrcode;
+	public String getP_qrcode() {
+		return p_qrcode;
 	}
-	public void setQrcode(String qrcode) {
-		this.qrcode = qrcode;
+	public void setP_qrcode(String p_qrcode) {
+		this.p_qrcode = p_qrcode;
 	}
-	public int getPoint() {
-		return point;
+	public int getP_point() {
+		return p_point;
 	}
-	public void setPoint(int point) {
-		this.point = point;
+	public void setP_point(int p_point) {
+		this.p_point = p_point;
 	}
-	public boolean isCheck() {
-		return check;
+	public boolean isP_check() {
+		return p_check;
 	}
-	public void setCheck(boolean check) {
-		this.check = check;
+	public void setP_check(boolean p_check) {
+		this.p_check = p_check;
+	}
+	public String getP_coupon() {
+		return p_coupon;
+	}
+	public void setP_coupon(String p_coupon) {
+		this.p_coupon = p_coupon;
+	}
+	public Paper() {
+		super();
+	}
+	public Paper(int p_id, int p_aid, int p_mtid, String p_image, String p_video, String p_qrcode, int p_point,
+			boolean p_check, String p_coupon) {
+		super();
+		this.p_id = p_id;
+		this.p_aid = p_aid;
+		this.p_mtid = p_mtid;
+		this.p_image = p_image;
+		this.p_video = p_video;
+		this.p_qrcode = p_qrcode;
+		this.p_point = p_point;
+		this.p_check = p_check;
+		this.p_coupon = p_coupon;
 	}
 	
-	
-	public String getCoupon() {
-		return coupon;
-	}
-	public void setCoupon(String coupon) {
-		this.coupon = coupon;
-	}
-	@Override
-	public String toString() {
-		return "Paper [id=" + id + ", aid=" + aid + ", mtid=" + mtid + ", image=" + image + ", video=" + video
-				+ ", qrcode=" + qrcode + ", point=" + point + ", check=" + check + ", coupon=" + coupon + "]";
-	}
-	
-	
-    
-    
-    
     
 }
