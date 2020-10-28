@@ -82,7 +82,7 @@ public class DataInsertService implements IDataInsertService{
             		for(int i = 0; i < market.length; i++) {
             			Preference p = new Preference();
             			p.setUid(user.getId());
-            			p.setMname(market[i].trim());
+//            			p.setMname(market[i].trim());//메인디비에 넣을때 주석 풀기..
             			p.setIsprefer(true);
 //            			System.out.println(p);
             			repository.insertPreference(p);

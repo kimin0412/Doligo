@@ -4,9 +4,12 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -22,6 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.ALWAYS)
+@Table(name = "User")
 public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
@@ -32,8 +36,9 @@ public class User {
     private boolean gender;		//성별 => 여 : 0, 남 : 1
     private int age;			//나이 => 년생으로(뒤에 숫자 두개)
     private int point;			//포인트
-    private int addd;
-    //private List<Preference> preferences;
+
+    @OneToMany(targetEntity = Preference.class, mappedBy = "uid", fetch = FetchType.EAGER)
+    private List<Preference> preferences;
     
 	public int getId() {
 		return id;
@@ -72,17 +77,17 @@ public class User {
 		this.point = point;
 	}
 	
-//	public List<Preference> getPreferences() {
-//		return preferences;
-//	}
-//	public void setPreferences(List<Preference> preferences) {
-//		this.preferences = preferences;
-//	}
-//	@Override
-//	public String toString() {
-//		return "User [id=" + id + ", email=" + email + ", password=" + password + ", gender=" + gender + ", age=" + age
-//				+ ", point=" + point + ", preferences=" + preferences + "]";
-//	}
+	public List<Preference> getPreferences() {
+		return preferences;
+	}
+	public void setPreferences(List<Preference> preferences) {
+		this.preferences = preferences;
+	}
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", email=" + email + ", password=" + password + ", gender=" + gender + ", age=" + age
+				+ ", point=" + point + ", preferences=" + preferences + "]";
+	}
 	
     
     
