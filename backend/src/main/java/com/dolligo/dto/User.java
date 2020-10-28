@@ -1,5 +1,7 @@
 package com.dolligo.dto;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,6 +32,8 @@ public class User {
     private boolean gender;		//성별 => 여 : 0, 남 : 1
     private int age;			//나이 => 년생으로(뒤에 숫자 두개)
     private int point;			//포인트
+    private int addd;
+    //private List<Preference> preferences;
     
 	public int getId() {
 		return id;
@@ -67,11 +71,18 @@ public class User {
 	public void setPoint(int point) {
 		this.point = point;
 	}
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", email=" + email + ", password=" + password + ", gender=" + gender + ", age=" + age
-				+ ", point=" + point + "]";
-	}
+	
+//	public List<Preference> getPreferences() {
+//		return preferences;
+//	}
+//	public void setPreferences(List<Preference> preferences) {
+//		this.preferences = preferences;
+//	}
+//	@Override
+//	public String toString() {
+//		return "User [id=" + id + ", email=" + email + ", password=" + password + ", gender=" + gender + ", age=" + age
+//				+ ", point=" + point + ", preferences=" + preferences + "]";
+//	}
 	
     
     

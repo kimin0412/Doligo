@@ -41,6 +41,7 @@ public class Paperstate {
     private boolean visited;		//가게 방문 여부
     private boolean couponused;		//쿠폰 사용여부
     private boolean isget;			//포인트 회수 여부(상세조회 페이지에서 '포인트받기' 버튼 눌렀는지 여부)
+    private int point;				//해당 광고를 통해 얻은 포인트 총 양
     
 	public int getId() {
 		return id;
@@ -96,13 +97,19 @@ public class Paperstate {
 	public void setIsget(boolean isget) {
 		this.isget = isget;
 	}
+	
+	public int getPoint() {
+		return point;
+	}
+	public void setPoint(int point) {
+		this.point = point;
+	}
 	@Override
 	public String toString() {
 		return "Paperstate [id=" + id + ", uid=" + uid + ", pid=" + pid + ", aid=" + aid + ", mtid=" + mtid + ", state="
-				+ state + ", visited=" + visited + ", couponused=" + couponused + ", isget=" + isget + "]";
+				+ state + ", visited=" + visited + ", couponused=" + couponused + ", isget=" + isget + ", point="
+				+ point + "]";
 	}
-    
-	
     
     
 }
