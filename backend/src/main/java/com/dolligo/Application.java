@@ -6,9 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.cache.annotation.EnableCaching;
 
-@EnableCaching//캐시 사용하겠다
 @ServletComponentScan//filter사용
 @SpringBootApplication
 @MapperScan(value = "com.dolligo.repository")

@@ -2,15 +2,11 @@ package com.dolligo.repository;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import org.mapstruct.Mapper;
 
-import com.dolligo.dto.Advertiser;
+import com.dolligo.dto.User;
 
-@Repository
-public interface IAdvertiserPaperRepository extends JpaRepository<Advertiser, Integer>{
-	@Query(value = "select * from Advertiser where id = ?1 ", nativeQuery=true)
-	List<Advertiser> getAdvertiserById(int id);
+public interface IAdvertiserPaperRepository {
+    
 
 }

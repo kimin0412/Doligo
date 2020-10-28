@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.dolligo.dto.User;
 import com.dolligo.exception.ApplicationException;
 import com.dolligo.exception.NotFoundException;
-import com.dolligo.repository.IAdvertiserPaperRepository;
 import com.dolligo.repository.IUserRepository;
 import com.dolligo.service.IAdvertiserPaperService;
 import com.dolligo.service.IUserService;
@@ -19,9 +18,7 @@ import com.dolligo.util.SHA256;
 
 @Service
 public class AdvertiserPaperService implements IAdvertiserPaperService {
-	@Autowired
-	private IAdvertiserPaperRepository advertiserPaperRepository;
-	
+
     
 
 }

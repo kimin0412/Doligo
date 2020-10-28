@@ -1,50 +1,24 @@
 package com.dolligo.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import java.time.LocalDateTime;
+import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 //광고주 유저
-@Entity
-@Getter
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@JsonInclude(JsonInclude.Include.ALWAYS)
 public class Advertiser {
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Id
-	@Column
     private int id;						//pk
     private int mtid;					//fk : 상권종류 아이디(MarketTypeId)
     private String email;				//이메일
     private String password;			//비밀번호
     private String marketname;			//가게이름
-    private String marketbranch;		//가게지점
     private String marketnumber;		//가게번호
     private String marketaddress;		//가게주소
     private String marketurl;			//가게 url
     private String lat;					//위도
     private String lon;					//경도
     private int point;					//포인트
-    
-    private String mediumcode;
-    
-	public String getMediumcode() {
-		return mediumcode;
-	}
-	public void setMediumcode(String mediumcode) {
-		this.mediumcode = mediumcode;
-	}
 	public int getId() {
 		return id;
 	}
@@ -74,12 +48,6 @@ public class Advertiser {
 	}
 	public void setMarketname(String marketname) {
 		this.marketname = marketname;
-	}
-	public String getMarketbranch() {
-		return marketbranch;
-	}
-	public void setMarketbranch(String marketbranch) {
-		this.marketbranch = marketbranch;
 	}
 	public String getMarketnumber() {
 		return marketnumber;
@@ -120,10 +88,11 @@ public class Advertiser {
 	@Override
 	public String toString() {
 		return "Advertiser [id=" + id + ", mtid=" + mtid + ", email=" + email + ", password=" + password
-				+ ", marketname=" + marketname + ", marketbranch=" + marketbranch + ", marketnumber=" + marketnumber
-				+ ", marketaddress=" + marketaddress + ", marketurl=" + marketurl + ", lat=" + lat + ", lon=" + lon
-				+ ", point=" + point + ", mediumcode=" + mediumcode + "]";
+				+ ", marketname=" + marketname + ", marketnumber=" + marketnumber + ", marketaddress=" + marketaddress
+				+ ", marketurl=" + marketurl + ", lat=" + lat + ", lon=" + lon + ", point=" + point + "]";
 	}
-	
-	
+    
+    
+    
+    
 }

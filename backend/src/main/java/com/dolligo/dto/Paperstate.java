@@ -3,30 +3,11 @@ package com.dolligo.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 //전단지 상태(일반유저의 로그 데이터)
-@Entity
-@Getter
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@JsonInclude(JsonInclude.Include.ALWAYS)
 public class Paperstate {
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Id
-	@Column
     private int id;					//pk  전단지상태 아이디
     private int uid;				//fk  일반 유저 아이디(userId)
     private int pid;				//fk  전단지 아이디(paperId)
@@ -41,7 +22,6 @@ public class Paperstate {
     private boolean visited;		//가게 방문 여부
     private boolean couponused;		//쿠폰 사용여부
     private boolean isget;			//포인트 회수 여부(상세조회 페이지에서 '포인트받기' 버튼 눌렀는지 여부)
-    private int point;				//해당 광고를 통해 얻은 포인트 총 양
     
 	public int getId() {
 		return id;
@@ -97,19 +77,13 @@ public class Paperstate {
 	public void setIsget(boolean isget) {
 		this.isget = isget;
 	}
-	
-	public int getPoint() {
-		return point;
-	}
-	public void setPoint(int point) {
-		this.point = point;
-	}
 	@Override
 	public String toString() {
 		return "Paperstate [id=" + id + ", uid=" + uid + ", pid=" + pid + ", aid=" + aid + ", mtid=" + mtid + ", state="
-				+ state + ", visited=" + visited + ", couponused=" + couponused + ", isget=" + isget + ", point="
-				+ point + "]";
+				+ state + ", visited=" + visited + ", couponused=" + couponused + ", isget=" + isget + "]";
 	}
+    
+	
     
     
 }

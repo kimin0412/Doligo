@@ -3,30 +3,11 @@ package com.dolligo.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 //전단지
-@Entity
-@Getter
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@JsonInclude(JsonInclude.Include.ALWAYS)
 public class Paper {
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Id
-	@Column
     private int id;					//pk
     private int aid;				//fk  광고주아이디(advertiserId)
     private int mtid;				//fk  상권종류 아이디(marketTypeId)

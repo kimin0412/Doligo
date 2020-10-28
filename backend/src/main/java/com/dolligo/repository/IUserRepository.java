@@ -1,32 +1,28 @@
 package com.dolligo.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+
+import org.mapstruct.Mapper;
 
 import com.dolligo.dto.User;
 
-@Repository
-public interface IUserRepository extends JpaRepository<User, Integer>{
-	@Query(value = "select * from User where email = ?1 ", nativeQuery = true)
+public interface IUserRepository {
+    List<User> list();//전체 유저 리스트(유저 검색할때)
+    
+    
+    User getUserById(long userid);
     User getUserByEmail(String email);
     
-//    int create(User user);
-//    int update(User user);
-//    int delete(String id);
-//
-//	int isDupEmail(String email);
-//	
-	//비밀번호 찾기
-	@Query(value = "select count(id) from User where id = ?1 and password = ?2", nativeQuery = true)
-	int checkPassword(int id, String password);
-	
-//	@Query("update count(id) from User where id = ?1 and password = ?2")
-//	void updatePasswordByEmail(String email, String password);
-//	
-//	String selectPassword(String userId);
+    long create(User user);
+    int update(User user);
+    int delete(String userid);
 
+	int isDupEmail(String email);
 	
+	int checkPassword(String userId, String password);
+	void updatePasswordByEmail(String email, String password);
+	String selectPassword(String userId);
 	
+	long selectNextUserId();
 
 }

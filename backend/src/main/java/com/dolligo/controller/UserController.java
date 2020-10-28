@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dolligo.dto.Login;
 import com.dolligo.dto.TempKey;
 import com.dolligo.dto.User;
-import com.dolligo.exception.ApplicationException;
 import com.dolligo.exception.BadRequestException;
 import com.dolligo.exception.EmptyListException;
 import com.dolligo.exception.NotFoundException;
@@ -77,49 +76,64 @@ public class UserController {
   	
   	
     
-    //회원가입(광고 선호도 정보 같이 조회)
+    //회원가입
   	@ApiOperation(value = "회원가입", notes = "회원가입 후 'jwt-token'으로 access token 넘겨줌")
-  	@PostMapping(value = "user/signup")
+  	@PostMapping(value = "user/join")
   	public ResponseEntity<HashMap<String, Object>> signupUser2(@RequestBody User user, HttpServletResponse response)throws Exception {
       	HashMap<String, Object> map = new HashMap<String, Object>();
       	
+//      	String namePt = "^[a-zA-Z0-9가-힣]{2,12}$";
       	String pwPt = "^[0-9a-zA-Z~`!@#$%\\\\^&*()-]{8,12}$";//특수,대소문자,숫자 포함 8자리 이상
       	String emailPt = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
       	
+      	map.put("result", "fail");
+      	
       	if(user.getPassword() == null || user.getPassword().equals("")) {
-      		throw new ApplicationException("비밀번호 입력 필수");
+      		map.put("cause", "비밀번호 입력 필수");
+      		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
       	}
 //      	if(!user.getPassword().matches(pwPt)) {
-//      		throw new ApplicationException("비밀번호 형식 오류");
+//      		map.put("cause", "비밀번호 형식 오류");
+//      		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
 //      	}
       	
+      	
       	if(user.getEmail() == null || user.getEmail().equals("")) {
-      		throw new ApplicationException("이메일 입력 필수");
+      		map.put("cause", "이메일 입력 필수");
+      		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
       	}
 //      	if(!user.getEmail().matches(emailPt)) {
-//      		throw new ApplicationException("이메일 형식 오류");
+//      		map.put("cause", "이메일 형식 오류");
+//      		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
 //      	}
       	if(userService.isDupEmail(user.getEmail())) {
-      		throw new ApplicationException("이메일 중복");
+      		map.put("cause", "이메일 중복");
+      		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
       	}
       	
       	response.setHeader("Access-Control-Allow-Headers", "token");//token
       	
       	User me = userService.add(user);
   		
-  		String token = jwtService.create(Long.toString(me.getId()));
-  		map.put("data", me);
-  		response.addHeader("token", token);
-  		
-  		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
+      	if(me.getId() > 0) {
+      		String token = jwtService.create(Long.toString(me.getId()));
+      		map.put("result", "success");
+      		map.put("data", me);
+      		response.addHeader("token", token);
+      		
+      		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
+      	}else {
+      		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
+      	}
   	}
       
-  	 //로그인(광고 선호도 정보 같이 조회)
+  	 //로그인
      @ApiOperation(value = "로그인", notes = "로그인 후 'jwt-token'으로 access token 넘겨줌")
-     @PostMapping("user/signin")
+     @PostMapping("user/login")
      public ResponseEntity<HashMap<String, Object>> signinUser(@RequestBody Login login
      								, HttpServletResponse response) throws Exception {
 	      HashMap<String, Object> map = new HashMap<String, Object>();
+	      HttpStatus status = null;
 	      	
 	      response.setHeader("Access-Control-Allow-Headers", "token");//token
 //	      	System.out.println(login.getEmail()+", "+login.getPassword());
@@ -127,18 +141,18 @@ public class UserController {
 	  	  if (user == null) {
 	  		  throw new NotFoundException("회원 정보 찾을 수 없음");
 		  } else {
-			  if (!SHA256.testSHA256(login.getPassword()).equals(user.getPassword())) {
+			  if (!SHA256.testSHA256(login.getPassword()).equals(user.getPassword()))
 				  throw new NotFoundException("비밀번호 불일치");
-			  }
-			  
 			  user.setPassword("");
 			  String token = jwtService.create(Long.toString(user.getId()));
 
+			  map.put("result", "success");
 			  map.put("data", user);
 			  response.addHeader("token", token);
 		  }
 	  	  
-	  	  return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.ACCEPTED);
+	  	  status = HttpStatus.ACCEPTED;
+	  	  return new ResponseEntity<HashMap<String, Object>>(map, status);
      }
       
      
@@ -148,14 +162,20 @@ public class UserController {
 	     	public ResponseEntity<HashMap<String, Object>> signoutUser(HttpServletRequest request, HttpServletResponse response) throws Exception {
 	      	HashMap<String, Object> map = new HashMap<String, Object>();
 	      	
+	      	String result = "success";
+	      	HttpStatus status = HttpStatus.ACCEPTED;
+	      	
 	      	String token = request.getHeader("Authorization").split(" ")[1];
 	      	
 			//access token을 blacklist로
 			redisTemplate.opsForValue().set(token, true);
 			redisTemplate.expire(token, 10, TimeUnit.DAYS);//10일 후 보관 종료
+	
 			
-	  		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.ACCEPTED);
-	 	}
+			
+	  		map.put("result", result);
+	  		return new ResponseEntity<HashMap<String, Object>>(map, status);
+     	}
       
       //회원탈퇴
       @ApiOperation(value = "회원탈퇴", notes = "Authorization header => 'Bearer [token]'")///token
@@ -163,46 +183,58 @@ public class UserController {
       public ResponseEntity<HashMap<String, Object>> deleteUser(HttpServletRequest request) throws Exception {
 	      	HashMap<String, Object> map = new HashMap<String, Object>();
 	      	
+	      	String result = "success";
+	      	HttpStatus status = HttpStatus.ACCEPTED;
+	      	
 	      	String token = request.getHeader("Authorization").split(" ")[1];
 	
 	  		Map<String, Object> claims = jwtService.get(token);
 	  		String uid = (String)claims.get("uid");
 	  		userService.delete(uid);
 	  		
-	  		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.ACCEPTED);
+	  		map.put("result", result);
+	  		return new ResponseEntity<HashMap<String, Object>>(map, status);
       }
       
-      //회원정보 조회(광고 선호도 정보 같이 조회)
+      //회원정보 조회
       @ApiOperation(value = "내 정보 가져오기", notes = "Authorization header => 'Bearer [token]'")///token
       @GetMapping("/token/user")
       public ResponseEntity<HashMap<String, Object>> getUserInfo(HttpServletRequest request) throws Exception {
 	      	HashMap<String, Object> map = new HashMap<String, Object>();
+	      	
+	      	
+	      	
+	      	HttpStatus status = HttpStatus.ACCEPTED;
+	      	map.put("result", "success");
 	      	
 	      	String token = request.getHeader("Authorization").split(" ")[1];
 	
 	  		Map<String, Object> claims = jwtService.get(token);
 	  		String uid = (String)claims.get("uid");
 	  		
-  			User user = userService.getUserInfo(uid);
+  			User user = userService.getMyInfo(Long.parseLong(uid));
   			map.put("data", user);
 	  			
-	  		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.ACCEPTED);
+	  		return new ResponseEntity<HashMap<String, Object>>(map, status);
       }
      
       
-      //회원정보 수정(광고 선호도 정보 같이 수정)
+      //회원정보 수정
       @ApiOperation(value = "회원정보 수정하기", notes = "Authorization header => 'Bearer [token]'")///token
       @PutMapping("/token/user")
       public ResponseEntity<HashMap<String, Object>> reviseUser(@ModelAttribute("user") User user, HttpServletRequest request) throws Exception {
 	      	HashMap<String, Object> map = new HashMap<String, Object>();
 	      	
+	      	HttpStatus status = HttpStatus.ACCEPTED;
+	      	
 	      	String token = request.getHeader("Authorization").split(" ")[1];
 	
 	  		Map<String, Object> claims = jwtService.get(token);
-	  		user.setId(Integer.parseInt((String)claims.get("uid")));
+//	  		user.setId(Long.parseLong((String)claims.get("uid")));
 	  		
 	  		userService.update(user);
-	  		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.ACCEPTED);
+	  		map.put("result", "success");
+	  		return new ResponseEntity<HashMap<String, Object>>(map, status);
       }
 
       
@@ -214,16 +246,20 @@ public class UserController {
 	      	HashMap<String, Object> map = new HashMap<String, Object>();
 	      	
 	      	String password = (String)param.get("password");
+	      	String result = "success";
+	      	HttpStatus status = HttpStatus.ACCEPTED;
 	      	
 	      	String token = request.getHeader("Authorization").split(" ")[1];
 	  		Map<String, Object> claims = jwtService.get(token);
 	  		
 	  		
   			if(!userService.checkPassword((String)claims.get("uid"), SHA256.testSHA256(password))) {
-  				throw new ApplicationException("비밀번호 불일치");
+  				result = "fail";
+  				map.put("cause", "비밀번호 불일치");
   			}
 	  		
-	  		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.ACCEPTED);
+	  		map.put("result", result);
+	  		return new ResponseEntity<HashMap<String, Object>>(map, status);
       }
       
       //비밀번호 찾기
@@ -237,10 +273,12 @@ public class UserController {
 	  		}
 	  		
 	  		String tmpPw = new TempKey().getKey(6, false);  // 임시비밀번호
+	      	HttpStatus status = HttpStatus.ACCEPTED;
 	      	
 	  		userService.sendTmpPasswordEmail(tmpPw, email);
 	  				
-	  		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.ACCEPTED);
+	        map.put("result", "success");
+	  		return new ResponseEntity<HashMap<String, Object>>(map, status);
      }
       
 

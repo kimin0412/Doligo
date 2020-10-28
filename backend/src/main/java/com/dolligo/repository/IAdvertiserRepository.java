@@ -1,8 +1,11 @@
 package com.dolligo.repository;
 
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
-@Repository
+import org.mapstruct.Mapper;
+
+import com.dolligo.dto.User;
+
 public interface IAdvertiserRepository {
     
 
