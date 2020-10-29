@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:userApp/my_coupon_QRCode_page.dart';
 
-class MyCouponPage extends StatefulWidget {
+class MyCouponQRCodePage extends StatefulWidget {
+  static const routeName = '/myCouponQRCode';
+
   @override
-  _MyCouponPageState createState() => _MyCouponPageState();
+  _MyCouponQRCodePageState createState() => _MyCouponQRCodePageState();
 }
 
-class _MyCouponPageState extends State<MyCouponPage> {
-  int _couponCnt;
-
-  // Global Key of Scaffold
-  final scaffoldKey = GlobalKey<ScaffoldState>();
+class _MyCouponQRCodePageState extends State<MyCouponQRCodePage> {
 
   var _listviewData = [
     {'heading' : '사이다 무료', 'storeName' : '우리집 국밥 쿠폰',
@@ -21,22 +18,7 @@ class _MyCouponPageState extends State<MyCouponPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    // inialize
-    // user 정보 얻어오는 과정 필요
-    //
-    //
-    //
-    //
-
-    setState(() {
-      _couponCnt = _listviewData.length;    // 쿠폰 개수 초기화
-    });
-
-
-    // UI Build
     return Scaffold(
-      key: scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         title: Text("쿠폰함",
@@ -53,13 +35,7 @@ class _MyCouponPageState extends State<MyCouponPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Container(
-                width: 500,
-                child: Text('보유쿠폰 : $_couponCnt장',
-                  style: TextStyle(fontSize: 25, color: Color(0xFF8B6DFF)),
-                  textAlign: TextAlign.left,
-                ),
-              ),  // 보유쿠폰 현황
+              SizedBox(height: 50,),
               Center(
                 child: Container(
                   height: 900,
@@ -130,33 +106,6 @@ class _MyCouponPageState extends State<MyCouponPage> {
                                     ],
                                   ),  // 쿠폰 내용
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 20),
-                                  child: Positioned.fill(
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: ButtonTheme(
-                                        minWidth: 70,
-                                        height: 70,
-                                        child: RaisedButton(
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-                                          child: Text('쿠폰\n쓰기',
-                                            style: TextStyle(fontSize: 18),
-                                          ),
-                                          onPressed: () {
-                                            showAlertDialog(context, index);// 쓸건지 한번 물어보는 창으로 연결
-                                            //
-                                          },
-                                          color: Color(0xff7C4CFF),
-                                          textColor: Colors.white,
-                                          disabledColor: Color(0xff9C9C9C),
-                                          disabledTextColor: Colors.black,
-                                        ),
-                                      ),
-                                    ),
-
-                                  ),
-                                ),  // 쿠폰 사용 버튼
                               ],
                             ),
                           ),
@@ -172,51 +121,4 @@ class _MyCouponPageState extends State<MyCouponPage> {
       ),
     );
   }
-
-  void showAlertDialog(BuildContext context, int index) async {
-    String result = await showDialog(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('쿠폰 사용'),
-          content: Text("쿠폰을 사용하시겠습니까?"),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('OK'),
-              onPressed: () {
-                setState(() {
-                  _listviewData.removeAt(index);
-                });
-                Navigator.pop(context, "쿠폰을 사용하였습니다!");
-              },
-            ),
-            FlatButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.pop(context, "Cancel");
-              },
-            ),
-          ],
-        );
-      },
-    );
-
-    if(result != 'Cancel') {
-      scaffoldKey.currentState
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text("$result"),
-            backgroundColor: Color(0xff7C4CFF),
-            action: SnackBarAction(
-              label: "Done",
-              textColor: Colors.white,
-              onPressed: () {},
-            ),
-          ),
-        );
-    }
-  }
-
 }
