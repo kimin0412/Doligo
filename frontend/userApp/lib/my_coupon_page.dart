@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:userApp/my_coupon_QRCode_page.dart';
 
 class MyCouponPage extends StatefulWidget {
   @override
