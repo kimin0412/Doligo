@@ -3,7 +3,7 @@ Implementation-Title: backend
 Implementation-Version: 1.0.5
 Built-By: multicampus
 Implementation-Vendor-Id: com.dolligo
-Build-Jdk: 1.8.0_251
+Build-Jdk: 1.8.0_242
 Implementation-URL: https://projects.spring.io/spring-boot/#/spring-bo
  ot-starter-parent/backend
 Created-By: Maven Integration for Eclipse

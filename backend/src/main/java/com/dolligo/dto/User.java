@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -39,6 +40,9 @@ public class User {
 
     @OneToMany(targetEntity = Preference.class, mappedBy = "uid", fetch = FetchType.EAGER)
     private List<Preference> preferences;
+    
+    @Transient
+    private List<String> prefercode;//선호하는 상권 대분류 리스트(회원가입 시 선택)
     
 	public int getId() {
 		return id;
@@ -83,11 +87,20 @@ public class User {
 	public void setPreferences(List<Preference> preferences) {
 		this.preferences = preferences;
 	}
+	
+	public List<String> getPrefercode() {
+		return prefercode;
+	}
+	public void setPrefercode(List<String> prefercode) {
+		this.prefercode = prefercode;
+	}
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", email=" + email + ", password=" + password + ", gender=" + gender + ", age=" + age
-				+ ", point=" + point + ", preferences=" + preferences + "]";
+				+ ", point=" + point + ", preferences=" + preferences + ", prefercode=" + prefercode + "]";
 	}
+	
+	
 	
     
     

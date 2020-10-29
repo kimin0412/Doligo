@@ -76,7 +76,7 @@ public class UserController {
   	
     
     //회원가입(광고 선호도 정보 같이 조회)
-  	@ApiOperation(value = "회원가입", notes = "회원가입 후 'jwt-token'으로 access token 넘겨줌")
+  	@ApiOperation(value = "회원가입", notes = "prefercode 리스트에 상권 대분류 코드 리스트(ex. ['D', 'Q', ...])를 넘겨주세용 \n회원가입 후 'token'으로 access token 넘겨줌")
   	@PostMapping(value = "user/signup")
   	public ResponseEntity<HashMap<String, Object>> signupUser(@RequestBody User user, HttpServletResponse response)throws Exception {
       	HashMap<String, Object> map = new HashMap<String, Object>();
@@ -113,7 +113,7 @@ public class UserController {
   	}
       
   	 //로그인(광고 선호도 정보 같이 조회)
-     @ApiOperation(value = "로그인", notes = "로그인 후 'jwt-token'으로 access token 넘겨줌")
+     @ApiOperation(value = "로그인", notes = "로그인 후 'token'으로 access token 넘겨줌")
      @PostMapping("user/signin")
      public ResponseEntity<HashMap<String, Object>> signinUser(@RequestBody Login login
      								, HttpServletResponse response) throws Exception {
@@ -190,7 +190,7 @@ public class UserController {
      
       
       //회원정보 수정(광고 선호도 정보 같이 수정)
-      @ApiOperation(value = "회원정보 수정하기", notes = "Authorization header => 'Bearer [token]'")///token
+      @ApiOperation(value = "회원정보 수정하기", notes = "preference 리스트에 변경된 광고 선호도 리스트 넘겨주세용.\n Authorization header => 'Bearer [token]'")///token
       @PutMapping("/token/user")
       public ResponseEntity<HashMap<String, Object>> reviseUser(@RequestBody User user, HttpServletRequest request) throws Exception {
 	      	HashMap<String, Object> map = new HashMap<String, Object>();
