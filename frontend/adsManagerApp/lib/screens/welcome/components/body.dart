@@ -5,6 +5,7 @@ import 'package:dolligo_ads_manager/screens/signup/signup_screen.dart';
 import 'package:dolligo_ads_manager/screens/welcome/components/background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 
 class Body extends StatelessWidget {
@@ -18,8 +19,8 @@ class Body extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "WELCOME TO EDU",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              "돌리Go! 광고주용",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             SizedBox(height: size.height * 0.05),
             SvgPicture.asset(

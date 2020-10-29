@@ -9,9 +9,10 @@ import 'package:dolligo_ads_manager/screens/signup/components/or_divider.dart';
 import 'package:dolligo_ads_manager/screens/signup/components/social_icon.dart';
 import 'package:dolligo_ads_manager/screens/signup/signup_screen_2.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class Body extends StatelessWidget {
+
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -25,10 +26,6 @@ class Body extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             SizedBox(height: size.height * 0.03),
-            //SvgPicture.asset(
-            //  "assets/icons/signup.svg",
-            //  height: size.height * 0.35,
-            //),
             RoundedInputField(
               hintText: "이메일을 입력해주세요.",
               onChanged: (value) {},
