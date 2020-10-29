@@ -1,5 +1,6 @@
 package com.dolligo.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import com.dolligo.dao.MarkettypeDao;
 import com.dolligo.dao.PreferenceDao;
 import com.dolligo.dto.Preference;
 import com.dolligo.dto.User;
@@ -27,6 +29,9 @@ public class UserService implements IUserService {
     
     @Autowired
     private PreferenceDao preferenceDao;
+
+    @Autowired
+    private MarkettypeDao markettypeDao;
     
     @Autowired
     private JavaMailSender mailSender;
@@ -68,12 +73,18 @@ public class UserService implements IUserService {
         user.setPassword(SHA256.testSHA256(user.getPassword()));
         this.userRepository.save(user);
 
-        List<Preference> plist = user.getPreferences();
-        
-        for(Preference p : plist) {
-        	p.setUid(user.getId());
-        	preferenceDao.save(p);
+        List<String> largeList = user.getPrefercode();
+        List<Preference> plist = new ArrayList<>();
+        for(String l : largeList) {
+        	List<Integer> mid = markettypeDao.findByLargecode(l);
+        	for(int m : mid) {//유저 광고 선호도 정보 저장
+        		Preference p = new Preference(user.getId(), m, true);
+        		plist.add(p);
+        		preferenceDao.save(p);
+        	}
         }
+        
+        user.setPreferences(plist);
         
         return user;
     }
