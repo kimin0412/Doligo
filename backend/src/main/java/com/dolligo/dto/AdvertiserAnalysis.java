@@ -23,36 +23,34 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.ALWAYS)
-public class Analysis {
+public class AdvertiserAnalysis {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	@Column
 	private int id;					//pk
-	private boolean type;			//상권인지 전단지인지
-	private int targetid;			//상권/ 전단지 아이디
-	private boolean gender;			//성별  0 : 여자, 1 : 남자
-	private int age;				//연령(년도, 뒤에 숫자 두 개)
-	private int state;				//차단, 바로삭제, 상세조회, 방문(qr인증) 체크
-	private boolean isdiscount;		//이벤트 여부
-	private int cnt;				//누적 횟수(쌓인 유저 데이터 개수)
-	
+	private int adi;				//fk 광고주 아이디
+	private int mtid;				//fk 상권 아이디
+	private boolean gender;			//성별
+	private int age;				//연령대
+	private int state;				//반응상태값
+	private String time;			//반응시간
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
 	}
-	public boolean isType() {
-		return type;
+	public int getAdi() {
+		return adi;
 	}
-	public void setType(boolean type) {
-		this.type = type;
+	public void setAdi(int adi) {
+		this.adi = adi;
 	}
-	public int getTargetid() {
-		return targetid;
+	public int getMtid() {
+		return mtid;
 	}
-	public void setTargetid(int targetid) {
-		this.targetid = targetid;
+	public void setMtid(int mtid) {
+		this.mtid = mtid;
 	}
 	public boolean isGender() {
 		return gender;
@@ -72,23 +70,18 @@ public class Analysis {
 	public void setState(int state) {
 		this.state = state;
 	}
-	public boolean isIsdiscount() {
-		return isdiscount;
+	public String getTime() {
+		return time;
 	}
-	public void setIsdiscount(boolean isdiscount) {
-		this.isdiscount = isdiscount;
-	}
-	public int getCnt() {
-		return cnt;
-	}
-	public void setCnt(int cnt) {
-		this.cnt = cnt;
+	public void setTime(String time) {
+		this.time = time;
 	}
 	@Override
 	public String toString() {
-		return "Analysis [id=" + id + ", type=" + type + ", targetid=" + targetid + ", gender=" + gender + ", age="
-				+ age + ", state=" + state + ", isdiscount=" + isdiscount + ", cnt=" + cnt + "]";
+		return "AdvertiserAnalysis [id=" + id + ", adi=" + adi + ", mtid=" + mtid + ", gender=" + gender + ", age="
+				+ age + ", state=" + state + ", time=" + time + "]";
 	}
+	
 	
 	
     

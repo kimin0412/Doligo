@@ -104,7 +104,7 @@ public class UserController {
       	response.setHeader("Access-Control-Allow-Headers", "token");//token
       	
       	User me = userService.add(user);
-  		
+  		me.setPassword("");
   		String token = jwtService.create(Integer.toString(me.getId()));
   		map.put("data", me);
   		response.addHeader("token", token);
