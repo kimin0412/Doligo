@@ -211,9 +211,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                                         child: RaisedButton(
                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
                                           child: Text(_isCouponButtonDisable ? '지급완료' : '쿠폰받기'),
-                                          onPressed: () {
-                                            _isCouponButtonDisable ? null : _getCoupon;
-                                          },
+                                          onPressed: _isCouponButtonDisable ? null : _getCoupon,
                                           color: Color(0xff7C4CFF),
                                           textColor: Colors.white,
                                           disabledColor: Color(0xff9C9C9C),
