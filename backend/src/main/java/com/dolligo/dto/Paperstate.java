@@ -30,7 +30,6 @@ public class Paperstate {
     private int id;					//pk  전단지상태 아이디
     private int uid;				//fk  일반 유저 아이디(userId)
     private int pid;				//fk  전단지 아이디(paperId)
-    private int aid;				//fk  광고주 아이디(advertiserId)
     private int state;				//전단지 받았을 때 유저 로그 데이터 => 0 : 조회X, 1 : 조회O
     								/*
     								 * state == 0 일때 전단지를 리스트에서 삭제하거나 차단할 경우
@@ -56,12 +55,6 @@ public class Paperstate {
 	}
 	public void setPid(int pid) {
 		this.pid = pid;
-	}
-	public int getAid() {
-		return aid;
-	}
-	public void setAid(int aid) {
-		this.aid = aid;
 	}
 	public int getState() {
 		return state;
@@ -89,7 +82,7 @@ public class Paperstate {
 	}
 	@Override
 	public String toString() {
-		return "Paperstate [id=" + id + ", uid=" + uid + ", pid=" + pid + ", aid=" + aid + ", state=" + state
+		return "Paperstate [id=" + id + ", uid=" + uid + ", pid=" + pid + ", state=" + state
 				+ ", visited=" + visited + ", isget=" + isget + ", point=" + point + "]";
 	}
 	
