@@ -46,8 +46,8 @@ public class Advertiser {
     private String lon;					//경도
     private int point;					//포인트
     
-    @OneToMany(mappedBy = "advertiser")
-    private List<Paper> papers;
+//    @OneToMany(mappedBy = "advertiser")
+//    private List<Paper> papers;
     
     @Transient
     private String mediumcode;
@@ -130,19 +130,19 @@ public class Advertiser {
 	public void setPoint(int point) {
 		this.point = point;
 	}
-	
-	public List<Paper> getPapers() {
-		return papers;
-	}
-	public void setPapers(List<Paper> papers) {
-		this.papers = papers;
-	}
+//	
+//	public List<Paper> getPapers() {
+//		return papers;
+//	}
+//	public void setPapers(List<Paper> papers) {
+//		this.papers = papers;
+//	}
 	@Override
 	public String toString() {
 		return "Advertiser [id=" + id + ", mtid=" + mtid + ", email=" + email + ", password=" + password
 				+ ", marketname=" + marketname + ", marketbranch=" + marketbranch + ", marketnumber=" + marketnumber
 				+ ", marketaddress=" + marketaddress + ", marketurl=" + marketurl + ", lat=" + lat + ", lon=" + lon
-				+ ", point=" + point + ", papers=" + papers + ", mediumcode=" + mediumcode + "]";
+				+ ", point=" + point + ", mediumcode=" + mediumcode + "]";
 	}
 	
 	

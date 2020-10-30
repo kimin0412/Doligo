@@ -7,10 +7,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.ColumnDefault;
 
+import com.dolligo.mapping.PaperMapping;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators.IntSequenceGenerator;
 
@@ -27,7 +30,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.ALWAYS)
 @JsonIdentityInfo(generator = IntSequenceGenerator.class, property = "p_id") // 무한루프방지
-public class Paper {
+public class Paper{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	@Column
@@ -51,6 +54,13 @@ public class Paper {
     private int remainsheets;			//배포 후 남은 종이 수
     @ColumnDefault(value = "0") 
     private int cost;					//결제 금액
+    
+    //일반 유저 => 전단지 상세 페이지 접속 시 필요
+    @Transient
+    private boolean getpoint;//이미 포인트 회수했는지
+    @Transient
+    private Coupon coupon;//쿠폰 사용 여부
+    
     
     @ManyToOne
     @JoinColumn(name = "p_aid", insertable = false, updatable = false)
@@ -159,7 +169,21 @@ public class Paper {
 		this.cost = cost;
 	}
 	
+	
+	public boolean isGetpoint() {
+		return getpoint;
+	}
+	public void setGetpoint(boolean getpoint) {
+		this.getpoint = getpoint;
+	}
+	public Coupon getCoupon() {
+		return coupon;
+	}
+	public void setCoupon(Coupon coupon) {
+		this.coupon = coupon;
+	}
 	public Advertiser getAdvertiser() {
+		this.advertiser.setPassword("");
 		return advertiser;
 	}
 	public void setAdvertiser(Advertiser advertiser) {
@@ -171,9 +195,8 @@ public class Paper {
 				+ p_video + ", p_point=" + p_point + ", p_check=" + p_check + ", p_coupon=" + p_coupon + ", condition1="
 				+ condition1 + ", condition2=" + condition2 + ", starttime=" + starttime + ", endtime=" + endtime
 				+ ", lat=" + lat + ", lon=" + lon + ", sheets=" + sheets + ", remainsheets=" + remainsheets + ", cost="
-				+ cost + ", advertiser=" + advertiser + "]";
+				+ cost + ", getpoint=" + getpoint + ", coupon=" + coupon + ", advertiser=" + advertiser + "]";
 	}
-	
 	
 	
 	
