@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -15,10 +17,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 //전단지 상태(일반유저의 로그 데이터)
 @Entity
 @Getter
+@Setter
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,6 +42,12 @@ public class Paperstate {
     private boolean visited;		//가게 방문 여부
     private boolean isget;			//포인트 회수 여부(상세조회 페이지에서 '포인트받기' 버튼 눌렀는지 여부)
     private int point;				//해당 광고를 통해 얻은 포인트 총 양
+    
+    
+    @ManyToOne
+    @JoinColumn(name = "pid", insertable = false, updatable = false)
+    private Paper paper;//어느 전단지의 paperstate인지
+    
 	public int getId() {
 		return id;
 	}
@@ -79,6 +89,13 @@ public class Paperstate {
 	}
 	public void setPoint(int point) {
 		this.point = point;
+	}
+	
+	public Paper getPaper() {
+		return paper;
+	}
+	public void setPaper(Paper paper) {
+		this.paper = paper;
 	}
 	@Override
 	public String toString() {

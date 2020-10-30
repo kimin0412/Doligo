@@ -16,7 +16,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-//분석결과
+//전단지별 분석
 @Entity
 @Getter
 @Data

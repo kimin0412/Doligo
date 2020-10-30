@@ -1,15 +1,18 @@
 package com.dolligo.dto;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.ColumnDefault;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.IntSequenceGenerator;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,6 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.ALWAYS)
+@JsonIdentityInfo(generator = IntSequenceGenerator.class, property = "p_id") // 무한루프방지
 public class Paper {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
@@ -41,9 +45,16 @@ public class Paper {
     private String endtime;				//배포 종료 시간
     private String lat;					//배포할 위치 위도
     private String lon;					//배포할 위치 경도
+    @ColumnDefault(value = "0") 
     private int sheets;					//배포할 종이 수
+    @ColumnDefault(value = "0") 
     private int remainsheets;			//배포 후 남은 종이 수
+    @ColumnDefault(value = "0") 
     private int cost;					//결제 금액
+    
+    @ManyToOne
+    @JoinColumn(name = "p_aid", insertable = false, updatable = false)
+    private Advertiser advertiser;
     
 	public int getP_id() {
 		return p_id;
@@ -147,14 +158,23 @@ public class Paper {
 	public void setCost(int cost) {
 		this.cost = cost;
 	}
+	
+	public Advertiser getAdvertiser() {
+		return advertiser;
+	}
+	public void setAdvertiser(Advertiser advertiser) {
+		this.advertiser = advertiser;
+	}
 	@Override
 	public String toString() {
 		return "Paper [p_id=" + p_id + ", p_aid=" + p_aid + ", p_mtid=" + p_mtid + ", p_image=" + p_image + ", p_video="
 				+ p_video + ", p_point=" + p_point + ", p_check=" + p_check + ", p_coupon=" + p_coupon + ", condition1="
 				+ condition1 + ", condition2=" + condition2 + ", starttime=" + starttime + ", endtime=" + endtime
 				+ ", lat=" + lat + ", lon=" + lon + ", sheets=" + sheets + ", remainsheets=" + remainsheets + ", cost="
-				+ cost + "]";
+				+ cost + ", advertiser=" + advertiser + "]";
 	}
+	
+	
 	
 	
 	

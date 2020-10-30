@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -33,6 +34,7 @@ public class User {
 	@Column
     private int id;				//pk
     private String email;		//이메일
+    @JsonIgnore
     private String password;	//비밀번호
     private boolean gender;		//성별 => 여 : 0, 남 : 1
     private int age;			//나이 => 년생으로(뒤에 숫자 두개)
