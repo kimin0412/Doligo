@@ -1,6 +1,7 @@
 package com.dolligo.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,21 +25,35 @@ public class UserPaperService implements IUserPaperService {
 	private IPaperStateRepository psRepo;
 	
 
+	//포인트 내역 가져오기
 	@Override
 	public List<Paperstate> getPointHistory(String uid) {
 		return psRepo.findAllByUid(uid);
 	}
 
+	//주변 전단지 목록 가져오기
 	@Override
 	public List<Paper> getPaperList(String uid, String lat, String lon) throws Exception {
-		// TODO Auto-generated method stub
+		/*
+		 * paper 테이블에서 위도경도 범위 안에 있는 전단지 목록 다 가져옴
+		 *  + 차단한 광고주의 전단지(pid) 제외
+		 *  + 사용자가 이미 삭제한 전단지(pid) 제외
+		 *  + 선호도 체크한 상권(mkid)의 전단지를 상단 배치 => order by..? 
+		 */
 		return null;
 	}
 
+	
+	//paper + advertiser(어떤 가게인지도 알아야지)
 	@Override
 	public Paper getPaperDetail(int pid) {
-		// TODO Auto-generated method stub
-		return null;
+		Optional<Paper> paper = pRepo.findById(pid);
+		
+		if(!paper.isPresent()) {
+    		throw new NotFoundException(pid+"번 전단지 정보 찾지 못함");
+    	}
+		
+		return paper.get();
 	}
 
 	@Override
@@ -49,7 +64,7 @@ public class UserPaperService implements IUserPaperService {
 
 	@Override
 	public void blockPaper(int pid, String uid) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
@@ -60,8 +75,9 @@ public class UserPaperService implements IUserPaperService {
 	}
 
 	@Override
-	public void saveCoupon(String uid, Coupon coupon) {
+	public Coupon saveCoupon(String uid, int pid) {
 		// TODO Auto-generated method stub
+		return null;
 		
 	}
 
@@ -77,15 +93,4 @@ public class UserPaperService implements IUserPaperService {
 		
 	}
 	
-//	@Override
-//	public List<Paper> getPaperList() throws Exception {
-//		List<Paper> papers = this.paperRepo.findAll();
-//		if(papers.isEmpty()) {
-//			throw new NotFoundException("근처에 등록된 전단지가 없습니다.");
-//		}
-//		
-//		return papers;
-//	}
-
-
 }

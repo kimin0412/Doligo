@@ -17,8 +17,8 @@ import lombok.NoArgsConstructor;
 //선호도
 @Entity
 @Getter
-@Data
 @NoArgsConstructor
+@Data
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class Preference {

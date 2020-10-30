@@ -16,7 +16,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-//분석결과
+//광고주별 분석
 @Entity
 @Getter
 @Data
