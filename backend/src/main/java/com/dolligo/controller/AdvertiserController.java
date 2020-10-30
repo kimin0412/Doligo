@@ -38,7 +38,7 @@ import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/advertiser")
+@RequestMapping("/api")
 public class AdvertiserController {
     public static final Logger logger = LoggerFactory.getLogger(AdvertiserController.class);
 
@@ -222,7 +222,7 @@ public class AdvertiserController {
       
       //비밀번호 찾기
       @ApiOperation(value = "비밀번호 찾기")
-      @GetMapping("/user/password/{email}")
+      @GetMapping("/advertiser/password/{email}")
       public ResponseEntity<HashMap<String, Object>> sendEmailForPw(@PathVariable("email") String email, HttpServletRequest request) throws Exception {
 	  		HashMap<String, Object> map = new HashMap<String, Object>();
 	  		

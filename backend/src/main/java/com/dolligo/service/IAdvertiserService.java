@@ -9,6 +9,8 @@ public interface IAdvertiserService {
 	Advertiser getMyInfo(int id) throws Exception;//내 정보
 	@Transactional
 	Advertiser getAdvertiserInfo(String email) throws Exception;
+//	@Transactional
+//	Advertiser getMarketInfo(int id) throws Exception;
     @Transactional
     Advertiser add(Advertiser advertiser) throws Exception;//회원가입
     @Transactional
