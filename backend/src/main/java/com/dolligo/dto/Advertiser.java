@@ -36,7 +36,6 @@ public class Advertiser {
     private int id;						//pk
     private int mtid;					//fk : 상권종류 아이디(MarketTypeId)
     private String email;				//이메일
-    @JsonIgnore
     private String password;			//비밀번호
     private String marketname;			//가게이름
     private String marketbranch;		//가게지점
