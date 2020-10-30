@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -37,6 +38,7 @@ public class Advertiser {
     private String lon;					//경도
     private int point;					//포인트
     
+    @Transient
     private String mediumcode;
     
 	public String getMediumcode() {
@@ -124,6 +126,5 @@ public class Advertiser {
 				+ ", marketaddress=" + marketaddress + ", marketurl=" + marketurl + ", lat=" + lat + ", lon=" + lon
 				+ ", point=" + point + ", mediumcode=" + mediumcode + "]";
 	}
-	
 	
 }

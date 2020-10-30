@@ -25,10 +25,10 @@ public class AdvertiserService implements IAdvertiserService {
 	@Autowired
 	private JavaMailSender mailSender;
 
-//	@Autowired
-//	public public AdvertiserService(IAdvertiserRepository advertiserRepository) {
-//		this.advertiserRepository = advertiserRepository;
-//	}
+	@Autowired
+	public AdvertiserService(IAdvertiserRepository advertiserRepository) {
+		this.advertiserRepository = advertiserRepository;
+	}
 
 	// 로그인한 유저 정보 가져옴 => token
 	@Override
@@ -92,6 +92,8 @@ public class AdvertiserService implements IAdvertiserService {
 
 	@Override
 	public boolean isDupEmail(String email) throws Exception {
+		System.out.println(email);
+		System.out.println(advertiserRepository.isDupEmail(email));
 		return advertiserRepository.isDupEmail(email) > 0 ? true : false;
 	}
 

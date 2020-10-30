@@ -29,6 +29,6 @@ public interface IAdvertiserRepository extends JpaRepository<Advertiser, Integer
 	
 	//가게정보 보기
 	@Query(value = "select marketname, marketbranch, marketnumber, marketaddress, marketurl from advertiser where id = ?1", nativeQuery = true)
-	String selectMarket(int userId);
+	Advertiser selectMarket(int userId);
 
 }
