@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class LeafletDetailPage extends StatefulWidget {
   static const routeName = '/leafFletDetail';
@@ -16,10 +17,19 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
   Completer<GoogleMapController> _controller = Completer();
 
   Set<Marker> _markers = Set();
+  bool initCheck;
   bool _isCouponButtonDisable;
   bool _isPointButtonDisable;
 
   ScreenArguments args;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    initCheck = true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +44,15 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
         infoWindow: InfoWindow(title: args.heading),
       ));
 
-      // coupon 상태 초기화
-      _isCouponButtonDisable = args.coupon;
+      if(initCheck) {
+        // coupon 상태 초기화
+        _isCouponButtonDisable = args.coupon;
 
-      // point 상태 초기화
-      _isPointButtonDisable = args.point;
+        // point 상태 초기화
+        _isPointButtonDisable = args.point;
+
+        initCheck = false;
+      }
     });
     print(args.imageUrl);
     print(args.heading);
@@ -211,8 +225,8 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                                         child: RaisedButton(
                                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
                                           child: Text(_isCouponButtonDisable ? '지급완료' : '쿠폰받기'),
-                                          onPressed: () {
-                                            _isCouponButtonDisable ? null : _getCoupon;
+                                          onPressed: _isCouponButtonDisable ? null : () {
+                                            _getCoupon();
                                           },
                                           color: Color(0xff7C4CFF),
                                           textColor: Colors.white,
@@ -230,6 +244,18 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                         ],
                       ),
                     ),  // 쿠폰 Area
+                    Container(
+                      child: Column(
+                        children: [
+                          QrImage(
+                            data: "1234567890",
+                            version: QrVersions.auto,
+                            size: 200.0,
+                          ),
+                          Text('QR코드 찍고 가게 방문 인증하세요!', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+                        ],
+                      ),
+                    ),  // QR코드 Area
                   ],
                 ),
               ),
@@ -239,9 +265,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                 height: 50,
                 child: RaisedButton(
                   child: Text(_isPointButtonDisable ? '지급완료' : 'Point 겟 하기', style: TextStyle(fontSize: 20),),
-                  onPressed: () {
-                    _isPointButtonDisable ? null : _getCoupon;
-                  },
+                  onPressed: _isPointButtonDisable ? null : () {},
                   color: Color(0xff7C4CFF),
                   textColor: Colors.white,
                   disabledColor: Color(0xff9C9C9C),
@@ -255,8 +279,34 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
     );
   }
 
-  void _getCoupon() {
+  _getCoupon()  {
+    showAlertDialog(context);
+  }
 
+  void showAlertDialog(BuildContext context) async {
+    String result = await showDialog(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('쿠폰획득'),
+          content: Text("쿠폰을 획득하셨습니다."),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                setState(() {
+                  print('Coupon : $_isCouponButtonDisable');
+                  _isCouponButtonDisable = true;
+                  print('Coupon : $_isCouponButtonDisable');
+                });
+                Navigator.pop(context, "쿠폰을 사용하였습니다!");
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _onMapCreated(GoogleMapController controller) {

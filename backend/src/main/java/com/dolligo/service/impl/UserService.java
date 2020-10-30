@@ -1,5 +1,9 @@
 package com.dolligo.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -8,9 +12,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import com.dolligo.dto.Preference;
 import com.dolligo.dto.User;
 import com.dolligo.exception.ApplicationException;
 import com.dolligo.exception.NotFoundException;
+import com.dolligo.repository.IMarkettypeRepository;
+import com.dolligo.repository.IPreferenceRepository;
 import com.dolligo.repository.IUserRepository;
 import com.dolligo.service.IUserService;
 import com.dolligo.util.SHA256;
@@ -21,6 +28,12 @@ public class UserService implements IUserService {
     private IUserRepository userRepository;
     
     @Autowired
+    private IPreferenceRepository preferenceRepository;
+
+    @Autowired
+    private IMarkettypeRepository markettypeRepository;
+    
+    @Autowired
     private JavaMailSender mailSender;
 
     @Autowired
@@ -29,26 +42,17 @@ public class UserService implements IUserService {
     }
 
 
-    //다른 유저 정보 가져옴
-    @Override
-    public User getUserInfo(long id) throws Exception{
-    	User user = this.userRepository.getUserById(id);
-    	if(user == null) {
-    		throw new NotFoundException("회원 정보 찾지 못함");
-    	}
-    	
-    	return user;
-    }
-
     //로그인한 유저 정보 가져옴 => token
     @Override
-    public User getMyInfo(long id) throws Exception{
-    	User user = this.userRepository.getUserById(id);
-    	if(user == null) {
+    public User getMyInfo(int id) throws Exception{
+    	Optional<User> user = this.userRepository.findById(id);
+
+    	if(!user.isPresent()) {
     		throw new NotFoundException("회원 정보 찾지 못함");
     	}
+    	User me = user.get(); 
 	    
-	    return user;
+	    return me;
     }
     
     //이메일로 유저정보 가져옴 => login
@@ -59,15 +63,28 @@ public class UserService implements IUserService {
     		throw new NotFoundException("회원 정보 찾지 못함");
     	}
     	
-    	
     	return user;
     }
+
 
     //회원가입
     @Override
     public User add(User user) throws Exception{
         user.setPassword(SHA256.testSHA256(user.getPassword()));
-        this.userRepository.create(user);
+        this.userRepository.save(user);
+
+        List<String> largeList = user.getPrefercode();
+        List<Preference> plist = new ArrayList<>();
+        for(String l : largeList) {
+        	List<Integer> mid = markettypeRepository.findByLargecode(l);
+        	for(int m : mid) {//유저 광고 선호도 정보 저장
+        		Preference p = new Preference(user.getId(), m, true);
+        		plist.add(p);
+        		preferenceRepository.save(p);
+        	}
+        }
+        
+        user.setPreferences(plist);
         
         return user;
     }
@@ -75,31 +92,32 @@ public class UserService implements IUserService {
     //회원 수정
     @Override
     public User update(User user) throws Exception{
-
-        User found = this.userRepository.getUserById(user.getId());
-        if(found == null)
-            throw new ApplicationException("회원 정보를 찾을 수 없습니다.");
-
-        if(user.getId() == 0)
-            user.setId(found.getId());
+        String password = this.userRepository.selectPassword(user.getId());
         
+        if(password == null || password.equals("")) {
+        	throw new ApplicationException("회원 정보를 찾을 수 없습니다.");
+        }
+
+        //비번 변경인 경우
         if(user.getPassword() == null || user.getPassword().equals(""))
-            user.setPassword(found.getPassword());
+            user.setPassword(password);
         else user.setPassword(SHA256.testSHA256(user.getPassword()));
         
-        if(user.getEmail() == null || user.getEmail().equals(""))
-        	user.setEmail(found.getEmail());
 
-        int affected = this.userRepository.update(user);
-        if(affected == 0)
-            throw new ApplicationException("회원수정 처리가 반영되지 않았습니다.");
+        this.userRepository.save(user);
+        List<Preference> plist = user.getPreferences();
+        
+        for(Preference p : plist) {
+        	preferenceRepository.save(p);
+        }
 
-        return this.userRepository.getUserById(user.getId());
+        user.setPassword("");
+        return user;
     }
 
     @Override
     public void delete(String id) throws Exception {
-        this.userRepository.delete(id);
+        this.userRepository.deleteById(Integer.parseInt(id));
     }
 
 
@@ -110,8 +128,7 @@ public class UserService implements IUserService {
 	}
 
 
-
-
+	//본인확인
 	@Override
 	public boolean checkPassword(String uid, String password) throws Exception{
 		return userRepository.checkPassword(uid, password) > 0 ? true : false;
@@ -120,7 +137,7 @@ public class UserService implements IUserService {
 
 	@Override
 	public void sendTmpPasswordEmail(String password, String email) throws Exception{
-		String title = "TRABLOCK 임시 비밀번호 발급";
+		String title = "Dolligo 임시 비밀번호 발급";
 		String content = "\n\n안녕하세요!, 임시 비밀번호로 로그인 후 반드시 수정해주세요!!"
 						+ "\n\n새 비밀번호 : " + password; // 내용
             

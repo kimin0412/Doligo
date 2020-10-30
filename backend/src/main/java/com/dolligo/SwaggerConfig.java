@@ -37,7 +37,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
         		.globalOperationParameters(aParameters)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.trablock.api"))
+                .apis(RequestHandlerSelectors.basePackage("com.dolligo.controller"))
                 .paths(PathSelectors.ant("/api/**"))
                 .build()
                 .apiInfo(apiInfo());

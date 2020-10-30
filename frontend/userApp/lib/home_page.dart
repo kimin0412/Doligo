@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:userApp/leaflet_page.dart';
 import 'package:userApp/market_page.dart';
+import 'package:userApp/my_coupon_page.dart';
 import 'package:userApp/point_history_page.dart';
 
 class Homepage extends StatefulWidget {
@@ -81,7 +82,7 @@ class _HomepageState extends State<Homepage> {
                                   ),
                                 ),
                               )
-                          ),
+                          ),  // 회원 정보 Card
                           Padding(padding: EdgeInsets.all(8.0)),
                           Card(
                             margin: EdgeInsets.all(5),
@@ -115,7 +116,7 @@ class _HomepageState extends State<Homepage> {
                                 Padding(padding: EdgeInsets.all(8.0)),
                               ],
                             ),
-                          ),
+                          ),  // 오늘의 잔여 횟수 및 & 적립포인트 Card
                           Padding(padding: EdgeInsets.all(8.0)),
                           Card(
                             elevation: 4.0,
@@ -155,34 +156,43 @@ class _HomepageState extends State<Homepage> {
                                 ),
                               ),
                             ),
-                          ),
+                          ),  // 포인트 바로 받기 Card
                           Padding(padding: EdgeInsets.all(8.0)),
                           Card(
                             elevation: 4.0,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            child: Column(
-                                children: <Widget>[
-                                  ListTile(
-                                    title: Text('내 쿠폰 확인하기 >',
-                                        style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)),
-                                    trailing: Wrap(
-                                      spacing: 12,
-                                      children: <Widget>[
-                                        SizedBox(
-                                            width: 50.0,
-                                            height: 50.0,
-                                            child: Icon(Icons.swap_vert_circle,
-                                                color: Colors.lightBlue,
-                                                size: 50.0)
-                                        ),
-                                      ],
+                            child: InkWell(
+                              onTap: () =>{
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => MyCouponPage()),
+                                )
+                              },
+                              child: Column(
+                                  children: <Widget>[
+                                    ListTile(
+                                      title: Text('내 쿠폰 확인하기 >',
+                                          style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)),
+                                      trailing: Wrap(
+                                        spacing: 12,
+                                        children: <Widget>[
+                                          SizedBox(
+                                              width: 50.0,
+                                              height: 50.0,
+                                              child: Icon(Icons.swap_vert_circle,
+                                                  color: Colors.lightBlue,
+                                                  size: 50.0)
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ]
+                                  ]
+                              ),
                             ),
-                          ), Padding(padding: EdgeInsets.all(8.0)),
+                          ),  // 내 쿠폰 확인하기 Card
+                          Padding(padding: EdgeInsets.all(8.0)),
                           Card(
                               elevation: 4.0,
                               shape: RoundedRectangleBorder(
@@ -219,7 +229,7 @@ class _HomepageState extends State<Homepage> {
                                     ),
                                   )
                               )
-                          ),
+                          ),  // 쇼핑하기 Card
                         ],
                       )
                   )
