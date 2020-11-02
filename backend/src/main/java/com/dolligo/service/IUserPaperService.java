@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.dolligo.dto.Block;
 import com.dolligo.dto.Coupon;
 import com.dolligo.dto.Paper;
+import com.dolligo.dto.PaperForList;
 import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.State;
 
@@ -17,7 +18,7 @@ public interface IUserPaperService {
 	
 	// 주변 전단지 목록 가져오기
 	@Transactional
-	List<Paper> getPaperList(String uid, String lat, String lon) throws Exception;
+	List<PaperForList> getPaperList(String uid, String lat, String lon, int radius) throws Exception;
 	
 	// 전단지 상세보기
 	Paper getPaperDetail(String uid, int pid);

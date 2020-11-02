@@ -1,5 +1,6 @@
 package com.dolligo.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.ALWAYS)
-public class Coupon {
+public class Coupon implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	@Column

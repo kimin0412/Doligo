@@ -1,5 +1,7 @@
 package com.dolligo.dto;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,7 +32,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.ALWAYS)
 @JsonIdentityInfo(generator = IntSequenceGenerator.class, property = "p_id") // 무한루프방지
-public class Paper{
+public class Paper implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	@Column
@@ -60,6 +62,11 @@ public class Paper{
     private boolean getpoint;//이미 포인트 회수했는지
     @Transient
     private Coupon coupon;//쿠폰 사용 여부
+    @Transient
+    private int prefer;//전단지 선호도 점수
+    @Transient
+    private double distance;//현재 내 위치로부터 전단지까지의 거리(가게 위치가 중요하니까..사실 중요한 정보는 아닌듯...)
+    
     
     
     @ManyToOne
@@ -181,6 +188,20 @@ public class Paper{
 	}
 	public void setCoupon(Coupon coupon) {
 		this.coupon = coupon;
+	}
+	
+	
+	public int getPrefer() {
+		return prefer;
+	}
+	public void setPrefer(int prefer) {
+		this.prefer = prefer;
+	}
+	public double getDistance() {
+		return distance;
+	}
+	public void setDistance(double distance) {
+		this.distance = distance;
 	}
 	public Advertiser getAdvertiser() {
 		this.advertiser.setPassword("");

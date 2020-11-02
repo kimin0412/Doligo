@@ -78,7 +78,7 @@ public class UserService implements IUserService {
         for(String l : largeList) {
         	List<Integer> mid = markettypeRepository.findByLargecode(l);
         	for(int m : mid) {//유저 광고 선호도 정보 저장
-        		Preference p = new Preference(user.getId(), m, true);
+        		Preference p = new Preference(user.getId(), m, 10);//처음 선호도 표시 가중치 10
         		plist.add(p);
         		preferenceRepository.save(p);
         	}
