@@ -4,10 +4,11 @@ import java.util.List;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import com.dolligo.dto.Advertiser;
+import com.dolligo.dto.Block;
 import com.dolligo.dto.Coupon;
 import com.dolligo.dto.Paper;
 import com.dolligo.dto.Paperstate;
+import com.dolligo.dto.State;
 
 public interface IUserPaperService {
 
@@ -19,16 +20,14 @@ public interface IUserPaperService {
 	List<Paper> getPaperList(String uid, String lat, String lon) throws Exception;
 	
 	// 전단지 상세보기
-	Paper getPaperDetail(int pid);
+	Paper getPaperDetail(String uid, int pid);
 	
-	// 포인트 받기(바로 삭제, 상세 조회 후 포인트받기 버튼 클릭, qr인증)
-	Paperstate getPoint(int pid, String uid, int state);//전단지 id, 상태값
-	
-	// 전단지 차단하기
-	void blockPaper(int pid, String uid);
+	// 상태값 변경(바로 삭제, 상세 조회 후 포인트받기 버튼 클릭, qr인증, 차단)
+	@Transactional
+	Paperstate saveState(String uid, State state);//state : pid, 유저 성별, 유저 연령대, 유저 상태값
 	
 	// 차단한 가게 목록 확인
-	List<Advertiser> getBlockList(String uid);
+	List<Block> getBlockList(String uid);
 	
 	// 쿠폰 저장하기
 	Coupon saveCoupon(String uid, int pid);
