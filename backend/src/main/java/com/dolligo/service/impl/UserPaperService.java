@@ -12,6 +12,7 @@ import com.dolligo.dto.Coupon;
 import com.dolligo.dto.Paper;
 import com.dolligo.dto.PaperAnalysis;
 import com.dolligo.dto.Paperstate;
+import com.dolligo.dto.Preference;
 import com.dolligo.dto.State;
 import com.dolligo.exception.ApplicationException;
 import com.dolligo.exception.NotFoundException;
@@ -21,6 +22,7 @@ import com.dolligo.repository.ICouponRepository;
 import com.dolligo.repository.IPaperAnalysisRepository;
 import com.dolligo.repository.IPaperRepository;
 import com.dolligo.repository.IPaperStateRepository;
+import com.dolligo.repository.IPreferenceRepository;
 import com.dolligo.service.IUserPaperService;
 
 @Service
@@ -34,6 +36,8 @@ public class UserPaperService implements IUserPaperService {
 	private IPaperAnalysisRepository paRepo;
 	@Autowired
 	private IAdvertiserAnalysisRepository aaRepo;
+	@Autowired
+	private IPreferenceRepository pfRepo;
 	
 	@Autowired
 	private IBlockRepository blockRepo;
@@ -72,7 +76,7 @@ public class UserPaperService implements IUserPaperService {
 		Paper paper = p.get();
 		paper.setCoupon(c);
 		if(ps != null) paper.setGetpoint(ps.isIsget());
-//		
+
 		return paper;
 	}
 
@@ -83,11 +87,15 @@ public class UserPaperService implements IUserPaperService {
 		
 		Optional<Paper> tmp = pRepo.findById(state.getPid());
 		if(!tmp.isPresent()) {
-    		throw new NotFoundException("전단지 정보 찾지 못함");
+    		throw new NotFoundException(pid+"번 전단지 정보 찾지 못함");
     	}
 		Paper paper = tmp.get();
 		Paperstate ps = psRepo.findByUidAndPid(pid, uid);
 		PaperAnalysis pa = paRepo.findByPid(pid);
+		Preference pf = pfRepo.findByUidAndMid(uid, paper.getP_mtid());
+		if(pf == null) {//해당 markettype에 대한 선호도 정보가 없는 상태
+			pf = new Preference(Integer.parseInt(uid), paper.getP_mtid(), 0);
+		}
 		
 		switch (state.getState()) {
 		case 1://바로 삭제
@@ -95,6 +103,8 @@ public class UserPaperService implements IUserPaperService {
 			ps.setState(1);
 			//paperAnalysis 갱신
 			pa.setIgnore(pa.getIgnore() + 1);
+			//preference 가중치 -1
+			pf.setIsprefer(pf.getIsprefer() - 1);
 			break;
 		case 2://상세조회 포인트 얻기 버튼 클릭
 			if(ps.isIsget()) {
@@ -107,6 +117,8 @@ public class UserPaperService implements IUserPaperService {
 			ps.setIsget(true);
 			//paperAnalysis 갱신
 			pa.setInterest(pa.getInterest() + 1);
+			//preference 가중치 +1
+			pf.setIsprefer(pf.getIsprefer() + 1);
 			break;
 			
 		case 3://qr인증
@@ -120,6 +132,8 @@ public class UserPaperService implements IUserPaperService {
 			ps.setVisited(true);
 			//paperAnalysis 갱신
 			pa.setVisit(pa.getVisit() + 1);
+			//preference 가중치 +1
+			pf.setIsprefer(pf.getIsprefer() + 1);
 			break;
 			
 		case 4://차단
@@ -127,6 +141,8 @@ public class UserPaperService implements IUserPaperService {
 			ps.setState(4);
 			//paperAnalysis 갱신
 			pa.setBlock(pa.getBlock() + 1);
+			//preference 가중치 -1
+			pf.setIsprefer(pf.getIsprefer() - 1);
 			//block table 추가
 			blockRepo.save(new Block(Integer.parseInt(uid), paper.getP_aid(), paper.getP_mtid()));
 			break;
@@ -136,6 +152,8 @@ public class UserPaperService implements IUserPaperService {
 		psRepo.save(ps);
 		//paperAnalysis 갱신
 		paRepo.save(pa);
+		//preference 갱신
+		pfRepo.save(pf);
 		//advertiserAnalysis 갱신
 		aaRepo.save(new AdvertiserAnalysis(pid
 										, paper.getP_mtid()

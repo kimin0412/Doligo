@@ -10,4 +10,7 @@ import com.dolligo.dto.Preference;
 
 @Repository
 public interface IPreferenceRepository extends JpaRepository<Preference, Integer>{
+
+	@Query(value = "select * from preference where uid = ?1 and mid = ?2 ", nativeQuery = true)
+	Preference findByUidAndMid(String uid, int p_mtid);
 }
