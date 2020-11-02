@@ -1,0 +1,2 @@
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 697, 78, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_78.png', 15, false, '오픈 이벤트! 맛있는 베이글 단돈 1,000원 @_@');

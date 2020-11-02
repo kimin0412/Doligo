@@ -1,0 +1,2 @@
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 427, 43, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_2_43.png', 15, false, '경영/사업 상담비 무료 이벤트~ 방문 하세요~~');

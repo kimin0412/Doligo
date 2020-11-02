@@ -1,0 +1,2 @@
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 298, 59, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_5_59.png', 15, false, '호텔 연말 세일! 50% 할인');

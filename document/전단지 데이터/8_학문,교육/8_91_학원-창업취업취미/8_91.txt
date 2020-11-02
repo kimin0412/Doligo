@@ -1,0 +1,2 @@
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 21299, 91, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_91.png', 15, false, '뷰티 아카데미 한달 등록비 20% 세일!');

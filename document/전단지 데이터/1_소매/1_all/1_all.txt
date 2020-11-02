@@ -1,0 +1,78 @@
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 690, 1, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_1.png', 15, false, '아로니아 생과/즙/분말 할인 판매!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 12, 2, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_2.png', 15, false, '명절 맞이 대할인! 건강을 선물하세요 :D');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 197, 3, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_3.png', 15, false, '꽃배달 2000원 할인 서비스~');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 54, 4, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_4.png', 15, false, '봄맞이 인테리어 새단장 이벤트~');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 252, 5, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_5.png', 15, false, '여름옷 땡처리!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 77, 6, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_6.png', 15, false, '안경 BIG SALE @-@');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 2285, 7, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_5.png', 15, false, '전자책/오디오북 무료대여 이벤트');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 95, 8, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_6.png', 15, false, '가을맞이 뷰티 전제품 50% 세일!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 106, 9, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_9.png', 15, false, '철물점. 오픈. 이벤트입니다.');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 110, 10, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_10.png', 15, false, '중고차 팔땐 여기로~ 소개비 0원!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 121, 11, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_4.png', 15, false, '전체 품목 50% 할인 찬스!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 2442, 12, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_12.png', 15, false, '웨딩 악세사리 빅 세일~!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 763, 13, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_7.png', 15, false, '까치마트 반값할인~!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 199, 14, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_14.png', 15, false, '랜덤박스 9900원 할인! 애X워치 득템 찬스!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 3831, 15, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_15.png', 15, false, '중고책 구매시 2000원 할인!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 3284, 16, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_16.png', 15, false, '자전거 구매시 10% 할인##');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 3001, 17, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_17.png', 15, false, '기타 구매시 기타줄 무료 증정.');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 691, 18, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_18.png', 15, false, '새학기 맞이 신발,가방 구매시 3000원 할인!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 2181, 19, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_19.png', 15, false, '***보청기 무료검진 행사***');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 2424, 20, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_2.png', 15, false, '마이폰10 구매시 투명 케이스 증정!!!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 4145, 21, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_21.png', 15, false, '베이비 카시트 구매시 기저귀 한세트 증정!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 1938, 22, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_22.png', 15, false, '페인트 구매시 시공 해드립니다~!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 978, 23, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_23.png', 15, false, '갤러리 점포 정리!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 3445, 24, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_8.png', 15, false, '가구 전제품 땡처리 특가!!!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 26690, 25, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_25.png', 15, false, '');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 3942, 26, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_26.png', 15, false, '유기농 사료 구매시 개껌 무료 증정!!');
+

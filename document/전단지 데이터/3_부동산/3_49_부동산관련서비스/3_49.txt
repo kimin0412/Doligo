@@ -1,0 +1,2 @@
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 56678, 49, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_3_49.png', 15, false, '부동산 투자 시작하세요! 상담 무료 서비스!');

@@ -1,0 +1,9 @@
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 888, 64, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_6_64.png', 15, false, '아아의 건강함을 위해! 태권도장 1개월 무료@@');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 334114, 65, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_6_65.png', 15, false, '전국민 요가 프로젝트! 30일 5만원 특가 행사###');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 327096, 66, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_6_66.png', 15, false, '워터파크 30% 특가 할인!!!');
+

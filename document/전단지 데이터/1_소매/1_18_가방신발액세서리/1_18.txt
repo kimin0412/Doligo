@@ -1,0 +1,2 @@
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 691, 18, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_1_18.png', 15, false, '새학기 맞이 신발,가방 구매시 3000원 할인!');

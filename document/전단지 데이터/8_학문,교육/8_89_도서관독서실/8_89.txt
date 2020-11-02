@@ -1,0 +1,2 @@
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 937, 89, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_89.png', 15, false, '수험생 이벤트! 한달 이용시 3만원 할인!!');

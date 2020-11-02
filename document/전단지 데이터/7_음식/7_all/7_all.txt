@@ -1,0 +1,42 @@
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 3, 67, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_67.png', 15, false, '화요일엔 피자가 1+1 @@@');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 4, 68, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_68.png', 15, false, '고기 1인분 주문시 된장찌개 무료!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 5, 69, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_69.png', 15, false, '방문 시 테이블 당 소주 한병 무료!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 62, 70, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_70.png', 15, false, '맛있는 레모네이드 500원 할인!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 1215, 71, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_71.png', 15, false, 'OPEN SALE!! 30% 세일!!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 663, 72, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_72.png', 15, false, '짬뽕 주문시 곱빼기로 드려요~~~!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 1185, 73, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_73.png', 15, false, '스테이크 주문시 에이드 무료 증정 서비스!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 30, 74, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_74.png', 15, false, '맥주 5잔에 먹태가 무료~~~');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 64, 75, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_75.png', 15, false, '오픈 기념 20% 할인 이벤트~~@@');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 10757, 76, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_76.png', 15, false, '구내 식당 오픈 세일! 20% 세일 합니다~!~!!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 1643, 77, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_77.png', 15, false, '반찬 3종류가 9,900원!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 697, 78, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_78.png', 15, false, '오픈 이벤트! 맛있는 베이글 단돈 1,000원 @_@');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 708, 79, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_79.png', 15, false, '치킨에 콜라가 무료!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 16636, 80, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_7_80.png', 15, false, '초밥 무한리필~ 9,900원 부터###');
+

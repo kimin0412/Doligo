@@ -1,0 +1,2 @@
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 102418, 61, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_5_61.png', 15, false, '캠핑 반값 할인@@');

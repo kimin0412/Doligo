@@ -1,0 +1,15 @@
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 88, 46, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_3_46.png', 15, false, '전단지 보고 찾아오면 중개료 20% 할인!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 372, 47, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_3_47.png', 15, false, '부동산 개발 컨설팅 50% 할인!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 430, 48, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_3_48.png', 15, false, '서두르세요! 명품 단지 할인 분양!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 56678, 49, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_3_49.png', 15, false, '부동산 투자 시작하세요! 상담 무료 서비스!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 336160, 50, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_3_50.png', 15, false, '임대 하우스 상담! 중개료 무료 이벤트합니다~!$$');
+

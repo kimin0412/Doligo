@@ -1,0 +1,42 @@
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 366, 81, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_81.png', 15, false, '간호학원 오픈 이벤트! 등록비 할인');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 99, 82, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_82.png', 15, false, '학원 오픈 기념 첫 레슨 무료 이벤트@@');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 1160, 83, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_83.png', 15, false, '어학원 OPEN EVENT# 한달 수강료 30% 할인##');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 247, 84, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_84.png', 15, false, '1등급을 위한 이벤트! 수강료 20% 할인!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 698, 85, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_85.png', 15, false, '할인 이벤트! 첫 등록시 기본 준비물 무료 제공!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 122, 86, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_86.png', 15, false, '첫 등록시 아이 책가방 드려요~~');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 129, 87, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_87.png', 15, false, '내신 대박! 입시 대박! 종합학원 오픈 기념 30% 할인!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 2133, 88, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_88.png', 15, false, '어서와. 학습지는 처음이지? 한달 반값 초특급 이벤트!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 937, 89, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_89.png', 15, false, '수험생 이벤트! 한달 이용시 3만원 할인!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 3691, 90, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_90.png', 15, false, '4차 산업시대 우리아이 코딩교육 이벤트! 20% 할인!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 21299, 91, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_91.png', 15, false, '뷰티 아카데미 한달 등록비 20% 세일!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 325511, 92, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_92.png', 15, false, '');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 338232, 93, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_93.png', 15, false, '');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 339986, 94, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_8_94.png', 15, false, '');
+

@@ -1,0 +1,15 @@
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 298, 59, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_5_59.png', 15, false, '호텔 연말 세일! 50% 할인');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 4918, 60, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_5_60.png', 15, false, '힐링룸 30% 할인');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 102418, 61, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_5_61.png', 15, false, '캠핑 반값 할인@@');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 22617, 62, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_5_62.png', 15, false, '고시텔 보증금 할인!!!');
+
+insert into paper (p_aid, p_mtid, p_image, p_point, p_check, p_coupon)
+values ( 125325, 63, 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Paper/paper_5_63.png', 15, false, '게스트하우스 관리비 3개월 면제!');
+
