@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.ALWAYS)
-public class PaperAnalysis {
+public class Paperanalysis {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	@Column
@@ -32,7 +32,7 @@ public class PaperAnalysis {
 	private int distributed;		//배포된 종이 양
 	private int visit;				//방문한 사람 수
 	private int interest;			//상세조회한 사람 수(포인트받기 버튼 클릭)
-	private int ignore;				//바로 삭제한 사람 수
+	private int disregard;				//바로 삭제한 사람 수
 	private int block;				//차단한 사람 수
 	public int getId() {
 		return id;
@@ -64,11 +64,11 @@ public class PaperAnalysis {
 	public void setInterest(int interest) {
 		this.interest = interest;
 	}
-	public int getIgnore() {
-		return ignore;
+	public int getDisregard() {
+		return disregard;
 	}
-	public void setIgnore(int ignore) {
-		this.ignore = ignore;
+	public void setDisregard(int disregard) {
+		this.disregard = disregard;
 	}
 	public int getBlock() {
 		return block;
@@ -79,7 +79,7 @@ public class PaperAnalysis {
 	@Override
 	public String toString() {
 		return "PaperAnalysis [id=" + id + ", pid=" + pid + ", distributed=" + distributed + ", visit=" + visit
-				+ ", interest=" + interest + ", ignore=" + ignore + ", block=" + block + "]";
+				+ ", interest=" + interest + ", disregard=" + disregard + ", block=" + block + "]";
 	}
     
     

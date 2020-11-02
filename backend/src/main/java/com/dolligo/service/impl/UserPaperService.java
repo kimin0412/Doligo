@@ -1,16 +1,26 @@
 package com.dolligo.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import com.dolligo.controller.UserController;
 import com.dolligo.dto.AdvertiserAnalysis;
 import com.dolligo.dto.Block;
 import com.dolligo.dto.Coupon;
 import com.dolligo.dto.Paper;
-import com.dolligo.dto.PaperAnalysis;
+import com.dolligo.dto.Paperanalysis;
+import com.dolligo.dto.PaperForList;
 import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.Preference;
 import com.dolligo.dto.State;
@@ -20,14 +30,20 @@ import com.dolligo.repository.IAdvertiserAnalysisRepository;
 import com.dolligo.repository.IBlockRepository;
 import com.dolligo.repository.ICouponRepository;
 import com.dolligo.repository.IPaperAnalysisRepository;
+import com.dolligo.repository.IPaperForListRepository;
 import com.dolligo.repository.IPaperRepository;
 import com.dolligo.repository.IPaperStateRepository;
 import com.dolligo.repository.IPreferenceRepository;
 import com.dolligo.service.IUserPaperService;
 
+import java.util.Collections;
+import java.util.Comparator;
+
 @Service
 public class UserPaperService implements IUserPaperService {
-
+	public static final Logger logger = LoggerFactory.getLogger(UserController.class);
+	public static final double R = 6372.8; // In kilometer
+	
 	@Autowired
 	private IPaperRepository pRepo;
 	@Autowired
@@ -38,11 +54,37 @@ public class UserPaperService implements IUserPaperService {
 	private IAdvertiserAnalysisRepository aaRepo;
 	@Autowired
 	private IPreferenceRepository pfRepo;
+	@Autowired
+	private IPaperForListRepository plRepo;
+	
 	
 	@Autowired
 	private IBlockRepository blockRepo;
 	@Autowired
 	private ICouponRepository cpRepo;
+	
+	
+	@Autowired
+	private RedisTemplate<String, Object> redisTemplate;
+
+	//정각에cache db 갱신
+	@Scheduled(cron = "0 * * * * *")//매일 정각에 수행(cron : "초 분 시 일 월 요일") 0 0 * * * *
+	public void upadteCache() {
+		LocalDateTime now = LocalDateTime.now();
+		//현재 시간에 유효한 광고 목록 가져옴
+		List<PaperForList> validPapers = plRepo.findallByTime(now);
+//		for(PaperForList p : validPapers) System.out.println(p);
+		if(validPapers == null) {
+			logger.info("valid paper is null");
+			return;
+		}
+		String timeKey = Integer.toString(now.getHour());
+		//redis에 갱신(현재 시간 row에 유효한 광고 목록 넣음)
+		redisTemplate.opsForValue().set(timeKey, validPapers);
+		redisTemplate.expire(timeKey, 1, TimeUnit.MINUTES);//1시간 후 만료 Hours
+		
+		logger.info(timeKey+"H : valid paper data update in redis");
+	}
 	
 
 	// 포인트 내역 가져오기(paperstate + paper + advertiser) test
@@ -51,17 +93,96 @@ public class UserPaperService implements IUserPaperService {
 		return psRepo.findAllByUid(uid);
 	}
 
-	// 주변 전단지 목록 가져오기
+	// 주변 전단지 목록 가져오기(내 위치 위도, 경도, 반경(m))
 	@Override
-	public List<Paper> getPaperList(String uid, String lat, String lon) throws Exception {
-		/*
-		 * paper 테이블에서 위도경도 범위 안에 있는 전단지 목록 다 가져옴
-		 *  + 차단한 광고주의 전단지(pid) 제외
-		 *  + 사용자가 이미 삭제한 전단지(pid) 제외
-		 *  + 선호도 체크한 상권(mkid)의 전단지를 상단 배치 => order by..? 
-		 */
-		return null;
+	public List<PaperForList> getPaperList(String uid, String lat, String lon, int radius) throws Exception {
+		// 1. 현재 시간 가져와서 현재 시간에 유효한 전단지 리스트 redis에서 꺼내옴
+		Object tmp = redisTemplate.opsForValue().get(Integer.toString(LocalTime.now().getHour()));
+		if(tmp == null) return null;
+		List<PaperForList> papers = (List<PaperForList>) tmp;
+//		for(PaperForList p : papers) System.out.println(p);
+		
+		// 2. 가져온 데이터 중 범위 벗어나는 전단지 & 차단한 광고주의 전단지 & 삭제한 전단지 제외
+		List<Block> blocks = blockRepo.findAllByUid(uid);//차단 목록
+		List<Integer> blockAid = new ArrayList<Integer>();
+		
+		// 3. uid로 나의 상권 preference 정보(order by mid) 가져와 내 전단지 리스트와 비교하면서 isprefer 가중치 값 paper 객체에 저장
+		List<Preference> prefers = pfRepo.findAllByUid(uid);
+		int preferIdx = 0;
+		
+		for(Block b : blocks) {
+			blockAid.add(b.getAid());
+		}
+		for(int i = 0; i < papers.size(); i++) {
+			PaperForList p = papers.get(i);
+			
+			//반경 안에 포함 안되면 삭제
+			if(!isIncluded(p, Double.parseDouble(lat), Double.parseDouble(lon), radius)) {
+				papers.remove(i--);
+				continue;
+			}
+			
+			//차단한 광고주 전단지 삭제
+			if(blockAid.contains(p.getP_aid())) {
+				papers.remove(i--);
+				continue;
+			}
+			
+			Paperstate ps = psRepo.findByUidAndPid(p.getP_id(), uid);
+			if(ps == null) {//처음 받는 전단지
+				p.setFirst(true);
+				//Paperstate 객체 생성
+				ps = new Paperstate();
+				ps.setUid(Integer.parseInt(uid));
+				ps.setPid(p.getP_id());
+				psRepo.saveAndFlush(ps);
+				//뿌린 전단지 숫자 ++
+				Paperanalysis pa = paRepo.findByPid(p.getP_id());
+				pa.setDistributed(pa.getDistributed() + 1);
+				paRepo.saveAndFlush(pa);
+			} else if(ps.getState() == 1) {//사용자가 이미 삭제한 전단지 삭제 => uid, pid로 paperstate 검색 후 state = 1이면 삭제한 기록
+				papers.remove(i--);
+				continue;
+			}
+			
+			//isprefer 가중치 값 찾아서 p의 prefer 값 갱신(prefers는 mid 오름차순 정렬 되어있음)
+			while(!prefers.isEmpty() && true) {
+				Preference pf = prefers.get(preferIdx);
+				if(pf.getMid() == p.getP_mtid()) {//같은 상권정보 찾으면 선호도 값 복사
+					p.setPrefer(pf.getIsprefer());
+					break;
+				}else {
+					preferIdx++;
+				}
+			}
+//			System.out.println(p);
+		}
+		
+		// 4. isperfer 내림차순으로 정렬한 후 return(만약 같다면 뿌리는 위치도 비교해야함,,,)
+		Collections.sort(papers);
+		return papers;
 	}
+
+	private boolean isIncluded(PaperForList paper, double lat, double lon, int radius) {
+		
+		double lat2 = Double.parseDouble(paper.getLat());
+		double lon2 = Double.parseDouble(paper.getLon());
+		double dLat = Math.toRadians(lat - lat2);
+		double dLon = Math.toRadians(lon - lon2);
+		
+		lat = Math.toRadians(lat);
+		lat2 = Math.toRadians(lat2);
+		
+		double a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2)
+					* Math.cos(lat) * Math.cos(lat2);
+		double c = 2 * Math.asin(Math.sqrt(a));
+		
+
+		//R * c * 1000 : 두 지점 사이의 거리 (단위 : m)
+		if(R * c * 1000 <= radius) return true;
+		else return false;
+	}
+
 
 	// 전단지 상세보기 paper + advertiser => paperstate, coupon도 가져와야 함(쿠폰 받았는지, 포인트 받았는지 확인) test
 	@Override
@@ -91,7 +212,7 @@ public class UserPaperService implements IUserPaperService {
     	}
 		Paper paper = tmp.get();
 		Paperstate ps = psRepo.findByUidAndPid(pid, uid);
-		PaperAnalysis pa = paRepo.findByPid(pid);
+		Paperanalysis pa = paRepo.findByPid(pid);
 		Preference pf = pfRepo.findByUidAndMid(uid, paper.getP_mtid());
 		if(pf == null) {//해당 markettype에 대한 선호도 정보가 없는 상태
 			pf = new Preference(Integer.parseInt(uid), paper.getP_mtid(), 0);
@@ -102,7 +223,7 @@ public class UserPaperService implements IUserPaperService {
 			//paperstate 갱신 : state = 1(추가 포인트 지급 X)
 			ps.setState(1);
 			//paperAnalysis 갱신
-			pa.setIgnore(pa.getIgnore() + 1);
+			pa.setDisregard(pa.getDisregard() + 1);
 			//preference 가중치 -1
 			pf.setIsprefer(pf.getIsprefer() - 1);
 			break;

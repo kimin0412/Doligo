@@ -1,5 +1,6 @@
 package com.dolligo.dto;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -29,7 +30,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.ALWAYS)
 @JsonIdentityInfo(generator = IntSequenceGenerator.class, property = "id") // 무한루프방지
-public class Advertiser {
+public class Advertiser implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	@Column

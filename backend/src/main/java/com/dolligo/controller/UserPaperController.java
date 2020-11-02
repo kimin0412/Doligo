@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.dolligo.dto.Block;
 import com.dolligo.dto.Coupon;
 import com.dolligo.dto.Paper;
+import com.dolligo.dto.PaperForList;
 import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.State;
 import com.dolligo.service.IJwtService;
@@ -66,16 +67,17 @@ public class UserPaperController {
 	
 	// 주변 전단지 목록 가져오기
 	@ApiOperation(value = "주변 전단지 목록 가져오기")
-	@GetMapping("/paper/{lat}/{lon}")
+	@GetMapping("/paper/{lat}/{lon}/{radius}")
 	public ResponseEntity<HashMap<String, Object>> getPaperList(@PathVariable("lat") String lat
 																, @PathVariable("lon") String lon
+																, @PathVariable("radius") int radius
 																, HttpServletRequest request) throws Exception {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		//가져온 전단지의 목록만큼 paperstate 만들어서 받은만큼 포인트++ 시켜줘야함
 		
 		String uid = getUid(request.getHeader("Authorization"));
 		
-		List<Paper> papers = upaperService.getPaperList(uid, lat, lon);
+		List<PaperForList> papers = upaperService.getPaperList(uid, lat, lon, radius);
 		
 		map.put("data", papers);
   		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
