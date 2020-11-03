@@ -1,5 +1,6 @@
 package com.dolligo.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -42,6 +43,35 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 			throw new NotFoundException(aid + "번 광고주의 통계를 찾지 못함");
 		}
 		return opa;
+	}
+
+	@Override
+	public List<Paperanalysis> getAllAnalysis(String aid) {
+		List<Paperanalysis> paperAnalysisList = paRepo.findAllByAid(aid);
+		
+		
+		return paperAnalysisList;
+	}
+
+	@Override
+	public Paper getPaperDetail(String aid, int pid) {
+		Paper paper = pRepo.findByPid(aid, pid);
+		
+		if(paper == null) {
+			throw new NotFoundException(pid+"번 전단지 찾지 못함");
+		}
+		return paper;
+	}
+
+	@Override
+	public List<Paper> getAllPaper(String aid) {
+		List<Paper> paperList = pRepo.findAllByP_aid(aid);
+		return paperList;
+	}
+
+	@Override
+	public void insertPaper(Paper paper) {
+		pRepo.save(paper);
 	}
 
 }

@@ -163,6 +163,7 @@ public class UserPaperService implements IUserPaperService {
 		return papers;
 	}
 
+	//반경 안에 포함 되는지 확인
 	private boolean isIncluded(PaperForList paper, double lat, double lon, int radius) {
 		
 		double lat2 = Double.parseDouble(paper.getLat());
@@ -179,7 +180,10 @@ public class UserPaperService implements IUserPaperService {
 		
 
 		//R * c * 1000 : 두 지점 사이의 거리 (단위 : m)
-		if(R * c * 1000 <= radius) return true;
+		if(R * c * 1000 <= radius) {
+			paper.setDistance(R*c*1000);
+			return true;
+		}
 		else return false;
 	}
 

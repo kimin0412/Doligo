@@ -66,6 +66,11 @@ public class DataController {
   	public void insertAdvertiser()throws Exception {
   		service.insertAdvertiser();
   	}
+  	@ApiOperation(value = "insert paper")
+  	@PostMapping(value = "paper")
+  	public void insertPaper()throws Exception {
+  		service.insertPaper();
+  	}
       
   
       
