@@ -11,8 +11,11 @@ import org.springframework.stereotype.Service;
 import com.dolligo.controller.AdvertiserPaperController;
 import com.dolligo.controller.UserController;
 import com.dolligo.dto.AdvertiserAnalysis;
+import com.dolligo.dto.CircleAge;
+import com.dolligo.dto.CircleGender;
 import com.dolligo.dto.Paper;
 import com.dolligo.dto.Paperanalysis;
+import com.dolligo.dto.TimeGraph;
 import com.dolligo.exception.NotFoundException;
 import com.dolligo.repository.IAdvertiserAnalysisRepository;
 import com.dolligo.repository.IAdvertiserRepository;
@@ -31,6 +34,8 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 	private IPaperRepository pRepo;
 	@Autowired
 	private IPaperAnalysisRepository paRepo;
+	@Autowired
+	private IAdvertiserAnalysisRepository aaRepo;
 	
 	@Override
 	public Paperanalysis getRecentAnalysis(int aid) {
@@ -40,9 +45,60 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 		Paperanalysis opa = paRepo.findByPid(p.getP_id());
 		
 		if(opa == null) {
-			throw new NotFoundException(aid + "번 광고주의 통계를 찾지 못함");
+			throw new NotFoundException(aid + " 번 광고주의 통계를 찾지 못함");
 		}
 		return opa;
+	}
+	
+	@Override
+	public List<AdvertiserAnalysis> getAllAdvertiserAnalysis(int aid){
+		List<AdvertiserAnalysis> aa = aaRepo.getAllAdvertiserAnalysis(aid);
+		if(aa.isEmpty()) {
+			throw new NotFoundException(aid + " 번 광고주 별 분석 통계를 찾지 못함");
+		}
+		return aa;
+	}
+
+	@Override
+	public TimeGraph getTimeTable(int aid) {
+		List<AdvertiserAnalysis> aa = aaRepo.getAllAdvertiserAnalysis(aid);
+		if(aa.isEmpty()) {
+			throw new NotFoundException(aid + " 번 광고주 별 분석 통계를 찾지 못함");
+		}
+		
+		for (AdvertiserAnalysis a : aa) {
+			System.out.println(a.getTime());
+//			if(a.getTime())
+		}
+		return null;
+	}
+
+	@Override
+	public CircleAge getCircleAge(int aid) {
+		int mCnt = aaRepo.getGenderMan(aid);
+		int wCnt = aaRepo.getGenderWoman(aid);
+		int allCnt = aaRepo.getAllAdvertiserAnalysis(aid).size();
+		
+		CircleAge ca = new CircleAge();
+//		cg.setM(mCnt);
+//		cg.setW(wCnt);
+//		cg.setA(allCnt);
+		
+		return ca;
+	}
+
+	@Override
+	public CircleGender getCircleGender(int aid) {
+		int mCnt = aaRepo.getGenderMan(aid);
+		int wCnt = aaRepo.getGenderWoman(aid);
+		int allCnt = aaRepo.getAllAdvertiserAnalysis(aid).size();
+		
+		CircleGender cg = new CircleGender();
+		cg.setM(mCnt);
+		cg.setW(wCnt);
+		cg.setA(allCnt);
+		
+		return cg;
 	}
 
 	@Override
