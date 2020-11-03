@@ -126,7 +126,7 @@ public class UserController {
 	  		  throw new NotFoundException("회원 정보 찾을 수 없음");
 		  } else {
 			  if (!SHA256.testSHA256(login.getPassword()).equals(user.getPassword())) {
-				  throw new NotFoundException("비밀번호 불일치");
+				  throw new BadRequestException("비밀번호 불일치");
 			  }
 			  
 			  user.setPassword("");

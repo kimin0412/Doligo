@@ -37,6 +37,7 @@ class _LeafletPageState extends State<LeafletPage> {
     );
   }
 
+  var url = 'http://k3a401.p.ssafy.io:8080/create';
 
   int _point = -1;     // 적립 포인트
 
