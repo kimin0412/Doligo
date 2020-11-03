@@ -59,8 +59,8 @@ class _LeafletPageState extends State<LeafletPage> {
     //
     //
 
-    // 현재 위치를 얻어와 초기화 한다.
-    _getUserLocation();
+      // 현재 위치를 얻어와 초기화 한다.
+      _getUserLocation();
 
   }
 

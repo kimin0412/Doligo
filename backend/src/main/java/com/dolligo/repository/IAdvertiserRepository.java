@@ -5,11 +5,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.dolligo.dto.Advertiser;
+import com.dolligo.mapping.AdvertiserMapping;
 
 @Repository
 public interface IAdvertiserRepository extends JpaRepository<Advertiser, Integer>{
 	@Query(value = "select * from advertiser where email = ?1 ", nativeQuery = true)
 	Advertiser getAdvertiserByEmail(String email);
+	
+//	AdvertiserMapping findById(int aid);
+	
     
 	//이메일 중복체크
 	@Query(value = "select count(email) from advertiser where email = ?1", nativeQuery = true)
@@ -29,6 +33,6 @@ public interface IAdvertiserRepository extends JpaRepository<Advertiser, Integer
 	
 	//가게정보 보기
 	@Query(value = "select marketname, marketbranch, marketnumber, marketaddress, marketurl from advertiser where id = ?1", nativeQuery = true)
-	String selectMarket(int userId);
+	Advertiser selectMarket(int userId);
 
 }

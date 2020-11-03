@@ -12,12 +12,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-import com.dolligo.dao.MarkettypeDao;
-import com.dolligo.dao.PreferenceDao;
 import com.dolligo.dto.Preference;
 import com.dolligo.dto.User;
 import com.dolligo.exception.ApplicationException;
 import com.dolligo.exception.NotFoundException;
+import com.dolligo.repository.IMarkettypeRepository;
+import com.dolligo.repository.IPreferenceRepository;
 import com.dolligo.repository.IUserRepository;
 import com.dolligo.service.IUserService;
 import com.dolligo.util.SHA256;
@@ -28,10 +28,10 @@ public class UserService implements IUserService {
     private IUserRepository userRepository;
     
     @Autowired
-    private PreferenceDao preferenceDao;
+    private IPreferenceRepository preferenceRepository;
 
     @Autowired
-    private MarkettypeDao markettypeDao;
+    private IMarkettypeRepository markettypeRepository;
     
     @Autowired
     private JavaMailSender mailSender;
@@ -76,11 +76,11 @@ public class UserService implements IUserService {
         List<String> largeList = user.getPrefercode();
         List<Preference> plist = new ArrayList<>();
         for(String l : largeList) {
-        	List<Integer> mid = markettypeDao.findByLargecode(l);
+        	List<Integer> mid = markettypeRepository.findByLargecode(l);
         	for(int m : mid) {//유저 광고 선호도 정보 저장
-        		Preference p = new Preference(user.getId(), m, true);
+        		Preference p = new Preference(user.getId(), m, 10);//처음 선호도 표시 가중치 10
         		plist.add(p);
-        		preferenceDao.save(p);
+        		preferenceRepository.save(p);
         	}
         }
         
@@ -108,7 +108,7 @@ public class UserService implements IUserService {
         List<Preference> plist = user.getPreferences();
         
         for(Preference p : plist) {
-        	preferenceDao.save(p);
+        	preferenceRepository.save(p);
         }
 
         user.setPassword("");

@@ -16,11 +16,10 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-//분석결과
+//광고주별 분석
 @Entity
 @Getter
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class AdvertiserAnalysis {
@@ -28,23 +27,35 @@ public class AdvertiserAnalysis {
 	@Id
 	@Column
 	private int id;					//pk
-	private int adi;				//fk 광고주 아이디
+	private int aid;				//fk 광고주 아이디
 	private int mtid;				//fk 상권 아이디
 	private boolean gender;			//성별
 	private int age;				//연령대
 	private int state;				//반응상태값
-	private String time;			//반응시간
+	private LocalDateTime time;			//반응시간
+	
+	
+	public AdvertiserAnalysis() {};
+	public AdvertiserAnalysis(int aid, int mtid, boolean gender, int age, int state) {
+		super();
+		this.aid = aid;
+		this.mtid = mtid;
+		this.gender = gender;
+		this.age = age;
+		this.state = state;
+		this.time = LocalDateTime.now();
+	}
 	public int getId() {
 		return id;
 	}
 	public void setId(int id) {
 		this.id = id;
 	}
-	public int getAdi() {
-		return adi;
+	public int getAid() {
+		return aid;
 	}
-	public void setAdi(int adi) {
-		this.adi = adi;
+	public void setAid(int aid) {
+		this.aid = aid;
 	}
 	public int getMtid() {
 		return mtid;
@@ -70,15 +81,15 @@ public class AdvertiserAnalysis {
 	public void setState(int state) {
 		this.state = state;
 	}
-	public String getTime() {
+	public LocalDateTime getTime() {
 		return time;
 	}
-	public void setTime(String time) {
+	public void setTime(LocalDateTime time) {
 		this.time = time;
 	}
 	@Override
 	public String toString() {
-		return "AdvertiserAnalysis [id=" + id + ", adi=" + adi + ", mtid=" + mtid + ", gender=" + gender + ", age="
+		return "AdvertiserAnalysis [id=" + id + ", aid=" + aid + ", mtid=" + mtid + ", gender=" + gender + ", age="
 				+ age + ", state=" + state + ", time=" + time + "]";
 	}
 	
