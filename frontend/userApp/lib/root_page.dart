@@ -31,21 +31,6 @@ class RootPage extends StatelessWidget {
         }
       },
     );
-
-    // Future<String> token = getToken();
-    //
-    //  if(token != null) {
-    //    // 토큰이 존재한다면 유효한 토큰인지 검사
-    //    if(JwtDecoder.isExpired(token)) { // 토큰이 만료되었다면
-    //      String str = token.toString();
-    //      print('token : $str');
-    //      FlutterSecureStorage().delete(key: 'token');  // store에서 삭제 후
-    //      return WelcomeScreen(); // welcome Page로 이동
-    //    }
-    //    return TabPage();  // 토큰이 만료되지 않았다면 TabPage로 이동
-    //  }
-    //  // return TabPage();
-    //  return WelcomeScreen(); // 토큰이 존재하지 않는다면 무조건 tabpage로 이동
   }
 
   Future<Widget> getToken() async {

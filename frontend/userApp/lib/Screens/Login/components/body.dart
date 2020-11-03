@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart';
 import 'package:userApp/Screens/Login/components/background.dart';
 import 'package:userApp/Screens/Signup/signup_screen.dart';
 import 'package:userApp/components/already_have_an_account_acheck.dart';
@@ -12,6 +11,7 @@ import 'package:userApp/components/rounded_input_field.dart';
 import 'package:userApp/components/rounded_password_field.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:userApp/home_page.dart';
+import 'package:userApp/main.dart';
 import 'package:userApp/tap_page.dart';
 import 'package:http/http.dart' as http;
 
@@ -83,7 +83,7 @@ class _BodyState extends State<Body> {
   }
 
   Future<int> signIn() async {
-    final response = await http.post('http://k3a401.p.ssafy.io:8080/api/user/signin',
+    final response = await http.post(MyApp.commonUrl + 'user/signin',
       body: jsonEncode(
           {
             'email' : _email,

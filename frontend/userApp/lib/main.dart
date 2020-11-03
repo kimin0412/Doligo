@@ -7,6 +7,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  static String commonUrl = 'http://k3a401.p.ssafy.io:8080/api/';
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
