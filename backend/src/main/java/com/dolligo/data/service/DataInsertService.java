@@ -133,7 +133,7 @@ public class DataInsertService implements IDataInsertService{
         //시트 수 (첫번째에만 존재하므로 0을 준다)
         XSSFSheet sheet=workbook.getSheetAt(0);
         
-        for(int i = 1; i < 95; i++) {
+        for(int i = 72; i < 95; i++) {
         	List<Advertiser> ads = repository.getAds(i);//i번째 mtid에 해당하는 광고주 목록
         	XSSFRow row=sheet.getRow(i);
         	Paper p = new Paper();
@@ -142,7 +142,8 @@ public class DataInsertService implements IDataInsertService{
         	p.setP_mtid(i);
         	p.setP_point(15);
         	p.setP_image(row.getCell(2).toString());
-        	p.setP_coupon(row.getCell(5).toString());
+        	if(row.getCell(5) != null) p.setP_coupon(row.getCell(5).toString());
+        	System.out.println(p);
         	for(Advertiser ad : ads) {
         		//aid, lat, lon, sheets(1000)
         		p.setP_aid(ad.getId());
