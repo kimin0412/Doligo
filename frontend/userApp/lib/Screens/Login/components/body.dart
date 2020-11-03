@@ -60,14 +60,7 @@ class _BodyState extends State<Body> {
               ),
               RoundedButton(
                 text: "LOGIN",
-                press: () {
-                  // 로그인 하기 위해 이메일과 비밀번호를 추출
-                  // print('email : $_email');
-                  // print('password : $_password');
-
-                  final responseCode = signIn();
-
-                },
+                press: signIn,
               ),
               SizedBox(height: size.height * 0.03),
               AlreadyHaveAnAccountCheck(
