@@ -17,6 +17,10 @@ import com.dolligo.mapping.PaperMapping;
 public interface IPaperRepository extends JpaRepository<Paper, Integer>{
 	@Query(value = "select * from paper ", nativeQuery = true)
     List<Paper> getAllPaper();
+	
+	@Query(value = "select * from paper where p_aid = ?1 order by p_id DESC limit 1", nativeQuery = true)
+    Paper getRecentPaper(int aid);
+
 
 //    List<PaperMapping> findAllBy(Pageable pageable);
     
