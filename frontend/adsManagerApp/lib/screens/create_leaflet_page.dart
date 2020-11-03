@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
@@ -17,9 +19,10 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
   ImagePicker imagePicker;
   Completer<GoogleMapController> _controller = Completer(); // ?
   MapType _googleMapType = MapType.normal;
-  Set<Marker> _markers = Set();
   LatLng currentPosition;
-
+  Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
+  int _markerIdCounter = 0;
+  int orderNum = 0;
 
   @override
   void initState(){
@@ -63,11 +66,6 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
                   ],
                 ),
               ),
-              trailing: Wrap(
-                children: [
-                  Text('0/20')
-                ],
-              ),
             ),
           ),
           Container(
@@ -94,11 +92,6 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
                     ),
                   ],
                 ),
-              ),
-              trailing: Wrap(
-                children: [
-                  Text('0/100')
-                ],
               ),
             ),
           ),
@@ -135,26 +128,6 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
             ),
           ),
           Container(
-
-          ),
-          Container(
-            child: ListTile(
-              title: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: '배포 날짜/시간',
-                    ),
-                    TextSpan(
-                        text: '*',
-                        style: TextStyle(color: Colors.red)
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Container(
             child: SizedBox(
               width: 400,
               height: 300,
@@ -170,13 +143,29 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
                       ),
                       onMapCreated: _onMapCreated,
                       myLocationEnabled: true,
-                      markers: _markers,
+                      markers: Set<Marker>.of(_markers.values),
+                      gestureRecognizers: Set()..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer())),
                       zoomControlsEnabled: false,
+                      onCameraMove: _cameraMove,
+                      circles: Set.from([Circle(
+                        circleId: CircleId('distributingRadius'),
+                        center: currentPosition,
+                        fillColor: Color.fromRGBO(30, 39, 133, 0.1),
+                        strokeWidth: 1,
+                        radius: 200,
+                      )]),
                     ),
                   ],
                 ),
               ),
             ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text('위도 : ${currentPosition.longitude}'),
+              Text('경도 : ${currentPosition.latitude}'),
+            ],
           ),
           Container(
             child: ListTile(
@@ -198,8 +187,9 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
           _leafletImage != null ? Card(
             margin: EdgeInsets.fromLTRB(20,0,20,20),
             child: Image.file(File(_leafletImage.path))
-          ) : Text('이미지를 등록해 주세요')
+          ) : Text('이미지를 등록해 주세요', textAlign: TextAlign.center,)
           ,
+
           Container(
             margin: EdgeInsets.symmetric(horizontal: 20),
             child: RaisedButton(
@@ -210,6 +200,23 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
               child: Text('이미지 올리기'),
               color: Colors.white,
               onPressed: _getImage,
+            ),
+          ),
+          Container(
+            child: ListTile(
+              title: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: '배포 날짜/시간',
+                    ),
+                    TextSpan(
+                        text: '*',
+                        style: TextStyle(color: Colors.red)
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
           Container(
@@ -241,12 +248,33 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly
               ], // Only numbers can be entered
+              onChanged: (value) {
+                setState(() {
+                  orderNum = int.parse(value);
+                });
+              },
             ),
+          ),
+          Container(
+            child: Column(
+              children: [
+                Text('디지털 전단지는 환경을 살립니다 🌱'),
+                Text('<주문서 확인>'),
+                Row(
+                  children: [
+                    Text('주문 매수 : '),
+                    Text('$orderNum * 50원'),
+                  ],
+                ),
+                Text('${orderNum*50}원'),
+
+              ],
+            )
           ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 20),
             child: RaisedButton(
-              child: Text('결제하기'),
+              child: Text('결제하기', style: TextStyle(color: Colors.white),),
               color: Colors.deepPurpleAccent,
               onPressed: _getImage,
             ),
@@ -259,21 +287,59 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
   void _getUserLocation() async{
     Position position = await GeolocatorPlatform.instance.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
 
-    print(position);
     setState(() {
       currentPosition = LatLng(position.latitude, position.longitude);
-
-      _markers.add(Marker(
-        markerId: MarkerId('현재 위치'),
-        position: currentPosition
-      ));
     });
   }
 
-  void _onMapCreated(GoogleMapController controller) {
-    setState(() {
-      _controller.complete(controller);
-    });
+  void _cameraMove(CameraPosition cameraPosition) async {
+
+    if(_markers.length > 0) {
+      MarkerId markerId = MarkerId(_markerIdVal());
+      Marker marker = _markers[markerId];
+      Marker updatedMarker = marker.copyWith(
+        positionParam: cameraPosition.target,
+      );
+
+      setState(() {
+        currentPosition = cameraPosition.target;
+        _markers[markerId] = updatedMarker;
+      });
+    }
+  }
+
+  String _markerIdVal({bool increment = false}) {
+    String val = 'marker_id_$_markerIdCounter';
+    if (increment) _markerIdCounter++;
+    return val;
+  }
+
+  void _onMapCreated(GoogleMapController controller) async {
+    _controller.complete(controller);
+    if (currentPosition != null) {
+      MarkerId markerId = MarkerId(_markerIdVal());
+      LatLng position = currentPosition;
+      Marker marker = Marker(
+        markerId: markerId,
+        position: position,
+        draggable: false,
+      );
+      setState(() {
+        _markers[markerId] = marker;
+      });
+
+      Future.delayed(Duration(seconds: 1), () async {
+        GoogleMapController controller = await _controller.future;
+        controller.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(
+              target: position,
+              zoom: 14.0,
+            ),
+          ),
+        );
+      });
+    }
   }
 
   Future _getImage() async{

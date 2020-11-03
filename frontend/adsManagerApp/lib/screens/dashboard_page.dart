@@ -1,6 +1,7 @@
 import 'package:dolligo_ads_manager/screens/create_leaflet_page.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:qrscan/qrscan.dart';
 
 
 class AdvDashboardPage extends StatefulWidget {
@@ -9,6 +10,8 @@ class AdvDashboardPage extends StatefulWidget {
 }
 
 class _AdvDashboardPage extends State<AdvDashboardPage> {
+  String _output = 'Empty Scan Code';
+
   List<charts.Series<Task, String>> _seriesPieData;
   String pieDropdownValue;
   String timeSeriesDropdownValue;
@@ -116,17 +119,23 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: _buildBody(),
+
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your onPressed code here!
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreateLeafletPage()),
-          );
-        },
-        child: Icon(Icons.add, color: Colors.white),
-        backgroundColor: Colors.deepPurpleAccent,
-      )
+        onPressed: () => _scan(),
+        tooltip: 'scan',
+        child: const Icon(Icons.camera_alt),
+      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     // Add your onPressed code here!
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => CreateLeafletPage()),
+      //     );
+      //   },
+      //   child: Icon(Icons.add, color: Colors.white),
+      //   backgroundColor: Colors.deepPurpleAccent,
+      // )
     );
   }
 
@@ -347,6 +356,13 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
       ),
     );
   }
+
+  Future _scan() async {
+    //스캔 시작 - 이때 스캔 될때까지 blocking
+    String barcode = await scan();
+    //스캔 완료하면 _output 에 문자열 저장하면서 상태 변경 요청.
+    setState(() => _output = barcode);
+  }
 }
 
 
@@ -364,3 +380,4 @@ class TimeStack{
 
   TimeStack(this.time, this.value);
 }
+

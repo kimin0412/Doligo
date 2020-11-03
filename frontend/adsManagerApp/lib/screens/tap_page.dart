@@ -1,4 +1,6 @@
 import 'package:dolligo_ads_manager/screens/dashboard_page.dart';
+import 'package:dolligo_ads_manager/screens/leaflet_page.dart';
+import 'package:dolligo_ads_manager/screens/setting_page.dart';
 import 'package:flutter/material.dart';
 
 class TabPage extends StatefulWidget {
@@ -11,8 +13,8 @@ class _TabPage extends State<TabPage> {
 
   List _pages = [
     AdvDashboardPage(),
-    AdvDashboardPage(),
-    AdvDashboardPage(),
+    Leafletpage(),
+    SettingPage(),
   ];
 
   @override

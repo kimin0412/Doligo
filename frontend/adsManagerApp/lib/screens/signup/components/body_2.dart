@@ -54,7 +54,7 @@ class Body2State extends State<Body2> {
                       },
                       child: ListTile(
                         title: Text('${largeCategoryItems[index].name}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                        subtitle: Text('${largeCategoryItems[index].subject}'),
+                        // subtitle: Text('${largeCategoryItems[index].subject}'),
                         trailing: Icon(largeCategoryItems[index].icon,size: 40, color: kPrimaryColor),
                       )
                     )

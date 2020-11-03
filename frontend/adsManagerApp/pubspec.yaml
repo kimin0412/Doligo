@@ -31,13 +31,18 @@ dependencies:
 
   google_maps_flutter: ^1.0.3
   flutter_form_builder:
-  http:
+  http: ^0.12.2
   geolocator: ^6.1.1
   charts_flutter: ^0.9.0
   image_picker: ^0.6.7+12
   flutter_svg: ^0.19.1
   material_design_icons_flutter: 4.0.5755
   qr_flutter: ^3.2.0
+  qrscan: ^0.2.17
+  shared_preferences: ^0.5.12+2
+  flutter_secure_storage: ^3.3.5
+  fluttertoast: ^4.0.1
+  jwt_decoder: ^1.0.3
 
 dev_dependencies:
   flutter_test:
