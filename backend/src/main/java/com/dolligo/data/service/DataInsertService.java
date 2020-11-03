@@ -3,6 +3,7 @@ package com.dolligo.data.service;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -13,6 +14,9 @@ import org.springframework.stereotype.Service;
 
 import com.dolligo.dto.Advertiser;
 import com.dolligo.dto.Markettype;
+import com.dolligo.dto.Paper;
+import com.dolligo.dto.Paperanalysis;
+import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.Preference;
 import com.dolligo.dto.User;
 import com.dolligo.repository.IDataInsertRepository;
@@ -119,6 +123,40 @@ public class DataInsertService implements IDataInsertService{
             	
             }
         }
+	}
+	
+	public void insertPaper() throws IOException {
+		//엑셀 읽기
+		FileInputStream file = new FileInputStream("C:\\SSAFY\\freepjt\\data\\paper.xlsx");
+        XSSFWorkbook workbook = new XSSFWorkbook(file);
+		//데이터 insert
+        //시트 수 (첫번째에만 존재하므로 0을 준다)
+        XSSFSheet sheet=workbook.getSheetAt(0);
+        
+        for(int i = 1; i < 95; i++) {
+        	List<Advertiser> ads = repository.getAds(i);//i번째 mtid에 해당하는 광고주 목록
+        	XSSFRow row=sheet.getRow(i);
+        	Paper p = new Paper();
+        	Paperanalysis pa = new Paperanalysis();
+        	
+        	p.setP_mtid(i);
+        	p.setP_point(15);
+        	p.setP_image(row.getCell(2).toString());
+        	p.setP_coupon(row.getCell(5).toString());
+        	for(Advertiser ad : ads) {
+        		//aid, lat, lon, sheets(1000)
+        		p.setP_aid(ad.getId());
+        		p.setLat(ad.getLat());
+        		p.setLon(ad.getLon());
+        		p.setSheets(1000);
+        		
+        		repository.insertPaper(p);
+        		repository.insertPaperAnalysis(p.getP_id());
+        	}
+        	
+        }
+        
+      
 	}
 	
 	public static void main(String[] args) throws IOException {
