@@ -2,11 +2,18 @@ package com.dolligo.dto;
 
 //savePoint
 public class State {
+	private int uid;
 	private int pid;
 	private boolean gender;
 	private int age;
 	private int state;
 	
+	public int getUid() {
+		return uid;
+	}
+	public void setUid(int uid) {
+		this.uid = uid;
+	}
 	public int getPid() {
 		return pid;
 	}
@@ -33,9 +40,9 @@ public class State {
 	}
 	@Override
 	public String toString() {
-		return "Point [pid=" + pid + ", gender=" + gender + ", age=" + age + ", state=" + state + "]";
+		return "State [uid=" + uid + ", pid=" + pid + ", gender=" + gender + ", age=" + age + ", state=" + state + "]";
 	}
-
+	
 	
 	
 	

@@ -98,7 +98,8 @@ public class UserPaperController {
 	
 	
 	// 상태값 변경(바로 삭제, 상세 조회 후 포인트받기 버튼 클릭, qr인증, 차단)
-	@ApiOperation(value = "상태값 변경 + 포인트 얻기(state => 1 : 바로 삭제, 2 : 상세 조회 페이지에서 포인트받기 버튼 클릭, 3 : qr인증, 4 : 차단)")
+	@ApiOperation(value = "상태값 변경 + 포인트 얻기(state => 1 : 바로 삭제, 2 : 상세 조회 페이지에서 포인트받기 버튼 클릭, 4 : 차단)"
+			, notes = "state 정보로 uid값은 넣을 필요 X")
 	@PostMapping("/state")
 	public ResponseEntity<HashMap<String, Object>> saveState(@RequestBody State state, HttpServletRequest request) throws Exception {
 		HashMap<String, Object> map = new HashMap<String, Object>();

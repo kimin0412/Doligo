@@ -21,7 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dolligo.dto.Paper;
+import com.dolligo.dto.PaperForPost;
 import com.dolligo.dto.Paperanalysis;
+import com.dolligo.dto.Paperstate;
+import com.dolligo.dto.State;
 import com.dolligo.exception.BadRequestException;
 import com.dolligo.service.IAdvertiserPaperService;
 import com.dolligo.service.IJwtService;
@@ -117,8 +120,10 @@ public class AdvertiserPaperController {
 	public ResponseEntity<HashMap<String, Object>> makeNewPaper(@RequestBody Paper paper, HttpServletRequest request) throws Exception {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		
-		String aid = getAid(request.getHeader("Authorization"));
+		System.out.println(paper);
 		
+		String aid = getAid(request.getHeader("Authorization"));
+//		paper.setP_aid(Integer.parseInt(aid));
 		if(paper.getP_aid() != Integer.parseInt(aid)) {
 			throw new BadRequestException("내 전단지만 등록 가능");
 		}
@@ -127,4 +132,20 @@ public class AdvertiserPaperController {
 		map.put("data", paper);
 		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
 	}
+
+	// 광고주 qr인증
+	@ApiOperation(value = "qr인증하기", notes = "변수 state값은 넣을 필요 X")
+	@PostMapping("paper/qr")
+	public ResponseEntity<HashMap<String, Object>> authQrcode(@RequestBody State state, HttpServletRequest request) throws Exception {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		//pid, uid 가져왔는데 해당 pid가 aid가 만든 전단지가 아니라면 
+		
+		String aid = getAid(request.getHeader("Authorization"));
+		apaperService.authQrcode(aid, state);
+		
+		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
+	}
+	
+	
 }
