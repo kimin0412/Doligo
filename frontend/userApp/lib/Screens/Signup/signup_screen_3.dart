@@ -160,6 +160,7 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
             "email": args.email,
             "gender": args.isFemail,
             "id": 0,
+            "nickname": args.nickname,
             "password": args.passwordCheck,
             "point": 0,
             "prefercode": prefercode,
