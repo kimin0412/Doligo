@@ -180,7 +180,6 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 		
 		Paper paper = tmp.get();
 		Paperstate ps = psRepo.findByUidAndPid(pid, uid);
-		System.out.println(ps);
 		Paperanalysis pa = paRepo.findByPid(pid);
 		Preference pf = pfRepo.findByUidAndMid(uid, paper.getP_mtid());
 		if(pf == null) {//해당 markettype에 대한 선호도 정보가 없는 상태

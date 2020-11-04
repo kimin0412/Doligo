@@ -145,7 +145,7 @@ public class AdvertiserPaperController {
 	}
 
 	// 광고주 qr인증
-	@ApiOperation(value = "qr인증하기", notes = "변수 state값은 넣을 필요 X && 성별 여자 : false, 남자 : true")
+	@ApiOperation(value = "qr인증하기", notes = "변수 state값은 넣을 필요 X && 성별 여자 : true, 남자 : false")
 	@PostMapping("qrcode")
 	public ResponseEntity<HashMap<String, Object>> authQrcode(@RequestBody State state, HttpServletRequest request) throws Exception {
 		HashMap<String, Object> map = new HashMap<String, Object>();
