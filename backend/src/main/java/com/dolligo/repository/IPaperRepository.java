@@ -27,6 +27,9 @@ public interface IPaperRepository extends JpaRepository<Paper, Integer>{
 	@Query(value = "select * from paper where p_aid = ?1 ", nativeQuery = true)
 	List<Paper> findAllByP_aid(String aid);
 
+	@Query(value = "select count(*) from paper where p_aid = ?1 and p_id = ?2 ", nativeQuery = true)
+	int findByAidAndPid(String aid, int pid);
+
 
 //    List<PaperMapping> findAllBy(Pageable pageable);
     

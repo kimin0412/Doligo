@@ -1,6 +1,7 @@
 package com.dolligo.dto;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.ColumnDefault;
@@ -29,9 +31,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "paper")
 @JsonInclude(JsonInclude.Include.ALWAYS)
-@JsonIdentityInfo(generator = IntSequenceGenerator.class, property = "p_id") // 무한루프방지
-public class Paper implements Serializable{
+public class PaperForPost implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id
 	@Column
@@ -45,33 +47,14 @@ public class Paper implements Serializable{
     private String p_coupon;			//쿠폰 내용
     private String condition1;			//쿠폰 조건1
     private String condition2;			//쿠폰 조건2
-    private String starttime;			//배포 시작시간
-    private String endtime;				//배포 종료 시간
+    private LocalDateTime starttime;			//배포 시작시간
+    private LocalDateTime endtime;				//배포 종료 시간
     private String lat;					//배포할 위치 위도
     private String lon;					//배포할 위치 경도
-    @ColumnDefault(value = "0") 
     private int sheets;					//배포할 종이 수
-    @ColumnDefault(value = "0") 
     private int remainsheets;			//배포 후 남은 종이 수
-    @ColumnDefault(value = "0") 
     private int cost;					//결제 금액
-    
-    //일반 유저 => 전단지 상세 페이지 접속 시 필요
-    @Transient
-    private boolean getpoint;//이미 포인트 회수했는지
-    @Transient
-    private Coupon coupon;//쿠폰 사용 여부
-    @Transient
-    private int prefer;//전단지 선호도 점수
-    @Transient
-    private double distance;//현재 내 위치로부터 전단지까지의 거리(가게 위치가 중요하니까..사실 중요한 정보는 아닌듯...)
-    
-    
-    
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "p_aid", insertable = false, updatable = false)
-    private Advertiser advertiser;
-    
+  
 	public int getP_id() {
 		return p_id;
 	}
@@ -132,16 +115,16 @@ public class Paper implements Serializable{
 	public void setCondition2(String condition2) {
 		this.condition2 = condition2;
 	}
-	public String getStarttime() {
+	public LocalDateTime getStarttime() {
 		return starttime;
 	}
-	public void setStarttime(String starttime) {
+	public void setStarttime(LocalDateTime starttime) {
 		this.starttime = starttime;
 	}
-	public String getEndtime() {
+	public LocalDateTime getEndtime() {
 		return endtime;
 	}
-	public void setEndtime(String endtime) {
+	public void setEndtime(LocalDateTime endtime) {
 		this.endtime = endtime;
 	}
 	public String getLat() {
@@ -175,47 +158,13 @@ public class Paper implements Serializable{
 		this.cost = cost;
 	}
 	
-	
-	public boolean isGetpoint() {
-		return getpoint;
-	}
-	public void setGetpoint(boolean getpoint) {
-		this.getpoint = getpoint;
-	}
-	public Coupon getCoupon() {
-		return coupon;
-	}
-	public void setCoupon(Coupon coupon) {
-		this.coupon = coupon;
-	}
-	
-	
-	public int getPrefer() {
-		return prefer;
-	}
-	public void setPrefer(int prefer) {
-		this.prefer = prefer;
-	}
-	public double getDistance() {
-		return distance;
-	}
-	public void setDistance(double distance) {
-		this.distance = distance;
-	}
-	public Advertiser getAdvertiser() {
-		this.advertiser.setPassword("");
-		return advertiser;
-	}
-	public void setAdvertiser(Advertiser advertiser) {
-		this.advertiser = advertiser;
-	}
 	@Override
 	public String toString() {
 		return "Paper [p_id=" + p_id + ", p_aid=" + p_aid + ", p_mtid=" + p_mtid + ", p_image=" + p_image + ", p_video="
 				+ p_video + ", p_point=" + p_point + ", p_check=" + p_check + ", p_coupon=" + p_coupon + ", condition1="
 				+ condition1 + ", condition2=" + condition2 + ", starttime=" + starttime + ", endtime=" + endtime
 				+ ", lat=" + lat + ", lon=" + lon + ", sheets=" + sheets + ", remainsheets=" + remainsheets + ", cost="
-				+ cost + ", getpoint=" + getpoint + ", coupon=" + coupon + ", advertiser=" + advertiser + "]";
+				+ cost + "]";
 	}
 	
 	
