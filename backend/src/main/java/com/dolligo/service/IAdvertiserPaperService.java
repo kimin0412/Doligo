@@ -3,6 +3,7 @@ package com.dolligo.service;
 import java.util.List;
 
 import com.dolligo.dto.Paper;
+import com.dolligo.dto.PaperForPost;
 import com.dolligo.dto.Paperanalysis;
 import com.dolligo.dto.State;
 import com.dolligo.exception.BadRequestException;
@@ -16,7 +17,7 @@ public interface IAdvertiserPaperService {
 
 	List<Paper> getAllPaper(String aid);
 
-	void insertPaper(Paper paper);
+	void insertPaper(PaperForPost paper);
 
 	void authQrcode(String aid, State state) throws BadRequestException;
 }

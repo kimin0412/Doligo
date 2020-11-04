@@ -1,6 +1,7 @@
 package com.dolligo.dto;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.ColumnDefault;
@@ -29,6 +31,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "paper")
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class PaperForPost implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,15 +47,12 @@ public class PaperForPost implements Serializable{
     private String p_coupon;			//쿠폰 내용
     private String condition1;			//쿠폰 조건1
     private String condition2;			//쿠폰 조건2
-    private String starttime;			//배포 시작시간
-    private String endtime;				//배포 종료 시간
+    private LocalDateTime starttime;			//배포 시작시간
+    private LocalDateTime endtime;				//배포 종료 시간
     private String lat;					//배포할 위치 위도
     private String lon;					//배포할 위치 경도
-    @ColumnDefault(value = "0") 
     private int sheets;					//배포할 종이 수
-    @ColumnDefault(value = "0") 
     private int remainsheets;			//배포 후 남은 종이 수
-    @ColumnDefault(value = "0") 
     private int cost;					//결제 금액
   
 	public int getP_id() {
@@ -115,16 +115,16 @@ public class PaperForPost implements Serializable{
 	public void setCondition2(String condition2) {
 		this.condition2 = condition2;
 	}
-	public String getStarttime() {
+	public LocalDateTime getStarttime() {
 		return starttime;
 	}
-	public void setStarttime(String starttime) {
+	public void setStarttime(LocalDateTime starttime) {
 		this.starttime = starttime;
 	}
-	public String getEndtime() {
+	public LocalDateTime getEndtime() {
 		return endtime;
 	}
-	public void setEndtime(String endtime) {
+	public void setEndtime(LocalDateTime endtime) {
 		this.endtime = endtime;
 	}
 	public String getLat() {

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.dolligo.controller.AdvertiserPaperController;
 import com.dolligo.dto.AdvertiserAnalysis;
 import com.dolligo.dto.Paper;
+import com.dolligo.dto.PaperForPost;
 import com.dolligo.dto.Paperanalysis;
 import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.Preference;
@@ -43,6 +44,8 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 	private IAdvertiserAnalysisRepository aaRepo;
 	@Autowired
 	private IPreferenceRepository pfRepo;
+	@Autowired
+	private IPaperForPostRepository pfpRepo;
 	
 	@Override
 	public Paperanalysis getRecentAnalysis(int aid) {
@@ -82,8 +85,8 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 	}
 
 	@Override
-	public void insertPaper(Paper paper) {
-		pRepo.save(paper);
+	public void insertPaper(PaperForPost paper) {
+		pfpRepo.save(paper);
 	}
 
 	@Override
