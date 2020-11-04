@@ -125,7 +125,7 @@ class _HomepageState extends State<Homepage> {
                                       '내 적립포인트',
                                       style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)
                                   ),
-                                  subtitle: Text('${_userInfo['point']} Point',
+                                  subtitle: Text(_userInfo != null ? '${_userInfo['point']} Point' : '? Point',
                                     style: TextStyle(color: Colors.lightBlue, fontSize: 30),
                                     textAlign: TextAlign.right,
                                   ),
