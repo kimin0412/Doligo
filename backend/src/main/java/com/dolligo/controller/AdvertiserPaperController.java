@@ -51,19 +51,21 @@ public class AdvertiserPaperController {
 	}
 
 	// 최근 전단지 통계 가져오기
-	@ApiOperation(value = "최근 전단지 통계 가져오기")
+	@ApiOperation(value = "대시보드 통계 가져오기")
 	@GetMapping("/statistic/recent")
 	public ResponseEntity<HashMap<String, Object>> getRecentStatistic(HttpServletRequest request) throws Exception {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
 		String aid = getAid(request.getHeader("Authorization"));
-
-//		Map<String, Object> claims = jwtService.get(token);
-//  		String id = (String)claims.get("id");
-  		System.out.println(aid);
+//  		System.out.println(aid);
 		Paperanalysis pa = apaperService.getRecentAnalysis(Integer.parseInt(aid));
-		map.put("data", pa);
+		map.put("data1", pa);
+		
+		apaperService.getTimeTable(Integer.parseInt(aid));
+		
+		
 		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
+		
 	}
 
 	private String getAid(String auth) {
