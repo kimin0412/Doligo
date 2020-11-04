@@ -12,6 +12,7 @@ import 'package:userApp/components/rounded_input_field.dart';
 import 'package:userApp/components/rounded_password_field.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:userApp/home_page.dart';
+import 'package:userApp/main.dart';
 import 'package:userApp/tap_page.dart';
 import 'package:http/http.dart' as http;
 
@@ -83,7 +84,7 @@ class _BodyState extends State<Body> {
   }
 
   Future<int> signIn() async {
-    final response = await http.post('http://k3a401.p.ssafy.io:8080/api/user/signin',
+    final response = await http.post('${MyApp.commonUrl}/user/signin',
       body: jsonEncode(
           {
             'email' : _email,
@@ -113,7 +114,7 @@ class _BodyState extends State<Body> {
       Fluttertoast.showToast(
           msg: "비밀번호가 일치하지 않습니다",
           toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
+          gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
@@ -123,7 +124,7 @@ class _BodyState extends State<Body> {
       Fluttertoast.showToast(
           msg: "해당 아이디가 존재하지 않습니다",
           toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
+          gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,

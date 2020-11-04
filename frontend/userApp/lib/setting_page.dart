@@ -60,7 +60,7 @@ class SettingTile extends StatelessWidget {
           Fluttertoast.showToast(
               msg: '로그아웃이 되었습니다',
               toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
+              gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 1,
               backgroundColor: Colors.grey,
               textColor: Colors.white,
