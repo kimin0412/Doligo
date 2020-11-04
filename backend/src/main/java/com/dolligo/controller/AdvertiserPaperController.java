@@ -1,5 +1,6 @@
 package com.dolligo.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,9 +21,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dolligo.dto.CircleAge;
+import com.dolligo.dto.CircleGender;
 import com.dolligo.dto.Paper;
 import com.dolligo.dto.PaperForPost;
 import com.dolligo.dto.Paperanalysis;
+import com.dolligo.dto.TimeGraph;
 import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.State;
 import com.dolligo.exception.BadRequestException;
@@ -57,15 +61,22 @@ public class AdvertiserPaperController {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 
 		String aid = getAid(request.getHeader("Authorization"));
-//  		System.out.println(aid);
+		
 		Paperanalysis pa = apaperService.getRecentAnalysis(Integer.parseInt(aid));
-		map.put("data1", pa);
+		map.put("recent", pa);
+		
+		CircleGender cg = apaperService.getCircleGender(Integer.parseInt(aid));
+		CircleAge ca = apaperService.getCircleAge(Integer.parseInt(aid));
+		map.put("cg", cg);
+		map.put("ca", ca);
+
+		List<TimeGraph> tg = new ArrayList<>();
+		tg = apaperService.getTimeTable(Integer.parseInt(aid));
+		map.put("tg", tg);
 		
 		apaperService.getTimeTable(Integer.parseInt(aid));
 		
-		
 		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
-		
 	}
 
 	private String getAid(String auth) {

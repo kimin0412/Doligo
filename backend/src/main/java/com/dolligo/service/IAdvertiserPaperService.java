@@ -17,7 +17,7 @@ public interface IAdvertiserPaperService {
 
 	List<AdvertiserAnalysis> getAllAdvertiserAnalysis(int aid);
 	
-	TimeGraph getTimeTable(int aid);
+	List<TimeGraph> getTimeTable(int aid);
 	
 	CircleAge getCircleAge(int aid);
 	CircleGender getCircleGender(int aid);
