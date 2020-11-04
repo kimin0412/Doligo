@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -34,6 +36,11 @@ public class Paperanalysis {
 	private int interest;			//상세조회한 사람 수(포인트받기 버튼 클릭)
 	private int disregard;				//바로 삭제한 사람 수
 	private int block;				//차단한 사람 수
+	
+	@OneToOne
+	@JoinColumn(name = "pid", insertable = false, updatable = false)
+    private Paper paper;
+	
 	public int getId() {
 		return id;
 	}
@@ -76,11 +83,18 @@ public class Paperanalysis {
 	public void setBlock(int block) {
 		this.block = block;
 	}
+	
+	public Paper getPaper() {
+		return paper;
+	}
+	public void setPaper(Paper paper) {
+		this.paper = paper;
+	}
 	@Override
 	public String toString() {
-		return "PaperAnalysis [id=" + id + ", pid=" + pid + ", distributed=" + distributed + ", visit=" + visit
-				+ ", interest=" + interest + ", disregard=" + disregard + ", block=" + block + "]";
+		return "Paperanalysis [id=" + id + ", pid=" + pid + ", distributed=" + distributed + ", visit=" + visit
+				+ ", interest=" + interest + ", disregard=" + disregard + ", block=" + block + ", paper=" + paper + "]";
 	}
-    
+	
     
 }
