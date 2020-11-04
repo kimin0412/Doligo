@@ -6,7 +6,10 @@ import com.dolligo.dto.AdvertiserAnalysis;
 import com.dolligo.dto.CircleAge;
 import com.dolligo.dto.CircleGender;
 import com.dolligo.dto.Paper;
+import com.dolligo.dto.PaperForPost;
 import com.dolligo.dto.Paperanalysis;
+import com.dolligo.dto.State;
+import com.dolligo.exception.BadRequestException;
 import com.dolligo.dto.TimeGraph;
 
 public interface IAdvertiserPaperService {
@@ -25,5 +28,7 @@ public interface IAdvertiserPaperService {
 
 	List<Paper> getAllPaper(String aid);
 
-	void insertPaper(Paper paper);
+	void insertPaper(PaperForPost paper);
+
+	void authQrcode(String aid, State state) throws BadRequestException;
 }

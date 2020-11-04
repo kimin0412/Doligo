@@ -205,7 +205,7 @@ public class UserPaperService implements IUserPaperService {
 		return paper;
 	}
 
-	// 상태값 변경(바로 삭제, 상세 조회 후 포인트받기 버튼 클릭, qr인증, 차단)
+	// 상태값 변경(바로 삭제, 상세 조회 후 포인트받기 버튼 클릭, -qr인증-, 차단)
 	@Override
 	public Paperstate saveState(String uid, State state) {
 		int pid = state.getPid();
@@ -246,6 +246,7 @@ public class UserPaperService implements IUserPaperService {
 			pf.setIsprefer(pf.getIsprefer() + 1);
 			break;
 			
+			/*
 		case 3://qr인증
 			//paperstate 갱신 : state = 3(추가 포인트 지급 O), visited = true
 			if(ps.isVisited()) {
@@ -260,7 +261,7 @@ public class UserPaperService implements IUserPaperService {
 			//preference 가중치 +1
 			pf.setIsprefer(pf.getIsprefer() + 1);
 			break;
-			
+			*/
 		case 4://차단
 			//paperstate 갱신 : state = 4(추가 포인트 지급 X)
 			ps.setState(4);
