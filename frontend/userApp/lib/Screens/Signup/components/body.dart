@@ -15,76 +15,85 @@ class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    return Background(
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              "SIGNUP",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: size.height * 0.03),
-            //SvgPicture.asset(
-            //  "assets/icons/signup.svg",
-            //  height: size.height * 0.35,
-            //),
-            RoundedInputField(
-              hintText: "이메일을 입력해주세요.",
-              onChanged: (value) {},
-            ),
-            RoundedPasswordField(
-              onChanged: (value) {},
-            ),
-            RoundedPasswordFieldCheck(
-              onChanged: (value) {},
-            ),
-            RoundedButton(
-              text: "다음",
-              press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return SignUpScreen2();
-                    },
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Background(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "SIGNUP",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: size.height * 0.03),
+              //SvgPicture.asset(
+              //  "assets/icons/signup.svg",
+              //  height: size.height * 0.35,
+              //),
+              RoundedInputField(
+                hintText: "이메일을 입력해주세요.",
+                onChanged: (value) {},
+              ),
+              RoundedInputField(
+                hintText: "닉네임을 입력해주세요.",
+                onChanged: (value) {},
+              ),
+              RoundedPasswordField(
+                onChanged: (value) {},
+              ),
+              RoundedPasswordFieldCheck(
+                onChanged: (value) {},
+              ),
+              RoundedButton(
+                text: "다음",
+                press: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return SignUpScreen2();
+                      },
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: size.height * 0.03),
+              AlreadyHaveAnAccountCheck(
+                login: false,
+                press: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) {
+                        return LoginScreen();
+                      },
+                    ),
+                  );
+                },
+              ),
+              OrDivider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SocalIcon(
+                    iconSrc: "assets/icons/facebook_logo.svg",
+                    press: () {},
                   ),
-                );
-              },
-            ),
-            SizedBox(height: size.height * 0.03),
-            AlreadyHaveAnAccountCheck(
-              login: false,
-              press: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) {
-                      return LoginScreen();
-                    },
+                  SocalIcon(
+                    iconSrc: "assets/icons/kakao_logo.svg",
+                    press: () {},
                   ),
-                );
-              },
-            ),
-            OrDivider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SocalIcon(
-                  iconSrc: "assets/icons/facebook_logo.svg",
-                  press: () {},
-                ),
-                SocalIcon(
-                  iconSrc: "assets/icons/kakao_logo.svg",
-                  press: () {},
-                ),
-                SocalIcon(
-                  iconSrc: "assets/icons/google_logo.svg",
-                  press: () {},
-                ),
-              ],
-            )
-          ],
+                  SocalIcon(
+                    iconSrc: "assets/icons/google_logo.svg",
+                    press: () {},
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
