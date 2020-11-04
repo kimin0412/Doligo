@@ -73,8 +73,8 @@ public class DataInsertService implements IDataInsertService{
             	User user = new User();
             	//년도로 저장
 //            	System.out.println(Arrays.toString(row.getCell(0).toString().split("\\.")));
-            	user.setAge(2019 - Integer.parseInt(row.getCell(0).toString().split("\\.")[0]));
-            	user.setGender(row.getCell(1).toString().equals("남자입니다") ? true : false);
+            	user.setAge(2021 - Integer.parseInt(row.getCell(0).toString().split("\\.")[0]));
+            	user.setGender(row.getCell(1).toString().equals("남자입니다") ? false : true);
             	user.setPoint(0);
             	repository.insertUser(user);
 //            	System.out.println(user);
