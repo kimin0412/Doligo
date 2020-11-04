@@ -114,7 +114,7 @@ class _BodyState extends State<Body> {
       Fluttertoast.showToast(
           msg: "비밀번호가 일치하지 않습니다",
           toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
+          gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
@@ -124,7 +124,7 @@ class _BodyState extends State<Body> {
       Fluttertoast.showToast(
           msg: "해당 아이디가 존재하지 않습니다",
           toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
+          gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,
           textColor: Colors.white,
