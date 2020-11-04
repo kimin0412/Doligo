@@ -26,9 +26,8 @@ import com.dolligo.dto.CircleGender;
 import com.dolligo.dto.Paper;
 import com.dolligo.dto.PaperForPost;
 import com.dolligo.dto.Paperanalysis;
-import com.dolligo.dto.TimeGraph;
-import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.State;
+import com.dolligo.dto.TimeGraph;
 import com.dolligo.exception.BadRequestException;
 import com.dolligo.service.IAdvertiserPaperService;
 import com.dolligo.service.IJwtService;
@@ -46,8 +45,6 @@ public class AdvertiserPaperController {
 
 	private IAdvertiserPaperService apaperService;
 
-//	private IApa
-	
 	@Autowired
 	public AdvertiserPaperController(IAdvertiserPaperService apaperService) {
 		Assert.notNull(apaperService, "advertiserPaperService 개체가 반드시 필요!");
@@ -56,7 +53,7 @@ public class AdvertiserPaperController {
 
 	// 최근 전단지 통계 가져오기
 	@ApiOperation(value = "대시보드 통계 가져오기")
-	@GetMapping("/statistic/recent")
+	@GetMapping("/dashboard")
 	public ResponseEntity<HashMap<String, Object>> getRecentStatistic(HttpServletRequest request) throws Exception {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 

@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.dolligo.dto.Advertiser;
-import com.dolligo.mapping.AdvertiserMapping;
 
 @Repository
 public interface IAdvertiserRepository extends JpaRepository<Advertiser, Integer>{

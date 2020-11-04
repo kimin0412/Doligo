@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.dolligo.dto.AdvertiserAnalysis;
-import com.dolligo.dto.TimeGraph;
 
 @Repository
 public interface IAdvertiserAnalysisRepository extends JpaRepository<AdvertiserAnalysis, Integer>{
