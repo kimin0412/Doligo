@@ -1,7 +1,5 @@
 package com.dolligo.service.impl;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -10,7 +8,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.datetime.joda.LocalDateTimeParser;
 import org.springframework.stereotype.Service;
 
 import com.dolligo.controller.AdvertiserPaperController;
@@ -23,25 +20,25 @@ import com.dolligo.dto.Paperanalysis;
 import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.Preference;
 import com.dolligo.dto.State;
+import com.dolligo.dto.TimeGraph;
 import com.dolligo.exception.ApplicationException;
 import com.dolligo.exception.BadRequestException;
-import com.dolligo.dto.TimeGraph;
 import com.dolligo.exception.NotFoundException;
 import com.dolligo.repository.IAdvertiserAnalysisRepository;
 import com.dolligo.repository.IPaperAnalysisRepository;
 import com.dolligo.repository.IPaperForPostRepository;
 import com.dolligo.repository.IPaperRepository;
-import com.dolligo.repository.ITimeGraphRepository;
 import com.dolligo.repository.IPaperStateRepository;
 import com.dolligo.repository.IPreferenceRepository;
+import com.dolligo.repository.ITimeGraphRepository;
 import com.dolligo.service.IAdvertiserPaperService;
 
 @Service
 public class AdvertiserPaperService implements IAdvertiserPaperService {
 	public static final Logger logger = LoggerFactory.getLogger(AdvertiserPaperController.class);
 
-	@Autowired
-	private IAdvertiserAnalysisRepository adanRepo;
+//	@Autowired
+//	private IAdvertiserAnalysisRepository adanRepo;
 
 	@Autowired
 	private IPaperRepository pRepo;
