@@ -257,7 +257,7 @@ class _HomepageState extends State<Homepage> {
 
   void _getUserInfo() async {
     String _token = await FlutterSecureStorage().read(key: 'token');
-    final response = await http.get(MyApp.commonUrl + 'token/user',
+    final response = await http.get('${MyApp.commonUrl}/token/user',
       headers: {
         'Authorization' : 'Bearer $_token'
       }
