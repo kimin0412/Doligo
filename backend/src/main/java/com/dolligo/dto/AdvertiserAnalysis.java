@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -22,6 +23,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.ALWAYS)
+@Table(name = "advertiseranalysis")
 public class AdvertiserAnalysis {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Id

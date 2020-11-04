@@ -237,8 +237,8 @@ public class UserPaperService implements IUserPaperService {
 			}
 			//paperstate 갱신 : state = 2(추가 포인트 지급 O => 이미지 or 애니메이션 각자 다르게?), isget = true
 			ps.setState(2);
-			ps.setPoint(10);
-			ps.setTotalpoint(ps.getTotalpoint() + 10);
+			ps.setPoint(paper.getP_point());
+			ps.setTotalpoint(ps.getTotalpoint() + paper.getP_point());
 			ps.setIsget(true);
 			//paperAnalysis 갱신
 			pa.setInterest(pa.getInterest() + 1);
