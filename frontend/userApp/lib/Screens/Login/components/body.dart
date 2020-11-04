@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart';
 import 'package:userApp/Screens/Login/components/background.dart';
 import 'package:userApp/Screens/Signup/signup_screen.dart';
 import 'package:userApp/components/already_have_an_account_acheck.dart';

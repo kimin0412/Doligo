@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:userApp/leaflet_page.dart';
+import 'package:userApp/main.dart';
 import 'package:userApp/market_page.dart';
 import 'package:userApp/my_coupon_page.dart';
 import 'package:userApp/point_history_page.dart';
+import 'package:http/http.dart' as http;
 
 class Homepage extends StatefulWidget {
   @override
@@ -10,6 +15,18 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
+
+  var _userInfo;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // 로그인한 유저의 정보를 가져와 환영 문구와 적립 포인트 들을 초기화 한다.
+    _getUserInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,7 +125,7 @@ class _HomepageState extends State<Homepage> {
                                       '내 적립포인트',
                                       style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)
                                   ),
-                                  subtitle: Text('12,000 Point',
+                                  subtitle: Text('${_userInfo['point']} Point',
                                     style: TextStyle(color: Colors.lightBlue, fontSize: 30),
                                     textAlign: TextAlign.right,
                                   ),
@@ -237,4 +254,23 @@ class _HomepageState extends State<Homepage> {
         )
     );
   }
+
+  void _getUserInfo() async {
+    String _token = await FlutterSecureStorage().read(key: 'token');
+    final response = await http.get(MyApp.commonUrl + 'token/user',
+      headers: {
+        'Authorization' : 'Bearer $_token'
+      }
+    );
+
+    setState(() {
+      _userInfo = json.decode(response.body)['data'];
+      print('userInfo : $_userInfo');
+    });
+
+  }
+
+
+
 }
+
