@@ -41,7 +41,7 @@ class _HomepageState extends State<Homepage> {
 
 
   Widget _buildBody(){
-    return Container(
+    return _userInfo == null ? Container() : Container(
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/images/background.jpg"),
@@ -80,7 +80,7 @@ class _HomepageState extends State<Homepage> {
                                             color: Colors.lightBlue,
                                             size: 50.0)
                                     ),
-                                    title: Text('김민지님 어서오세요!',
+                                    title: Text('${_userInfo['nickname']}님 어서오세요!',
                                         style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)),
                                     subtitle: Text('브론즈?',
                                         style: TextStyle(color: Colors.lightBlue)),
@@ -112,20 +112,10 @@ class _HomepageState extends State<Homepage> {
                                 Padding(padding: EdgeInsets.all(8.0)),
                                 ListTile(
                                   title: Text(
-                                      '오늘의 잔여 횟수',
-                                      style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)
-                                  ),
-                                  subtitle: Text('2/10회',
-                                    style: TextStyle(color: Colors.lightBlue, fontSize: 30),
-                                    textAlign: TextAlign.right,
-                                  ),
-                                ),
-                                ListTile(
-                                  title: Text(
                                       '내 적립포인트',
                                       style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)
                                   ),
-                                  subtitle: Text(_userInfo != null ? '${_userInfo['point']} Point' : '? Point',
+                                  subtitle: Text('${_userInfo['point']} Point',
                                     style: TextStyle(color: Colors.lightBlue, fontSize: 30),
                                     textAlign: TextAlign.right,
                                   ),
