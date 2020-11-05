@@ -2,10 +2,9 @@ package com.dolligo.data.service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -16,16 +15,19 @@ import com.dolligo.dto.Advertiser;
 import com.dolligo.dto.Markettype;
 import com.dolligo.dto.Paper;
 import com.dolligo.dto.Paperanalysis;
-import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.Preference;
 import com.dolligo.dto.User;
 import com.dolligo.repository.IDataInsertRepository;
+import com.dolligo.service.IUserService;
 
 @Service
 public class DataInsertService implements IDataInsertService{
 	
 	@Autowired
 	private IDataInsertRepository repository;
+	
+	@Autowired
+	private IUserService userService;
 	
 	public void insertMarket() throws IOException {
 		//엑셀 읽기
@@ -96,6 +98,123 @@ public class DataInsertService implements IDataInsertService{
             }
         }
 	}
+	
+	//20대 이외 연령대 유저 데이터 생성
+	@Override
+	public void insertOtherUser() throws Exception {
+		//D F L N O P Q R
+		User user = new User();
+		List<String> prefers = new ArrayList<String>();
+//		boolean[] prefer = new boolean[8];
+		//10대 여자 100
+		prefers.add("D");
+		prefers.add("N");
+		prefers.add("Q");
+		prefers.add("R");
+		for(int i = 0; i < 100; i++) {
+			user.setGender(true);
+			user.setAge(2005);//16살..
+			user.setPrefercode(prefers);
+			userService.add(user);
+		}
+		
+		
+		//10대 남자 100
+		prefers = new ArrayList<String>();
+		prefers.add("D");
+		prefers.add("N");
+		prefers.add("P");
+		prefers.add("R");
+		for(int i = 0; i < 100; i++) {
+			user.setGender(false);
+			user.setAge(2005);//16살..
+			user.setPrefercode(prefers);
+			userService.add(user);
+		}
+		
+		//30대 여자 100
+		prefers = new ArrayList<String>();
+		prefers.add("D");
+		prefers.add("F");
+		prefers.add("N");
+		prefers.add("O");
+		prefers.add("Q");
+		for(int i = 0; i < 100; i++) {
+			user.setGender(true);
+			user.setAge(1985);//36살..
+			user.setPrefercode(prefers);
+			userService.add(user);
+		}
+		//30대 남자 100
+		prefers = new ArrayList<String>();
+		prefers.add("L");
+		prefers.add("N");
+		prefers.add("O");
+		prefers.add("P");
+		prefers.add("Q");
+		for(int i = 0; i < 100; i++) {
+			user.setGender(false);
+			user.setAge(1985);//36살..
+			user.setPrefercode(prefers);
+			userService.add(user);
+		}
+
+		
+		//40대 여자 200
+		prefers = new ArrayList<String>();
+		prefers.add("D");
+		prefers.add("F");
+		prefers.add("L");
+		prefers.add("N");
+		prefers.add("Q");
+		prefers.add("R");
+		for(int i = 0; i < 200; i++) {
+			user.setGender(true);
+			user.setAge(1975);//46살..
+			user.setPrefercode(prefers);
+			userService.add(user);
+		}
+		//40대 남자 100
+		prefers = new ArrayList<String>();
+		prefers.add("L");
+		prefers.add("N");
+		prefers.add("P");
+		prefers.add("Q");
+		prefers.add("R");
+		for(int i = 0; i < 100; i++) {
+			user.setGender(false);
+			user.setAge(1975);//46살..
+			user.setPrefercode(prefers);
+			userService.add(user);
+		}
+		
+		//50대 여자 50
+		prefers = new ArrayList<String>();
+		prefers.add("D");
+		prefers.add("F");
+		prefers.add("L");
+		prefers.add("P");
+		prefers.add("Q");
+		prefers.add("R");
+		for(int i = 0; i < 50; i++) {
+			user.setGender(true);
+			user.setAge(1965);//56살..
+			user.setPrefercode(prefers);
+			userService.add(user);
+		}
+		//50대 남자 50
+		prefers = new ArrayList<String>();
+		prefers.add("L");
+		prefers.add("N");
+		prefers.add("P");
+		for(int i = 0; i < 50; i++) {
+			user.setGender(false);
+			user.setAge(1965);//56살..
+			user.setPrefercode(prefers);
+			userService.add(user);
+		}
+	}
+	
 	public void insertAdvertiser() throws IOException {
 		//엑셀 읽기
 		FileInputStream file = new FileInputStream("C:\\SSAFY\\freepjt\\data\\advertiseraa.xlsx");
@@ -160,8 +279,7 @@ public class DataInsertService implements IDataInsertService{
       
 	}
 	
-	public static void main(String[] args) throws IOException {
-		DataInsertService dis = new DataInsertService();
-		dis.insertMarket();
-	}
+	//전단지별 유저 액션 데이터 입력
+	
+	
 }

@@ -56,7 +56,7 @@ public class DataController {
   	public void insertMarketType()throws Exception {
       service.insertMarket();
   	}
-  	@ApiOperation(value = "insert user")
+  	@ApiOperation(value = "insert user 20s")
   	@PostMapping(value = "user")
   	public void insertUser()throws Exception {
   		service.insertUser();
@@ -70,6 +70,18 @@ public class DataController {
   	@PostMapping(value = "paper")
   	public void insertPaper()throws Exception {
   		service.insertPaper();
+  	}
+  	
+  	////////////////////////////////////////////////////////
+  	@ApiOperation(value = "insert user 10s, 30s, 40s, 50s")
+  	@PostMapping(value = "user/other")
+  	public void insertOtherUser()throws Exception {
+  		service.insertOtherUser();
+  	}
+  	@ApiOperation(value = "insert user action")
+  	@PostMapping(value = "user/action")
+  	public void insertUserAction()throws Exception {
+//  		service.insertOtherUser();
   	}
       
   
