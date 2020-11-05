@@ -2,6 +2,7 @@ package com.dolligo.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -70,7 +71,7 @@ public class UserPaperService implements IUserPaperService {
 	//정각에cache db 갱신
 	@Scheduled(cron = "0 * * * * *")//매일 정각에 수행(cron : "초 분 시 일 월 요일") 0 0 * * * *
 	public void upadteCache() {
-		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 		//현재 시간에 유효한 광고 목록 가져옴
 		List<PaperForList> validPapers = plRepo.findallByTime(now);
 //		for(PaperForList p : validPapers) System.out.println(p);
@@ -108,6 +109,7 @@ public class UserPaperService implements IUserPaperService {
 		
 		// 3. uid로 나의 상권 preference 정보(order by mid) 가져와 내 전단지 리스트와 비교하면서 isprefer 가중치 값 paper 객체에 저장
 		List<Preference> prefers = pfRepo.findAllByUid(uid);
+
 		int preferIdx = 0;
 		
 		for(Block b : blocks) {
@@ -146,7 +148,7 @@ public class UserPaperService implements IUserPaperService {
 			}
 			
 			//isprefer 가중치 값 찾아서 p의 prefer 값 갱신(prefers는 mid 오름차순 정렬 되어있음)
-			while(!prefers.isEmpty() && true) {
+			while(preferIdx < prefers.size()) {
 				Preference pf = prefers.get(preferIdx);
 				if(pf.getMid() == p.getP_mtid()) {//같은 상권정보 찾으면 선호도 값 복사
 					p.setPrefer(pf.getIsprefer());
