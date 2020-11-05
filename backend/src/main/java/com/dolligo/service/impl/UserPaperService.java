@@ -98,7 +98,8 @@ public class UserPaperService implements IUserPaperService {
 	@Override
 	public List<PaperForList> getPaperList(String uid, String lat, String lon, int radius) throws Exception {
 		// 1. 현재 시간 가져와서 현재 시간에 유효한 전단지 리스트 redis에서 꺼내옴
-		Object tmp = redisTemplate.opsForValue().get(Integer.toString(LocalTime.now().getHour()));
+		Object tmp = redisTemplate.opsForValue().get(Integer.toString(LocalTime.now(ZoneId.of("Asia/Seoul")).getHour()));
+		System.out.println(Integer.toString(LocalTime.now(ZoneId.of("Asia/Seoul")).getHour()));
 		if(tmp == null) return null;
 		List<PaperForList> papers = (List<PaperForList>) tmp;
 //		for(PaperForList p : papers) System.out.println(p);
