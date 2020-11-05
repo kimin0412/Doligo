@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:userApp/leaflet_page.dart';
 import 'package:userApp/main.dart';
 import 'package:userApp/market_page.dart';
@@ -150,11 +151,12 @@ class _HomepageState extends State<Homepage> {
                                           spacing: 12,
                                           children: <Widget>[
                                             SizedBox(
-                                                width: 50.0,
-                                                height: 50.0,
-                                                child: Icon(Icons.swap_vert_circle,
-                                                    color: Colors.lightBlue,
-                                                    size: 50.0)
+                                              width: 50.0,
+                                              height: 50.0,
+                                              child: SvgPicture.asset(
+                                                "assets/icons/pay_point.svg",
+                                                height: 50,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -188,9 +190,10 @@ class _HomepageState extends State<Homepage> {
                                           SizedBox(
                                               width: 50.0,
                                               height: 50.0,
-                                              child: Icon(Icons.swap_vert_circle,
-                                                  color: Colors.lightBlue,
-                                                  size: 50.0)
+                                              child: SvgPicture.asset(
+                                                "assets/icons/coupon.svg",
+                                                height: 50,
+                                              ),
                                           ),
                                         ],
                                       ),
@@ -225,9 +228,10 @@ class _HomepageState extends State<Homepage> {
                                                 SizedBox(
                                                     width: 50.0,
                                                     height: 50.0,
-                                                    child: Icon(Icons.swap_vert_circle,
-                                                        color: Colors.lightBlue,
-                                                        size: 50.0)
+                                                    child: SvgPicture.asset(
+                                                      "assets/icons/shopping-bag.svg",
+                                                      height: 50,
+                                                    ),
                                                 ),
                                               ],
                                             ),
@@ -248,9 +252,9 @@ class _HomepageState extends State<Homepage> {
   void _getUserInfo() async {
     String _token = await FlutterSecureStorage().read(key: 'token');
     final response = await http.get('${MyApp.commonUrl}/token/user',
-      headers: {
-        'Authorization' : 'Bearer $_token'
-      }
+        headers: {
+          'Authorization' : 'Bearer $_token'
+        }
     );
 
     setState(() {
