@@ -2,11 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:userApp/leaflet_detail_page.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:http/http.dart' as http;
+
+import 'main.dart';
 
 class LeafletPage extends StatefulWidget {
 
@@ -37,6 +40,8 @@ class _LeafletPageState extends State<LeafletPage> {
     );
   }
 
+  var _userInfo;
+
   var url = 'http://k3a401.p.ssafy.io:8080/create';
 
   int _point = -1;     // 적립 포인트
@@ -59,9 +64,9 @@ class _LeafletPageState extends State<LeafletPage> {
     //
     //
 
-      // 현재 위치를 얻어와 초기화 한다.
-      _getUserLocation();
-
+    // 현재 위치를 얻어와 초기화 한다.
+    _getUserLocation();
+    _getUserInfo();
   }
 
   void _getUserLocation() async {
@@ -81,7 +86,7 @@ class _LeafletPageState extends State<LeafletPage> {
         // the App.build method, and use it to set our appbar title.
         title: Text('포인트 바로 받기'),
       ),
-      body: _buildBody(),
+      body: _userInfo == null ? Container() : _buildBody(),
     );
   }
 
@@ -120,7 +125,7 @@ class _LeafletPageState extends State<LeafletPage> {
                             padding: EdgeInsets.only(right: 15),
                             width: 400,
                             child: Text(
-                              '$_point Point',
+                              '${_userInfo['point']} Point',
                               style: TextStyle(
                                 color: Colors.lightBlue,
                                 fontSize: 25,
@@ -186,6 +191,24 @@ class _LeafletPageState extends State<LeafletPage> {
         ),
       ),
     );
+  }
+
+  void _getUserInfo() async {
+    String _token = await FlutterSecureStorage().read(key: 'token');
+    final response = await http.get('${MyApp.commonUrl}/token/user',
+        headers: {
+          'Authorization': 'Bearer $_token'
+        }
+    );
+
+    setState(() {
+      _userInfo = json.decode(response.body)['data'];
+      print('userInfo : $_userInfo');
+    });
+  }
+
+  void _getNearLeafletList() async {
+    final response = await
   }
 
   void _onMapCreated(GoogleMapController controller) {
