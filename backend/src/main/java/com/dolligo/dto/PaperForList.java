@@ -44,12 +44,14 @@ public class PaperForList implements Serializable, Comparable<PaperForList>{
     private String lon;					//배포할 위치 경도
     private String marketname;			//가게 이름
     private String marketaddress;		//가게 주소
+    private int sheets;					//배포 장 수
     @Transient
     private int prefer;//전단지 선호도 점수
     @Transient
     private double distance;//현재 내 위치로부터 전단지까지의 거리(가게 위치가 중요하니까..사실 중요한 정보는 아닌듯...)
     @Transient
     private boolean first;//처음 받는 전단지 여부
+    
     
     @Override
     public int compareTo(PaperForList p) {//선호도 가중치 기준 내림차순 정렬
@@ -119,6 +121,16 @@ public class PaperForList implements Serializable, Comparable<PaperForList>{
 	public void setMarketaddress(String marketaddress) {
 		this.marketaddress = marketaddress;
 	}
+	
+
+	public int getSheets() {
+		return sheets;
+	}
+
+
+	public void setSheets(int sheets) {
+		this.sheets = sheets;
+	}
 
 
 	public int getPrefer() {
@@ -147,10 +159,12 @@ public class PaperForList implements Serializable, Comparable<PaperForList>{
 	public String toString() {
 		return "PaperForList [p_id=" + p_id + ", p_aid=" + p_aid + ", p_mtid=" + p_mtid + ", p_image=" + p_image
 				+ ", p_video=" + p_video + ", lat=" + lat + ", lon=" + lon + ", marketname=" + marketname
-				+ ", marketaddress=" + marketaddress + ", prefer=" + prefer + ", distance=" + distance + ", first="
-				+ first + "]";
+				+ ", marketaddress=" + marketaddress + ", sheets=" + sheets + ", prefer=" + prefer + ", distance="
+				+ distance + ", first=" + first + "]";
 	}
 
+
+	
 	
 	
     

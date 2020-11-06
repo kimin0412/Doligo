@@ -103,7 +103,7 @@ public class DataInsertService implements IDataInsertService{
 	@Override
 	public void insertOtherUser() throws Exception {
 		//D F L N O P Q R
-		User user = new User();
+		User user;
 		List<String> prefers = new ArrayList<String>();
 //		boolean[] prefer = new boolean[8];
 		//10대 여자 100
@@ -112,6 +112,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("Q");
 		prefers.add("R");
 		for(int i = 0; i < 100; i++) {
+			user = new User();
 			user.setGender(true);
 			user.setAge(2005);//16살..
 			user.setPrefercode(prefers);
@@ -126,6 +127,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("P");
 		prefers.add("R");
 		for(int i = 0; i < 100; i++) {
+			user = new User();
 			user.setGender(false);
 			user.setAge(2005);//16살..
 			user.setPrefercode(prefers);
@@ -140,6 +142,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("O");
 		prefers.add("Q");
 		for(int i = 0; i < 100; i++) {
+			user = new User();
 			user.setGender(true);
 			user.setAge(1985);//36살..
 			user.setPrefercode(prefers);
@@ -153,6 +156,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("P");
 		prefers.add("Q");
 		for(int i = 0; i < 100; i++) {
+			user = new User();
 			user.setGender(false);
 			user.setAge(1985);//36살..
 			user.setPrefercode(prefers);
@@ -169,6 +173,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("Q");
 		prefers.add("R");
 		for(int i = 0; i < 200; i++) {
+			user = new User();
 			user.setGender(true);
 			user.setAge(1975);//46살..
 			user.setPrefercode(prefers);
@@ -182,6 +187,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("Q");
 		prefers.add("R");
 		for(int i = 0; i < 100; i++) {
+			user = new User();
 			user.setGender(false);
 			user.setAge(1975);//46살..
 			user.setPrefercode(prefers);
@@ -197,6 +203,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("Q");
 		prefers.add("R");
 		for(int i = 0; i < 50; i++) {
+			user = new User();
 			user.setGender(true);
 			user.setAge(1965);//56살..
 			user.setPrefercode(prefers);
@@ -208,6 +215,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("N");
 		prefers.add("P");
 		for(int i = 0; i < 50; i++) {
+			user = new User();
 			user.setGender(false);
 			user.setAge(1965);//56살..
 			user.setPrefercode(prefers);
@@ -280,6 +288,10 @@ public class DataInsertService implements IDataInsertService{
 	}
 	
 	//전단지별 유저 액션 데이터 입력
-	
+	@Override
+	public void insertUserAction() throws Exception {
+		
+		
+	}
 	
 }

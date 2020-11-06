@@ -26,6 +26,7 @@ import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.Preference;
 import com.dolligo.dto.State;
 import com.dolligo.exception.ApplicationException;
+import com.dolligo.exception.BadRequestException;
 import com.dolligo.exception.NotFoundException;
 import com.dolligo.repository.IAdvertiserAnalysisRepository;
 import com.dolligo.repository.IBlockRepository;
@@ -69,23 +70,23 @@ public class UserPaperService implements IUserPaperService {
 	private RedisTemplate<String, Object> redisTemplate;
 
 	//정각에cache db 갱신
-	@Scheduled(cron = "0 * * * * *")//매일 정각에 수행(cron : "초 분 시 일 월 요일") 0 0 * * * *
-	public void upadteCache() {
-		LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-		//현재 시간에 유효한 광고 목록 가져옴
-		List<PaperForList> validPapers = plRepo.findallByTime(now);
-//		for(PaperForList p : validPapers) System.out.println(p);
-		if(validPapers == null) {
-			logger.info("valid paper is null");
-			return;
-		}
-		String timeKey = Integer.toString(now.getHour());
-		//redis에 갱신(현재 시간 row에 유효한 광고 목록 넣음)
-		redisTemplate.opsForValue().set(timeKey, validPapers);
-		redisTemplate.expire(timeKey, 1, TimeUnit.MINUTES);//1시간 후 만료 Hours
-		
-		logger.info(timeKey+"H : valid paper data update in redis");
-	}
+//	@Scheduled(cron = "0 * * * * *")//매일 정각에 수행(cron : "초 분 시 일 월 요일") 0 0 * * * *
+//	public void upadteCache() {
+//		LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+//		//현재 시간에 유효한 광고 목록 가져옴
+//		List<PaperForList> validPapers = plRepo.findallByTime(now);
+////		for(PaperForList p : validPapers) System.out.println(p);
+//		if(validPapers == null) {
+//			logger.info("valid paper is null");
+//			return;
+//		}
+//		String timeKey = Integer.toString(now.getHour());
+//		//redis에 갱신(현재 시간 row에 유효한 광고 목록 넣음)
+//		redisTemplate.opsForValue().set(timeKey, validPapers);
+//		redisTemplate.expire(timeKey, 1, TimeUnit.MINUTES);//1시간 후 만료 Hours
+//		
+//		logger.info(timeKey+"H : valid paper data update in redis");
+//	}
 	
 
 	// 포인트 내역 가져오기(paperstate + paper + advertiser) test
@@ -118,7 +119,6 @@ public class UserPaperService implements IUserPaperService {
 		}
 		for(int i = 0; i < papers.size(); i++) {
 			PaperForList p = papers.get(i);
-			
 			//반경 안에 포함 안되면 삭제
 			if(!isIncluded(p, Double.parseDouble(lat), Double.parseDouble(lon), radius)) {
 				papers.remove(i--);
@@ -133,16 +133,21 @@ public class UserPaperService implements IUserPaperService {
 			
 			Paperstate ps = psRepo.findByUidAndPid(p.getP_id(), uid);
 			if(ps == null) {//처음 받는 전단지
+				//뿌린 전단지 숫자 ++
+				Paperanalysis pa = paRepo.findByPid(p.getP_id());
+				if(pa.getDistributed() >= p.getSheets()) {//이미 배포 장 수가 넘었다면 제외
+					papers.remove(i--);
+					continue;
+				}
+				pa.setDistributed(pa.getDistributed() + 1);
+				paRepo.saveAndFlush(pa);
+				
 				p.setFirst(true);
 				//Paperstate 객체 생성
 				ps = new Paperstate();
 				ps.setUid(Integer.parseInt(uid));
 				ps.setPid(p.getP_id());
 				psRepo.saveAndFlush(ps);
-				//뿌린 전단지 숫자 ++
-				Paperanalysis pa = paRepo.findByPid(p.getP_id());
-				pa.setDistributed(pa.getDistributed() + 1);
-				paRepo.saveAndFlush(pa);
 			} else if(ps.getState() == 1) {//사용자가 이미 삭제한 전단지 삭제 => uid, pid로 paperstate 검색 후 state = 1이면 삭제한 기록
 				papers.remove(i--);
 				continue;
@@ -301,8 +306,12 @@ public class UserPaperService implements IUserPaperService {
 
 	// 쿠폰 저장하기 test
 	@Override
-	public Coupon saveCoupon(String uid, int pid) {
+	public Coupon saveCoupon(String uid, int pid) throws Exception {
+		if(cpRepo.findByPidAndUid(uid, pid) != null) {
+			throw new BadRequestException("이미 한번 저장한 쿠폰입니다.");
+		}
 		Coupon coupon = new Coupon(pid, Integer.parseInt(uid));
+		
 		cpRepo.save(coupon);
 		return coupon;
 	}

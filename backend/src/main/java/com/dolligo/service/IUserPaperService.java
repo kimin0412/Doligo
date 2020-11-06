@@ -31,7 +31,7 @@ public interface IUserPaperService {
 	List<Block> getBlockList(String uid);
 	
 	// 쿠폰 저장하기
-	Coupon saveCoupon(String uid, int pid);
+	Coupon saveCoupon(String uid, int pid) throws Exception;
 	
 	// 쿠폰 목록 확인(아직 사용 안하고 유효한것만)
 	List<Coupon> getCouponList(String uid);
