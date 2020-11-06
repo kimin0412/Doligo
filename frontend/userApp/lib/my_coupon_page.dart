@@ -1,4 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:userApp/leaflet_detail_page.dart';
+import 'package:userApp/main.dart';
 
 class MyCouponPage extends StatefulWidget {
   @override
@@ -11,27 +18,29 @@ class _MyCouponPageState extends State<MyCouponPage> {
   // Global Key of Scaffold
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
-  var _listviewData = [
-    {'heading' : '사이다 무료', 'storeName' : '우리집 국밥 쿠폰',
-      'content1' : '삼계탕 주문시', 'content2' : '최소주문금액 300,000원', 'expirationDate' : '2020. 10. 10 - 2020. 10. 23', 'isDisable' : 'false'},
-    {'heading' : '사이다 무료', 'storeName' : '우리집 국밥 쿠폰',
-      'content1' : '삼계탕 주문시', 'content2' : '최소주문금액 300,000원', 'expirationDate' : '2020. 10. 10 - 2020. 10. 23', 'isDisable' : 'false'},
-  ];
+  String _token = null;
+
+  bool initCheck;
+  var _couponList = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    initCheck = true;
+  }
+
+  Future<String> _getToken() async => _token = await FlutterSecureStorage().read(key: 'token');
 
   @override
   Widget build(BuildContext context) {
 
     // inialize
-    // user 정보 얻어오는 과정 필요
-    //
-    //
-    //
-    //
-
-    setState(() {
-      _couponCnt = _listviewData.length;    // 쿠폰 개수 초기화
-    });
-
+    if(initCheck) {
+      _getcouponList();
+      initCheck = false;
+    }
 
     // UI Build
     return Scaffold(
@@ -45,6 +54,22 @@ class _MyCouponPageState extends State<MyCouponPage> {
     );
   }
 
+  Future _getcouponList() async {
+    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
+    final response = await http.get('${MyApp.commonUrl}/token/user/coupon',
+        headers: {
+          'Authorization' : 'Bearer $_token'
+        }
+    );
+
+    if(response.statusCode == 200) {
+      setState(() {
+        _couponList = json.decode(response.body)['data'];
+        print('couponList : $_couponList');
+      });
+    }
+  }
+
   _buildBody() {
     return Padding(
       padding: EdgeInsets.all(15.0),
@@ -54,7 +79,7 @@ class _MyCouponPageState extends State<MyCouponPage> {
             children: [
               Container(
                 width: 500,
-                child: Text('보유쿠폰 : $_couponCnt장',
+                child: Text('보유쿠폰 : ${_couponList.length}장',
                   style: TextStyle(fontSize: 25, color: Color(0xFF8B6DFF)),
                   textAlign: TextAlign.left,
                 ),
@@ -65,9 +90,12 @@ class _MyCouponPageState extends State<MyCouponPage> {
                   margin: EdgeInsets.symmetric(vertical: 10),
                   child: ListView.builder(
                     scrollDirection: Axis.vertical,
-                    itemCount: _listviewData == null ? 0 : _listviewData.length,
+                    itemCount: _couponList.length,
                     itemBuilder: (BuildContext context, int index) {
                       return GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, LeafletDetailPage.routeName, arguments: _couponList[index]['pid']);
+                        },
                         child: SizedBox(
                           width: 10,
                           height: 180,
@@ -82,7 +110,7 @@ class _MyCouponPageState extends State<MyCouponPage> {
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Container(
-                                        child: Text(_listviewData[index]['heading'],
+                                        child: Text(_couponList[index]['paper']['p_coupon'],
                                           style: TextStyle(
                                             fontSize: 20,
                                             color: Color(0xff7C4CFF),
@@ -95,7 +123,7 @@ class _MyCouponPageState extends State<MyCouponPage> {
                                       SizedBox(height: 25,),
                                       Container(
                                         width: 200,
-                                        child: Text(_listviewData[index]['storeName'],
+                                        child: Text(_couponList[index]['paper']['advertiser']['marketname'],
                                           style: TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold,
@@ -105,7 +133,7 @@ class _MyCouponPageState extends State<MyCouponPage> {
                                       ),  // 가게이름
                                       Container(
                                         width: 200,
-                                        child: Text(_listviewData[index]['content1'],
+                                        child: Text(_couponList[index]['paper']['condition1'] == null ? '' : _couponList[index]['paper']['condition1'],
                                           style: TextStyle(
                                             fontSize: 13,
                                             color: Color(0xffEA9836),
@@ -117,7 +145,7 @@ class _MyCouponPageState extends State<MyCouponPage> {
                                       Container(
                                         width: 200,
                                         alignment: Alignment.bottomLeft,
-                                        child: Text(_listviewData[index]['content2'] + '\n사용기간 ' + _listviewData[index]['expirationDate'],
+                                        child: Text((_couponList[index]['paper']['condition2'] == null ? '' : _couponList[index]['paper']['condition2']) + '\n사용기간 ' + calExpiredDate(index),
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: Color(0xffA1A1A1),
@@ -138,10 +166,10 @@ class _MyCouponPageState extends State<MyCouponPage> {
                                       height: 70,
                                       child: RaisedButton(
                                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-                                        child: Text('쿠폰\n쓰기',
+                                        child: Text(isExpired(index) ? '기간\n만료': '쿠폰\n쓰기',
                                           style: TextStyle(fontSize: 18),
                                         ),
-                                        onPressed: () {
+                                        onPressed: isExpired(index) ? null : () {
                                           showAlertDialog(context, index);// 쓸건지 한번 물어보는 창으로 연결
                                           //
                                         },
@@ -169,6 +197,29 @@ class _MyCouponPageState extends State<MyCouponPage> {
     );
   }
 
+  bool isExpired(int index) {
+    final endDate = DateFormat('yyyy-MM-dd').parse('${_couponList[index]['created']}'.substring(0, 10)).add(new Duration(days: 30));
+
+    print('end : ${endDate.toString()}');
+    print('now : ${DateTime.now().toString()}');
+
+    if(endDate.compareTo(DateTime.now()) < 0) {
+      return true;
+    }
+    return false;
+
+  }
+
+  String calExpiredDate(int index) {
+    final startDate = DateFormat('yyyy-MM-dd').parse('${_couponList[index]['created']}'.substring(0, 10));
+    final endDate = startDate.add(new Duration(days: 30));
+
+    print('start : ${startDate.toString()}');
+    print('end : ${endDate.toString()}');
+
+    return '${startDate.toString().replaceAll('-', '.').substring(0,10)} - ${endDate.toString().replaceAll('-', '.').substring(0,10)}';
+  }
+
   void showAlertDialog(BuildContext context, int index) async {
     String result = await showDialog(
       context: context,
@@ -181,10 +232,7 @@ class _MyCouponPageState extends State<MyCouponPage> {
             FlatButton(
               child: Text('OK'),
               onPressed: () {
-                setState(() {
-                  _listviewData.removeAt(index);
-                });
-                Navigator.pop(context, "쿠폰을 사용하였습니다!");
+                _useCoupon(index, context);
               },
             ),
             FlatButton(
@@ -215,4 +263,21 @@ class _MyCouponPageState extends State<MyCouponPage> {
     }
   }
 
+  Future _useCoupon(int index, BuildContext context) async {
+    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
+    final response = await http.delete('${MyApp.commonUrl}/token/user/coupon/${_couponList[index]['id']}',
+        headers: {
+          'Authorization' : 'Bearer $_token'
+        }
+    );
+    print('쿠폰 사용 결과 : ${response.statusCode}');
+    if(response.statusCode == 200) {
+      setState(() {
+        _couponList.removeAt(index);
+      });
+      Navigator.pop(context, "쿠폰을 사용하였습니다!");
+    } else {
+      Navigator.pop(context, "쿠폰이 제대로 사용되지 않았습니다.");
+    }
+  }
 }
