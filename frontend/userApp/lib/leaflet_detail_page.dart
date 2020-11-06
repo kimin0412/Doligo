@@ -11,7 +11,6 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:userApp/leaflet_page.dart';
 import 'package:userApp/main.dart';
-import 'package:userApp/success_anouncement_page.dart';
 
 class Constants {
   static const String delete = '전단지 차단';        // 삭제
