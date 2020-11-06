@@ -131,29 +131,26 @@ class _MyCouponPageState extends State<MyCouponPage> {
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(right: 20),
-                                  child: Positioned.fill(
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: ButtonTheme(
-                                        minWidth: 70,
-                                        height: 70,
-                                        child: RaisedButton(
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-                                          child: Text('쿠폰\n쓰기',
-                                            style: TextStyle(fontSize: 18),
-                                          ),
-                                          onPressed: () {
-                                            showAlertDialog(context, index);// 쓸건지 한번 물어보는 창으로 연결
-                                            //
-                                          },
-                                          color: Color(0xff7C4CFF),
-                                          textColor: Colors.white,
-                                          disabledColor: Color(0xff9C9C9C),
-                                          disabledTextColor: Colors.black,
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: ButtonTheme(
+                                      minWidth: 70,
+                                      height: 70,
+                                      child: RaisedButton(
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+                                        child: Text('쿠폰\n쓰기',
+                                          style: TextStyle(fontSize: 18),
                                         ),
+                                        onPressed: () {
+                                          showAlertDialog(context, index);// 쓸건지 한번 물어보는 창으로 연결
+                                          //
+                                        },
+                                        color: Color(0xff7C4CFF),
+                                        textColor: Colors.white,
+                                        disabledColor: Color(0xff9C9C9C),
+                                        disabledTextColor: Colors.black,
                                       ),
                                     ),
-
                                   ),
                                 ),  // 쿠폰 사용 버튼
                               ],
