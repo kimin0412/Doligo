@@ -393,7 +393,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
               child: Text('OK'),
               onPressed: () async {
                 // 쿠폰 저장 http 호출
-                _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : () {};
+                _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
                 final response = await http.post('${MyApp.commonUrl}/token/user/coupon/${_detailLeaflet['p_id']}',
                     headers: {
                       'Authorization' : 'Bearer $_token'
@@ -424,7 +424,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
   }
 
   void _getDetailLeaflet(int args) async {
-    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : () {};
+    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
     final response = await http.get('${MyApp.commonUrl}/token/user/paper/$args',
         headers: {
           'Authorization': 'Bearer $_token'
@@ -456,7 +456,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
   }
 
   void _getUserInfo() async {
-    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : () {};
+    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
     print('token : $_token');
     final response = await http.get('${MyApp.commonUrl}/token/user',
         headers: {
