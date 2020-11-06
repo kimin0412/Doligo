@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:userApp/leaflet_page.dart';
 import 'package:userApp/main.dart';
 import 'package:userApp/market_page.dart';
@@ -41,7 +42,7 @@ class _HomepageState extends State<Homepage> {
 
 
   Widget _buildBody(){
-    return Container(
+    return _userInfo == null ? Container() : Container(
         decoration: BoxDecoration(
           image: DecorationImage(
             image: AssetImage("assets/images/background.jpg"),
@@ -80,7 +81,7 @@ class _HomepageState extends State<Homepage> {
                                             color: Colors.lightBlue,
                                             size: 50.0)
                                     ),
-                                    title: Text('김민지님 어서오세요!',
+                                    title: Text('${_userInfo['nickname']}님 어서오세요!',
                                         style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)),
                                     subtitle: Text('브론즈?',
                                         style: TextStyle(color: Colors.lightBlue)),
@@ -112,20 +113,10 @@ class _HomepageState extends State<Homepage> {
                                 Padding(padding: EdgeInsets.all(8.0)),
                                 ListTile(
                                   title: Text(
-                                      '오늘의 잔여 횟수',
-                                      style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)
-                                  ),
-                                  subtitle: Text('2/10회',
-                                    style: TextStyle(color: Colors.lightBlue, fontSize: 30),
-                                    textAlign: TextAlign.right,
-                                  ),
-                                ),
-                                ListTile(
-                                  title: Text(
                                       '내 적립포인트',
                                       style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)
                                   ),
-                                  subtitle: Text(_userInfo != null ? '${_userInfo['point']} Point' : '? Point',
+                                  subtitle: Text('${_userInfo['point']} Point',
                                     style: TextStyle(color: Colors.lightBlue, fontSize: 30),
                                     textAlign: TextAlign.right,
                                   ),
@@ -160,11 +151,12 @@ class _HomepageState extends State<Homepage> {
                                           spacing: 12,
                                           children: <Widget>[
                                             SizedBox(
-                                                width: 50.0,
-                                                height: 50.0,
-                                                child: Icon(Icons.swap_vert_circle,
-                                                    color: Colors.lightBlue,
-                                                    size: 50.0)
+                                              width: 50.0,
+                                              height: 50.0,
+                                              child: SvgPicture.asset(
+                                                "assets/icons/pay_point.svg",
+                                                height: 50,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -198,9 +190,10 @@ class _HomepageState extends State<Homepage> {
                                           SizedBox(
                                               width: 50.0,
                                               height: 50.0,
-                                              child: Icon(Icons.swap_vert_circle,
-                                                  color: Colors.lightBlue,
-                                                  size: 50.0)
+                                              child: SvgPicture.asset(
+                                                "assets/icons/coupon.svg",
+                                                height: 50,
+                                              ),
                                           ),
                                         ],
                                       ),
@@ -235,9 +228,10 @@ class _HomepageState extends State<Homepage> {
                                                 SizedBox(
                                                     width: 50.0,
                                                     height: 50.0,
-                                                    child: Icon(Icons.swap_vert_circle,
-                                                        color: Colors.lightBlue,
-                                                        size: 50.0)
+                                                    child: SvgPicture.asset(
+                                                      "assets/icons/shopping-bag.svg",
+                                                      height: 50,
+                                                    ),
                                                 ),
                                               ],
                                             ),
@@ -258,9 +252,9 @@ class _HomepageState extends State<Homepage> {
   void _getUserInfo() async {
     String _token = await FlutterSecureStorage().read(key: 'token');
     final response = await http.get('${MyApp.commonUrl}/token/user',
-      headers: {
-        'Authorization' : 'Bearer $_token'
-      }
+        headers: {
+          'Authorization' : 'Bearer $_token'
+        }
     );
 
     setState(() {
