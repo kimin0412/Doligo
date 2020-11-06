@@ -21,7 +21,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
   bool _isCouponButtonDisable;
   bool _isPointButtonDisable;
 
-  ScreenArguments args;
+  ScreenArguments args = null;
 
   @override
   void initState() {
@@ -29,12 +29,15 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
     super.initState();
 
     initCheck = true;
+    _isCouponButtonDisable = false;
+    _isPointButtonDisable = false;
   }
 
   @override
   Widget build(BuildContext context) {
 
     args = ModalRoute.of(context).settings.arguments;
+    print(args.toString());
 
     setState(() {
       // marker 추가
@@ -60,7 +63,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
     print(args.lng);
 
 
-    return Scaffold(
+    return args == null ? Scaffold() : Scaffold(
       appBar: AppBar(
         centerTitle: true,
         // Here we take the value from the MyHomePage object that was created by
@@ -133,13 +136,13 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                                     mapType: MapType.normal,
                                     initialCameraPosition: CameraPosition(
                                       target: LatLng(args.lat, args.lng),   // 전단지 배포 위치가 아닌, 실제 가게가 운영되는 위치
-                                      zoom: 14,
+                                      zoom: 17,
                                     ),
                                     onMapCreated: _onMapCreated,
                                     markers: _markers,
                                     gestureRecognizers: Set()..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer())),
-                                    myLocationButtonEnabled: true,
-                                    myLocationEnabled: true,
+                                    myLocationButtonEnabled: false,
+                                    myLocationEnabled: false,
                                   ),
                                 ],
                               ),
@@ -219,22 +222,19 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(right: 10),
-                                    child: Positioned.fill(
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: RaisedButton(
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-                                          child: Text(_isCouponButtonDisable ? '지급완료' : '쿠폰받기'),
-                                          onPressed: _isCouponButtonDisable ? null : () {
-                                            _getCoupon();
-                                          },
-                                          color: Color(0xff7C4CFF),
-                                          textColor: Colors.white,
-                                          disabledColor: Color(0xff9C9C9C),
-                                          disabledTextColor: Colors.black,
-                                        ),
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: RaisedButton(
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+                                        child: Text(_isCouponButtonDisable ? '지급완료' : '쿠폰받기'),
+                                        onPressed: _isCouponButtonDisable ? null : () {
+                                          _getCoupon();
+                                        },
+                                        color: Color(0xff7C4CFF),
+                                        textColor: Colors.white,
+                                        disabledColor: Color(0xff9C9C9C),
+                                        disabledTextColor: Colors.black,
                                       ),
-
                                     ),
                                   ),
                                 ],
@@ -330,4 +330,9 @@ class ScreenArguments{
 
   // 생성자
   ScreenArguments(this.id, this.imageUrl, this.heading, this.lat, this.lng, this.coupon, this.point);
+
+  @override
+  String toString() {
+    return 'ScreenArguments{id: $id, imageUrl: $imageUrl, heading: $heading, lat: $lat, lng: $lng, coupon: $coupon, point: $point}';
+  }
 }
