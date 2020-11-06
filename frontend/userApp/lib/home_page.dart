@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -66,7 +67,7 @@ class _HomepageState extends State<Homepage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) => PointHistoryPage()),
-                                  )
+                                  ).then(refreshPage)
                                 },
                                 borderRadius: BorderRadius.circular(8.0),
                                 child: Container(
@@ -136,7 +137,7 @@ class _HomepageState extends State<Homepage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => LeafletPage()),
-                                )
+                                ).then(refreshPage)
                               },
                               borderRadius: BorderRadius.circular(8.0),
                               child: Container(
@@ -177,7 +178,7 @@ class _HomepageState extends State<Homepage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => MyCouponPage()),
-                                )
+                                ).then(refreshPage)
                               },
                               child: Column(
                                   children: <Widget>[
@@ -213,7 +214,7 @@ class _HomepageState extends State<Homepage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(builder: (context) => MarketPage()),
-                                    )
+                                    ).then(refreshPage)
                                   },
                                   borderRadius: BorderRadius.circular(8.0),
                                   child: Container(
@@ -265,7 +266,8 @@ class _HomepageState extends State<Homepage> {
 
   }
 
-
-
+  FutureOr refreshPage(Object value) {
+    _getUserInfo();
+  }
 }
 

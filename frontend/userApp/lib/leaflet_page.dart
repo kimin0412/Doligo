@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'main.dart';
 
 class LeafletPage extends StatefulWidget {
+  static const routeName = '/leafFlet';
 
   @override
   _LeafletPageState createState() => _LeafletPageState();
@@ -59,12 +60,6 @@ class _LeafletPageState extends State<LeafletPage> {
   @override
   void initState() {
     super.initState();
-
-    // 나중에 적립 포인트 가져오는 부분도 여기서 구현한다!!
-    //
-    //
-    //
-    //
 
     // 현재 위치를 얻어와 초기화 한다.
     _getUserLocation();
@@ -190,7 +185,7 @@ class _LeafletPageState extends State<LeafletPage> {
                             context,
                             LeafletDetailPage.routeName,
                             arguments: _listviewData[index]['p_id'],
-                          );
+                          ).then(refreshPage);
                         },
                       );
                     },
@@ -256,6 +251,12 @@ class _LeafletPageState extends State<LeafletPage> {
   }
 
 
+
+  FutureOr refreshPage(Object value) {
+    _getUserLocation();
+    _getUserInfo();
+    _getNearLeafletList();
+  }
 }
 
 
