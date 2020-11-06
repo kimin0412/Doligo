@@ -291,7 +291,7 @@ public class UserPaperService implements IUserPaperService {
 			//preference 가중치 -1
 			pf.setIsprefer(pf.getIsprefer() - 1);
 			//block table 추가
-//			blockRepo.save(new Block(Integer.parseInt(uid), paper.getP_aid(), paper.getP_mtid()));//잠깐 주석..
+			blockRepo.save(new Block(Integer.parseInt(uid), paper.getP_aid(), paper.getP_mtid()));//잠깐 주석..
 			break;
 		}
 		
