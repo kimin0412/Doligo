@@ -81,7 +81,7 @@ public class DataController {
   	@ApiOperation(value = "insert user action")
   	@PostMapping(value = "user/action")
   	public void insertUserAction()throws Exception {
-//  		service.insertOtherUser();
+  		service.insertUserAction();
   	}
       
   

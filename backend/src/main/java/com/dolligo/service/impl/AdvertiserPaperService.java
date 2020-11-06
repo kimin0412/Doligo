@@ -21,6 +21,7 @@ import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.Preference;
 import com.dolligo.dto.State;
 import com.dolligo.dto.TimeGraph;
+import com.dolligo.dto.User;
 import com.dolligo.exception.ApplicationException;
 import com.dolligo.exception.BadRequestException;
 import com.dolligo.exception.NotFoundException;
@@ -31,6 +32,7 @@ import com.dolligo.repository.IPaperRepository;
 import com.dolligo.repository.IPaperStateRepository;
 import com.dolligo.repository.IPreferenceRepository;
 import com.dolligo.repository.ITimeGraphRepository;
+import com.dolligo.repository.IUserRepository;
 import com.dolligo.service.IAdvertiserPaperService;
 
 @Service
@@ -42,6 +44,8 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 
 	@Autowired
 	private IPaperRepository pRepo;
+	@Autowired
+	private IUserRepository uRepo;
 	@Autowired
 	private IPaperAnalysisRepository paRepo;
 	@Autowired
@@ -169,6 +173,7 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 		
 		int pid = state.getPid();
 		String uid = Integer.toString(state.getUid());
+		User user = uRepo.findById(state.getUid()).get();
 		
 		Optional<Paper> tmp = pRepo.findById(state.getPid());
 		if(!tmp.isPresent()) {
@@ -194,6 +199,10 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 		ps.setPoint(50);
 		ps.setTotalpoint(ps.getTotalpoint() + 50);
 		ps.setVisited(true);
+		
+		user.setPoint(user.getPoint() + 50);//방문 포인트 ++
+		uRepo.save(user);
+		
 		//paperAnalysis 갱신
 		pa.setVisit(pa.getVisit() + 1);
 		//preference 가중치 +1
