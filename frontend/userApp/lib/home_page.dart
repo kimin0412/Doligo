@@ -109,21 +109,24 @@ class _HomepageState extends State<Homepage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
                             ),
-                            child: Column(
-                              children: <Widget>[
-                                Padding(padding: EdgeInsets.all(8.0)),
-                                ListTile(
-                                  title: Text(
-                                      '내 적립포인트',
-                                      style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)
+                            child: InkWell(
+                              onTap: null,
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(padding: EdgeInsets.all(8.0)),
+                                  ListTile(
+                                    title: Text(
+                                        '내 적립포인트',
+                                        style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)
+                                    ),
+                                    subtitle: Text('${_userInfo['point']} Point',
+                                      style: TextStyle(color: Colors.lightBlue, fontSize: 30),
+                                      textAlign: TextAlign.right,
+                                    ),
                                   ),
-                                  subtitle: Text('${_userInfo['point']} Point',
-                                    style: TextStyle(color: Colors.lightBlue, fontSize: 30),
-                                    textAlign: TextAlign.right,
-                                  ),
-                                ),
-                                Padding(padding: EdgeInsets.all(8.0)),
-                              ],
+                                  Padding(padding: EdgeInsets.all(8.0)),
+                                ],
+                              ),
                             ),
                           ),  // 오늘의 잔여 횟수 및 & 적립포인트 Card
                           Padding(padding: EdgeInsets.all(8.0)),
