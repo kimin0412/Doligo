@@ -11,4 +11,5 @@ public interface IDataInsertService {
 	public void insertAdvertiser() throws IOException;
 	public void insertPaper() throws IOException;
 	public void insertOtherUser() throws Exception;
+	public void insertUserAction() throws Exception;
 }
