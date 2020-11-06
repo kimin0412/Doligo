@@ -2,6 +2,8 @@ package com.dolligo.service;
 
 import java.util.List;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import com.dolligo.dto.AdvertiserAnalysis;
 import com.dolligo.dto.CircleAge;
 import com.dolligo.dto.CircleGender;
@@ -28,6 +30,7 @@ public interface IAdvertiserPaperService {
 
 	List<Paper> getAllPaper(String aid);
 
+	@Transactional
 	void insertPaper(PaperForPost paper);
 
 	void authQrcode(String aid, State state) throws BadRequestException;

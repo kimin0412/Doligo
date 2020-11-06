@@ -158,6 +158,10 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 	@Override
 	public void insertPaper(PaperForPost paper) {
 		pfpRepo.save(paper);
+		
+		Paperanalysis pa = new Paperanalysis();
+		pa.setPid(paper.getP_id());
+		paRepo.save(pa);
 	}
 
 	@Override
