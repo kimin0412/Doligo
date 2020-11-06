@@ -19,7 +19,7 @@ public interface IPaperAnalysisRepository extends JpaRepository<Paperanalysis, I
 	Paperanalysis findByPid(int pid);
 
 	@Query(value = "select * from paperanalysis where pid in "
-			+ "( select p_id from paper where p_aid = ?1 ) ", nativeQuery = true)
+			+ "( select p_id from paper where p_aid = ?1 ) order by id DESC ", nativeQuery = true)
 	List<Paperanalysis> findAllByAid(String aid);
 	
     
