@@ -168,7 +168,7 @@ class _LeafletPageState extends State<LeafletPage> {
                             onMapCreated: _onMapCreated,
                             myLocationEnabled: true,
                             markers: _markers,
-                            zoomControlsEnabled: false,
+                            zoomControlsEnabled: true,
                             circles: circles,
                           ),
                         ],
@@ -189,8 +189,7 @@ class _LeafletPageState extends State<LeafletPage> {
                           Navigator.pushNamed(
                             context,
                             LeafletDetailPage.routeName,
-                            arguments: ScreenArguments(1, _listviewData[index]['p_image'], _listviewData[index]['marketname'],
-                                double.parse(_listviewData[index]['lat']), double.parse(_listviewData[index]['lon']), false, false),
+                            arguments: _listviewData[index]['p_id'],
                           );
                         },
                       );
@@ -238,13 +237,12 @@ class _LeafletPageState extends State<LeafletPage> {
       _listviewData = json.decode(response.body)['data'];
 
 
-      print('길이? : ${_listviewData.length}');
+      // print('길이? : ${_listviewData.length}');
       for(int i = 0; i < _listviewData.length; i++) {
-        print('나좀 넣어주라~~~~');
         _markers.add(Marker(
           markerId: MarkerId('$i'),
           position: LatLng(double.parse(_listviewData[i]['lat']), double.parse(_listviewData[i]['lon'])),
-          infoWindow: InfoWindow(title: '$i'),
+          infoWindow: InfoWindow(title: _listviewData[i]['marketname']),
         ));
       }
 
