@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:userApp/Screens/Signup/signup_screen_2.dart';
 import 'package:userApp/leaflet_detail_page.dart';
+import 'package:userApp/private_info_setting_page.dart';
 import 'package:userApp/root_page.dart';
 
 import 'Screens/Signup/signup_screen_3.dart';
@@ -27,6 +28,7 @@ class MyApp extends StatelessWidget {
       home: RootPage(),
       routes: {
         LeafletPage.routeName:(context) => LeafletPage(),
+        PrivateInfoSettingPage.routeName:(context) => PrivateInfoSettingPage(),
         LeafletDetailPage.routeName:(context) => LeafletDetailPage(),
         SignUpScreen2.routeName:(context) => SignUpScreen2(),
         SignUpScreen3.routeName:(context) => SignUpScreen3(),

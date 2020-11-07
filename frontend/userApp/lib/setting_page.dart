@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:userApp/Screens/Login/login_screen.dart';
 import 'package:userApp/Screens/Welcome/welcome_screen.dart';
 import 'package:userApp/leaflet_detail_page.dart';
+import 'package:userApp/private_info_setting_page.dart';
 import 'package:userApp/tap_page.dart';
 
 class SettingPage extends StatelessWidget {
@@ -36,7 +37,7 @@ class SettingPage extends StatelessWidget {
 
 class Constants {
   static const String notifySet = '알림 설정';
-  static const String privateInfoSet = '개인정보 설정';
+  static const String privateInfoSet = '내 정보 설정';
   static const String adBlockSet = '광고주 차단관리 설정';
   static const String logout = '로그아웃';
 
@@ -69,6 +70,9 @@ class SettingTile extends StatelessWidget {
         }
         else if(_name == Constants.adBlockSet) {
           // Navigator.pushNamed(context, routeName);
+        }
+        else if(_name == Constants.privateInfoSet) {
+          Navigator.pushNamed(context, PrivateInfoSettingPage.routeName);
         }
       },
       leading: SizedBox(
