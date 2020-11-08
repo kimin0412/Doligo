@@ -27,5 +27,6 @@ public interface IDataInsertRepository {
 	@Transactional
 	public void insertPaper(Paper paper);
 	public void insertPaperAnalysis(int pid);
+	public List<User> selectUsers(int start, int end);
 }
 

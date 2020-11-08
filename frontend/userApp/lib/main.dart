@@ -4,6 +4,7 @@ import 'package:userApp/leaflet_detail_page.dart';
 import 'package:userApp/root_page.dart';
 
 import 'Screens/Signup/signup_screen_3.dart';
+import 'leaflet_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
       ),
       home: RootPage(),
       routes: {
+        LeafletPage.routeName:(context) => LeafletPage(),
         LeafletDetailPage.routeName:(context) => LeafletDetailPage(),
         SignUpScreen2.routeName:(context) => SignUpScreen2(),
         SignUpScreen3.routeName:(context) => SignUpScreen3(),

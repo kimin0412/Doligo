@@ -38,4 +38,8 @@
 		insert into paperanalysis (pid)
 		values (#{pid});
 	</insert>
+	
+	<select id="selectUsers"	parameterType="int"	resultType="user">
+		select * from user where age between ${start} and ${end}
+	</select>
 </mapper>

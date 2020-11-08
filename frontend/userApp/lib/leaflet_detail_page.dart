@@ -1,10 +1,26 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'package:userApp/leaflet_page.dart';
+import 'package:userApp/main.dart';
+
+class Constants {
+  static const String delete = '전단지 차단';        // 삭제
+  static const String noSubscribe = '광고주 차단';   // 차단
+
+  static const List<String> choices = <String>[
+    delete,
+    noSubscribe
+  ];
+}
 
 class LeafletDetailPage extends StatefulWidget {
   static const routeName = '/leafFletDetail';
@@ -21,7 +37,13 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
   bool _isCouponButtonDisable;
   bool _isPointButtonDisable;
 
-  ScreenArguments args;
+  int args = -1;
+
+  String _token = null;
+
+  var _detailLeaflet = null;
+
+  var _userInfo;
 
   @override
   void initState() {
@@ -29,49 +51,93 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
     super.initState();
 
     initCheck = true;
+    _isCouponButtonDisable = false;
+    _isPointButtonDisable = false;
+    _getUserInfo();
   }
 
   @override
   Widget build(BuildContext context) {
 
     args = ModalRoute.of(context).settings.arguments;
+    print('args : $args');
 
-    setState(() {
-      // marker 추가
-      _markers.add(Marker(
-        markerId: MarkerId(args.heading),
-        position: LatLng(args.lat, args.lng),
-        infoWindow: InfoWindow(title: args.heading),
-      ));
+    if(initCheck) {
+      _getDetailLeaflet(args);
+    }
 
-      if(initCheck) {
-        // coupon 상태 초기화
-        _isCouponButtonDisable = args.coupon;
-
-        // point 상태 초기화
-        _isPointButtonDisable = args.point;
-
-        initCheck = false;
-      }
-    });
-    print(args.imageUrl);
-    print(args.heading);
-    print(args.lat);
-    print(args.lng);
-
-
-    return Scaffold(
+    return _detailLeaflet == null ? Scaffold() : Scaffold(
       appBar: AppBar(
         centerTitle: true,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(args.heading),
+        title: Text(_detailLeaflet['advertiser']['marketname']),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: choiceAction,
+            itemBuilder: (BuildContext context) {
+              return Constants.choices.map((String choice){
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+            icon: Icon(Icons.notifications),
+          )
+        ],
       ),
-      body: _buildBody(args),
+      body: _buildBody(_detailLeaflet),
     );
   }
 
-  _buildBody(ScreenArguments args) {
+  void choiceAction(String choice) async {
+    switch(choice) {
+      case Constants.delete:
+        print('$choice WORKING');
+        await dislike(choice);
+        break;
+      case Constants.noSubscribe:
+        print('$choice WORKING');
+        await dislike(choice);
+        break;
+    }
+  }
+
+  Future dislike(String choice) async {
+    int _state = choice == '전단지 차단' ? 1 : 4;
+    String _toastMessage = choice == '전단지 차단' ? '해당 전단지를 차단하였습니다.' : '해당 광고주를 차단하였습니다.';
+    final response = await http.post('${MyApp.commonUrl}/token/user/state',
+      body: jsonEncode({
+        "age": _userInfo['age'],
+        "gender": _userInfo['gender'],
+        "pid": _detailLeaflet['p_id'],
+        "state": _state,
+        "uid": _userInfo['id'],
+      }),
+      headers: {
+        'Authorization' : 'Bearer $_token',
+        'Content-Type' : 'application/json'
+      },
+    );
+
+
+    print('차단 결과 : ${response.statusCode}');
+
+    Fluttertoast.showToast(
+        msg: _toastMessage,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+
+    Navigator.pop(context);
+  }
+
+  _buildBody(var _detailLeaflet) {
     return SafeArea(
       child: SingleChildScrollView(
         child: Center(
@@ -99,7 +165,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                           SizedBox(
                             child: Card(
                               elevation: 4,
-                              child: Image.network(args.imageUrl),
+                              child: Image.network(_detailLeaflet['p_image']),
                             ),
                           ),
                         ],
@@ -129,17 +195,17 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                               elevation: 4,
                               child: Stack(
                                 children: [
-                                  args == null ? Container() : GoogleMap(
+                                  GoogleMap(
                                     mapType: MapType.normal,
                                     initialCameraPosition: CameraPosition(
-                                      target: LatLng(args.lat, args.lng),   // 전단지 배포 위치가 아닌, 실제 가게가 운영되는 위치
-                                      zoom: 14,
+                                      target: LatLng(double.parse(_detailLeaflet['advertiser']['lat']), double.parse(_detailLeaflet['advertiser']['lon'])),   // 전단지 배포 위치가 아닌, 실제 가게가 운영되는 위치
+                                      zoom: 17,
                                     ),
                                     onMapCreated: _onMapCreated,
                                     markers: _markers,
                                     gestureRecognizers: Set()..add(Factory<PanGestureRecognizer>(() => PanGestureRecognizer())),
-                                    myLocationButtonEnabled: true,
-                                    myLocationEnabled: true,
+                                    myLocationButtonEnabled: false,
+                                    myLocationEnabled: false,
                                   ),
                                 ],
                               ),
@@ -175,11 +241,11 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                               child: Stack(
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(top : 16, left: 20),
+                                    padding: const EdgeInsets.only(top : 16, left: 15),
                                     child: Column(
                                       children: [
                                         Container(
-                                          child: Text('50,000원 할인',
+                                          child: Text(_detailLeaflet['p_coupon'],
                                             style: TextStyle(
                                               fontSize: 20,
                                               color: Color(0xff7C4CFF),
@@ -192,7 +258,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                                         SizedBox(height: 25,),
                                         Container(
                                           width: 200,
-                                          child: Text('상담만 받아도!',
+                                          child: Text(_detailLeaflet['condition1'] == null ? '' : _detailLeaflet['condition1'],
                                             style: TextStyle(
                                               fontSize: 13,
                                               color: Color(0xffEA9836),
@@ -205,7 +271,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                                           width: 200,
                                           height: 40,
                                           alignment: Alignment.bottomLeft,
-                                          child: Text('한글로는몇자까지만가능해14자\n2줄커버가능개행포함',
+                                          child: Text(_detailLeaflet['condition2'] == null ? '' : _detailLeaflet['condition2'],    // 한글로는몇자까지만가능해14자\n2줄커버가능개행포함
                                             style: TextStyle(
                                               fontSize: 12,
                                               color: Color(0xffA1A1A1),
@@ -219,22 +285,19 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(right: 10),
-                                    child: Positioned.fill(
-                                      child: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: RaisedButton(
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
-                                          child: Text(_isCouponButtonDisable ? '지급완료' : '쿠폰받기'),
-                                          onPressed: _isCouponButtonDisable ? null : () {
-                                            _getCoupon();
-                                          },
-                                          color: Color(0xff7C4CFF),
-                                          textColor: Colors.white,
-                                          disabledColor: Color(0xff9C9C9C),
-                                          disabledTextColor: Colors.black,
-                                        ),
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: RaisedButton(
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+                                        child: Text(_isCouponButtonDisable ? '지급완료' : '쿠폰받기'),
+                                        onPressed: _isCouponButtonDisable ? null : () {
+                                          _getCoupon();
+                                        },
+                                        color: Color(0xff7C4CFF),
+                                        textColor: Colors.white,
+                                        disabledColor: Color(0xff9C9C9C),
+                                        disabledTextColor: Colors.black,
                                       ),
-
                                     ),
                                   ),
                                 ],
@@ -248,7 +311,13 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                       child: Column(
                         children: [
                           QrImage(
-                            data: "1234567890",
+                            data: jsonEncode({
+                              "age": _userInfo['age'],
+                              "gender": _userInfo['gender'],
+                              "pid": _detailLeaflet['p_id'],
+                              "state": 0,
+                              "uid": _userInfo['id']
+                            }),
                             version: QrVersions.auto,
                             size: 200.0,
                           ),
@@ -264,8 +333,36 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                 width: double.infinity,
                 height: 50,
                 child: RaisedButton(
-                  child: Text(_isPointButtonDisable ? '지급완료' : 'Point 겟 하기', style: TextStyle(fontSize: 20),),
-                  onPressed: _isPointButtonDisable ? null : () {},
+                  child: Text(_isPointButtonDisable ? '지급완료' : '${_detailLeaflet['p_point']} Point 받기', style: TextStyle(fontSize: 20),),
+                  onPressed: _isPointButtonDisable ? null : () async {
+                    final response = await http.post('${MyApp.commonUrl}/token/user/state',
+                      body: jsonEncode({
+                        "age": _userInfo['age'],
+                        "gender": _userInfo['gender'],
+                        "pid": _detailLeaflet['p_id'],
+                        "state": 2,
+                        "uid": _userInfo['id'],
+                      }),
+                      headers: {
+                        'Authorization' : 'Bearer $_token',
+                        'Content-Type' : 'application/json'
+                      },
+                    );
+
+                    print('포인트 받기 : ${response.statusCode}');
+
+                    Fluttertoast.showToast(
+                        msg: '포인트가 적립되었습니다!',
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.grey,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
+
+                    Navigator.pop(context);
+                  },
                   color: Color(0xff7C4CFF),
                   textColor: Colors.white,
                   disabledColor: Color(0xff9C9C9C),
@@ -294,13 +391,24 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
           actions: <Widget>[
             FlatButton(
               child: Text('OK'),
-              onPressed: () {
-                setState(() {
-                  print('Coupon : $_isCouponButtonDisable');
-                  _isCouponButtonDisable = true;
-                  print('Coupon : $_isCouponButtonDisable');
-                });
-                Navigator.pop(context, "쿠폰을 사용하였습니다!");
+              onPressed: () async {
+                // 쿠폰 저장 http 호출
+                _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
+                final response = await http.post('${MyApp.commonUrl}/token/user/coupon/${_detailLeaflet['p_id']}',
+                    headers: {
+                      'Authorization' : 'Bearer $_token'
+                    }
+                );
+
+                if(response.statusCode == 200 || response.statusCode == 201) {
+                  setState(() {
+                    print('Coupon : $_isCouponButtonDisable');
+                    _isCouponButtonDisable = true;
+                    print('Coupon : $_isCouponButtonDisable');
+                  });
+                }
+                Navigator.pop(context, "");
+
               },
             ),
           ],
@@ -314,20 +422,85 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
       _controller.complete(controller);
     });
   }
+
+  void _getDetailLeaflet(int args) async {
+    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
+    final response = await http.get('${MyApp.commonUrl}/token/user/paper/$args',
+        headers: {
+          'Authorization': 'Bearer $_token'
+        }
+    );
+
+    setState(() {
+      _detailLeaflet = json.decode(response.body)['data'];
+
+      // marker 추가
+      _markers.add(Marker(
+        markerId: MarkerId(_detailLeaflet['advertiser']['marketname']),
+        position: LatLng(double.parse(_detailLeaflet['advertiser']['lat']), double.parse(_detailLeaflet['advertiser']['lon'])),
+        infoWindow: InfoWindow(title: _detailLeaflet['advertiser']['marketname']),
+      ));
+
+      if(initCheck) {
+        // coupon 상태 초기화
+        _isCouponButtonDisable = _detailLeaflet['coupon'] == null ? false : true;
+
+        // point 상태 초기화
+        _isPointButtonDisable = _detailLeaflet['getpoint'];
+
+        initCheck = false;
+      }
+    });
+
+    print('leaflet : $_detailLeaflet');
+  }
+
+  void _getUserInfo() async {
+    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
+    print('token : $_token');
+    final response = await http.get('${MyApp.commonUrl}/token/user',
+        headers: {
+          'Authorization' : 'Bearer $_token'
+        }
+    );
+    _userInfo = json.decode(response.body)['data'];
+    print('userInfo : $_userInfo');
+
+  }
+
 }
 
-// 라우트 생성시 전달할 아규먼트 클래스
-class ScreenArguments{
-  // 아규먼트의 타이틀과 메시지. 생성자에 의해서만 초기화되고 변경할 수 없음
-  final int id;
-  final String imageUrl;
-  final String heading;
-  final double lat;
-  final double lng;
-  final bool coupon;
+class SliverMultilineAppBar extends StatelessWidget {
+  final String title;
+  final Widget leading;
+  final List<Widget> actions;
 
-  final bool point;
+  SliverMultilineAppBar({this.title, this.leading, this.actions});
 
-  // 생성자
-  ScreenArguments(this.id, this.imageUrl, this.heading, this.lat, this.lng, this.coupon, this.point);
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+
+    double availableWidth = mediaQuery.size.width - 160;
+    if (actions != null) {
+      availableWidth -= 32 * actions.length;
+    }
+    if (leading != null) {
+      availableWidth -= 32;
+    }
+    return SliverAppBar(
+      expandedHeight: 120.0,
+      forceElevated: true,
+      leading: leading,
+      actions: actions,
+      flexibleSpace: FlexibleSpaceBar(
+        title: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: availableWidth,
+          ),
+          child: Text(title, textScaleFactor: .8,),
+        ),
+      ),
+    );
+  }
 }

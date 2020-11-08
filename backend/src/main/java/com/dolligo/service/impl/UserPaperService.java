@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -20,12 +21,14 @@ import com.dolligo.dto.AdvertiserAnalysis;
 import com.dolligo.dto.Block;
 import com.dolligo.dto.Coupon;
 import com.dolligo.dto.Paper;
-import com.dolligo.dto.Paperanalysis;
 import com.dolligo.dto.PaperForList;
+import com.dolligo.dto.Paperanalysis;
 import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.Preference;
 import com.dolligo.dto.State;
+import com.dolligo.dto.User;
 import com.dolligo.exception.ApplicationException;
+import com.dolligo.exception.BadRequestException;
 import com.dolligo.exception.NotFoundException;
 import com.dolligo.repository.IAdvertiserAnalysisRepository;
 import com.dolligo.repository.IBlockRepository;
@@ -35,10 +38,8 @@ import com.dolligo.repository.IPaperForListRepository;
 import com.dolligo.repository.IPaperRepository;
 import com.dolligo.repository.IPaperStateRepository;
 import com.dolligo.repository.IPreferenceRepository;
+import com.dolligo.repository.IUserRepository;
 import com.dolligo.service.IUserPaperService;
-
-import java.util.Collections;
-import java.util.Comparator;
 
 @Service
 public class UserPaperService implements IUserPaperService {
@@ -57,6 +58,8 @@ public class UserPaperService implements IUserPaperService {
 	private IPreferenceRepository pfRepo;
 	@Autowired
 	private IPaperForListRepository plRepo;
+	@Autowired
+	private IUserRepository uRepo;
 	
 	
 	@Autowired
@@ -69,7 +72,7 @@ public class UserPaperService implements IUserPaperService {
 	private RedisTemplate<String, Object> redisTemplate;
 
 	//정각에cache db 갱신
-	@Scheduled(cron = "0 * * * * *")//매일 정각에 수행(cron : "초 분 시 일 월 요일") 0 0 * * * *
+	@Scheduled(cron = "0 0 * * * *")//매일 정각에 수행(cron : "초 분 시 일 월 요일") 0 0 * * * *
 	public void upadteCache() {
 		LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 		//현재 시간에 유효한 광고 목록 가져옴
@@ -82,7 +85,7 @@ public class UserPaperService implements IUserPaperService {
 		String timeKey = Integer.toString(now.getHour());
 		//redis에 갱신(현재 시간 row에 유효한 광고 목록 넣음)
 		redisTemplate.opsForValue().set(timeKey, validPapers);
-		redisTemplate.expire(timeKey, 1, TimeUnit.MINUTES);//1시간 후 만료 Hours
+		redisTemplate.expire(timeKey, 1, TimeUnit.HOURS);//1시간 후 만료 Hours
 		
 		logger.info(timeKey+"H : valid paper data update in redis");
 	}
@@ -91,7 +94,7 @@ public class UserPaperService implements IUserPaperService {
 	// 포인트 내역 가져오기(paperstate + paper + advertiser) test
 	@Override
 	public List<Paperstate> getPointHistory(String uid) {
-		return psRepo.findAllByUid(uid);
+		return psRepo.findPointList(uid);
 	}
 
 	// 주변 전단지 목록 가져오기(내 위치 위도, 경도, 반경(m))
@@ -103,6 +106,7 @@ public class UserPaperService implements IUserPaperService {
 		if(tmp == null) return null;
 		List<PaperForList> papers = (List<PaperForList>) tmp;
 //		for(PaperForList p : papers) System.out.println(p);
+		User user = uRepo.findById(Integer.parseInt(uid)).get();
 		
 		// 2. 가져온 데이터 중 범위 벗어나는 전단지 & 차단한 광고주의 전단지 & 삭제한 전단지 제외
 		List<Block> blocks = blockRepo.findAllByUid(uid);//차단 목록
@@ -118,7 +122,6 @@ public class UserPaperService implements IUserPaperService {
 		}
 		for(int i = 0; i < papers.size(); i++) {
 			PaperForList p = papers.get(i);
-			
 			//반경 안에 포함 안되면 삭제
 			if(!isIncluded(p, Double.parseDouble(lat), Double.parseDouble(lon), radius)) {
 				papers.remove(i--);
@@ -133,16 +136,25 @@ public class UserPaperService implements IUserPaperService {
 			
 			Paperstate ps = psRepo.findByUidAndPid(p.getP_id(), uid);
 			if(ps == null) {//처음 받는 전단지
+				//뿌린 전단지 숫자 ++
+				Paperanalysis pa = paRepo.findByPid(p.getP_id());
+				if(pa.getDistributed() >= p.getSheets()) {//이미 배포 장 수가 넘었다면 제외
+					papers.remove(i--);
+					continue;
+				}
+				pa.setDistributed(pa.getDistributed() + 1);
+				paRepo.saveAndFlush(pa);
+				
+				user.setPoint(user.getPoint() + 1);//전단지 받으면 자동 1 포인트 갱신
+				uRepo.save(user);
+				
 				p.setFirst(true);
 				//Paperstate 객체 생성
 				ps = new Paperstate();
 				ps.setUid(Integer.parseInt(uid));
 				ps.setPid(p.getP_id());
+				ps.setTotalpoint(1);
 				psRepo.saveAndFlush(ps);
-				//뿌린 전단지 숫자 ++
-				Paperanalysis pa = paRepo.findByPid(p.getP_id());
-				pa.setDistributed(pa.getDistributed() + 1);
-				paRepo.saveAndFlush(pa);
 			} else if(ps.getState() == 1) {//사용자가 이미 삭제한 전단지 삭제 => uid, pid로 paperstate 검색 후 state = 1이면 삭제한 기록
 				papers.remove(i--);
 				continue;
@@ -212,6 +224,7 @@ public class UserPaperService implements IUserPaperService {
 	@Override
 	public Paperstate saveState(String uid, State state) {
 		int pid = state.getPid();
+		User user = uRepo.findById(Integer.parseInt(uid)).get();
 		
 		Optional<Paper> tmp = pRepo.findById(state.getPid());
 		if(!tmp.isPresent()) {
@@ -243,10 +256,15 @@ public class UserPaperService implements IUserPaperService {
 			ps.setPoint(paper.getP_point());
 			ps.setTotalpoint(ps.getTotalpoint() + paper.getP_point());
 			ps.setIsget(true);
+			
+			user.setPoint(user.getPoint() + paper.getP_point());//포인트 갱신
+			uRepo.save(user);
+
 			//paperAnalysis 갱신
 			pa.setInterest(pa.getInterest() + 1);
 			//preference 가중치 +1
 			pf.setIsprefer(pf.getIsprefer() + 1);
+			
 			break;
 			
 			/*
@@ -273,7 +291,7 @@ public class UserPaperService implements IUserPaperService {
 			//preference 가중치 -1
 			pf.setIsprefer(pf.getIsprefer() - 1);
 			//block table 추가
-			blockRepo.save(new Block(Integer.parseInt(uid), paper.getP_aid(), paper.getP_mtid()));
+			blockRepo.save(new Block(Integer.parseInt(uid), paper.getP_aid(), paper.getP_mtid()));//잠깐 주석..
 			break;
 		}
 		
@@ -284,11 +302,20 @@ public class UserPaperService implements IUserPaperService {
 		//preference 갱신
 		pfRepo.save(pf);
 		//advertiserAnalysis 갱신
-		aaRepo.save(new AdvertiserAnalysis(pid
-										, paper.getP_mtid()
-										, state.isGender()
-										, state.getAge()
-										, state.getState()));
+//		aaRepo.save(new AdvertiserAnalysis(paper.getP_aid()
+//										, paper.getP_mtid()
+//										, state.isGender()
+//										, state.getAge()
+//										, state.getState()));
+		///////////////////잠깐만 주석..
+		AdvertiserAnalysis aaa = new AdvertiserAnalysis();
+		aaa.setAid(paper.getP_aid());
+		aaa.setMtid(paper.getP_mtid());
+		aaa.setGender(state.isGender());
+		aaa.setAge(state.getAge());
+		aaa.setState(state.getState());
+		aaa.setTime(LocalDateTime.of(2020,11,6, 16,10,00));
+		aaRepo.save(aaa);
 		return ps;
 	}
 
@@ -301,8 +328,12 @@ public class UserPaperService implements IUserPaperService {
 
 	// 쿠폰 저장하기 test
 	@Override
-	public Coupon saveCoupon(String uid, int pid) {
+	public Coupon saveCoupon(String uid, int pid) throws Exception {
+		if(cpRepo.findByPidAndUid(uid, pid) != null) {
+			throw new BadRequestException("이미 한번 저장한 쿠폰입니다.");
+		}
 		Coupon coupon = new Coupon(pid, Integer.parseInt(uid));
+		
 		cpRepo.save(coupon);
 		return coupon;
 	}

@@ -1,5 +1,6 @@
 package com.dolligo.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -21,6 +22,7 @@ import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.Preference;
 import com.dolligo.dto.State;
 import com.dolligo.dto.TimeGraph;
+import com.dolligo.dto.User;
 import com.dolligo.exception.ApplicationException;
 import com.dolligo.exception.BadRequestException;
 import com.dolligo.exception.NotFoundException;
@@ -31,6 +33,7 @@ import com.dolligo.repository.IPaperRepository;
 import com.dolligo.repository.IPaperStateRepository;
 import com.dolligo.repository.IPreferenceRepository;
 import com.dolligo.repository.ITimeGraphRepository;
+import com.dolligo.repository.IUserRepository;
 import com.dolligo.service.IAdvertiserPaperService;
 
 @Service
@@ -42,6 +45,8 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 
 	@Autowired
 	private IPaperRepository pRepo;
+	@Autowired
+	private IUserRepository uRepo;
 	@Autowired
 	private IPaperAnalysisRepository paRepo;
 	@Autowired
@@ -158,6 +163,10 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 	@Override
 	public void insertPaper(PaperForPost paper) {
 		pfpRepo.save(paper);
+		
+		Paperanalysis pa = new Paperanalysis();
+		pa.setPid(paper.getP_id());
+		paRepo.save(pa);
 	}
 
 	@Override
@@ -165,6 +174,7 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 		
 		int pid = state.getPid();
 		String uid = Integer.toString(state.getUid());
+		User user = uRepo.findById(state.getUid()).get();
 		
 		Optional<Paper> tmp = pRepo.findById(state.getPid());
 		if(!tmp.isPresent()) {
@@ -190,6 +200,10 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 		ps.setPoint(50);
 		ps.setTotalpoint(ps.getTotalpoint() + 50);
 		ps.setVisited(true);
+		
+		user.setPoint(user.getPoint() + 50);//방문 포인트 ++
+		uRepo.save(user);
+		
 		//paperAnalysis 갱신
 		pa.setVisit(pa.getVisit() + 1);
 		//preference 가중치 +1
@@ -203,12 +217,20 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 		//preference 갱신
 		pfRepo.save(pf);
 		//advertiserAnalysis 갱신
-		aaRepo.save(new AdvertiserAnalysis(pid
-										, paper.getP_mtid()
-										, state.isGender()
-										, state.getAge()
-										, state.getState()));
-		
+//		aaRepo.save(new AdvertiserAnalysis(pid
+//										, paper.getP_mtid()
+//										, state.isGender()
+//										, state.getAge()
+//										, state.getState()));
+//		
+		AdvertiserAnalysis aaa = new AdvertiserAnalysis();
+		aaa.setAid(paper.getP_aid());
+		aaa.setMtid(paper.getP_mtid());
+		aaa.setGender(state.isGender());
+		aaa.setAge(state.getAge());
+		aaa.setState(state.getState());
+		aaa.setTime(LocalDateTime.of(2020,11,6, 16,10,00));
+		aaRepo.save(aaa);
 	}
 
 }

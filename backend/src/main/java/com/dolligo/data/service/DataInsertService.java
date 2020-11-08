@@ -2,6 +2,7 @@ package com.dolligo.data.service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,12 +13,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dolligo.dto.Advertiser;
+import com.dolligo.dto.AdvertiserAnalysis;
 import com.dolligo.dto.Markettype;
 import com.dolligo.dto.Paper;
 import com.dolligo.dto.Paperanalysis;
+import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.Preference;
+import com.dolligo.dto.State;
 import com.dolligo.dto.User;
 import com.dolligo.repository.IDataInsertRepository;
+import com.dolligo.repository.IPaperAnalysisRepository;
+import com.dolligo.repository.IPaperRepository;
+import com.dolligo.repository.IPaperStateRepository;
+import com.dolligo.service.IAdvertiserPaperService;
+import com.dolligo.service.IUserPaperService;
 import com.dolligo.service.IUserService;
 
 @Service
@@ -25,9 +34,21 @@ public class DataInsertService implements IDataInsertService{
 	
 	@Autowired
 	private IDataInsertRepository repository;
+	@Autowired
+	private IPaperRepository pRepo;
+	@Autowired
+	private IPaperStateRepository psRepo;
+	@Autowired
+	private IPaperAnalysisRepository paRepo;
 	
 	@Autowired
 	private IUserService userService;
+	
+	@Autowired
+	private IAdvertiserPaperService atpaperService;
+	
+	@Autowired
+	private IUserPaperService upaperService;
 	
 	public void insertMarket() throws IOException {
 		//엑셀 읽기
@@ -103,7 +124,7 @@ public class DataInsertService implements IDataInsertService{
 	@Override
 	public void insertOtherUser() throws Exception {
 		//D F L N O P Q R
-		User user = new User();
+		User user;
 		List<String> prefers = new ArrayList<String>();
 //		boolean[] prefer = new boolean[8];
 		//10대 여자 100
@@ -112,6 +133,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("Q");
 		prefers.add("R");
 		for(int i = 0; i < 100; i++) {
+			user = new User();
 			user.setGender(true);
 			user.setAge(2005);//16살..
 			user.setPrefercode(prefers);
@@ -126,6 +148,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("P");
 		prefers.add("R");
 		for(int i = 0; i < 100; i++) {
+			user = new User();
 			user.setGender(false);
 			user.setAge(2005);//16살..
 			user.setPrefercode(prefers);
@@ -140,6 +163,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("O");
 		prefers.add("Q");
 		for(int i = 0; i < 100; i++) {
+			user = new User();
 			user.setGender(true);
 			user.setAge(1985);//36살..
 			user.setPrefercode(prefers);
@@ -153,6 +177,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("P");
 		prefers.add("Q");
 		for(int i = 0; i < 100; i++) {
+			user = new User();
 			user.setGender(false);
 			user.setAge(1985);//36살..
 			user.setPrefercode(prefers);
@@ -169,6 +194,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("Q");
 		prefers.add("R");
 		for(int i = 0; i < 200; i++) {
+			user = new User();
 			user.setGender(true);
 			user.setAge(1975);//46살..
 			user.setPrefercode(prefers);
@@ -182,6 +208,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("Q");
 		prefers.add("R");
 		for(int i = 0; i < 100; i++) {
+			user = new User();
 			user.setGender(false);
 			user.setAge(1975);//46살..
 			user.setPrefercode(prefers);
@@ -197,6 +224,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("Q");
 		prefers.add("R");
 		for(int i = 0; i < 50; i++) {
+			user = new User();
 			user.setGender(true);
 			user.setAge(1965);//56살..
 			user.setPrefercode(prefers);
@@ -208,6 +236,7 @@ public class DataInsertService implements IDataInsertService{
 		prefers.add("N");
 		prefers.add("P");
 		for(int i = 0; i < 50; i++) {
+			user = new User();
 			user.setGender(false);
 			user.setAge(1965);//56살..
 			user.setPrefercode(prefers);
@@ -273,13 +302,253 @@ public class DataInsertService implements IDataInsertService{
         		repository.insertPaper(p);
         		repository.insertPaperAnalysis(p.getP_id());
         	}
-        	
         }
-        
-      
 	}
 	
 	//전단지별 유저 액션 데이터 입력
+	@Override
+	public void insertUserAction() throws Exception {
+		//유흥주점 등록
+		//10대 삭제 및 차단, 제외
+		//전 연령대 고루고루2,3,4 많이 5 적게
+		//user 데이터를 연령대 별로 쭉 가져와서 상태값 저장
+		/*
+		 * 10개 paper
+		 * 시간대 : 12,16,17,18,19,20,21,22,23,0,1
+		 */
+		
+//		2011~2002 (10~19)
+		List<User> ones = repository.selectUsers(2002,2011);
+//		2001~1992 (20~29)
+		List<User> twos = repository.selectUsers(1992,2001);
+//		1991~1982 (30~39)
+		List<User> threes = repository.selectUsers(1982,1991);
+//		1981~1972 (40~49)
+		List<User> fours = repository.selectUsers(1972,1981);
+//		1971~1962 (50~59)
+		List<User> fives = repository.selectUsers(1962,1971);
+		
+		
+		//paper
+		List<Paper> paper = pRepo.findAllByP_aid("30");
+		
+		Paper p = paper.get(0);
+		Paperanalysis pa = paRepo.findByPid(p.getP_id());
+		
+		//12시
+		//20대
+//		for(User u : twos) {
+//			Paperstate ps = new Paperstate();
+//			ps.setPid(p.getP_id());
+//			ps.setUid(u.getId());
+//			psRepo.save(ps);//paper당 user paperstate 저장
+//			
+//			pa.setDistributed(pa.getDistributed() + 1);//pa distributed ++
+//			paRepo.save(pa);
+//			
+//
+//			State s = new State();
+//			s.setAge(u.getAge());
+//			s.setGender(u.isGender());
+//			s.setPid(p.getP_id());
+//			
+//			int n = (int)(Math.random()*10000 + 1);
+//			if(n < 5000) s.setState(1);
+//			else s.setState(2);
+//			
+//			upaperService.saveState(Integer.toString(u.getId()), s);//삭제 or 차단 or 상세조회
+////			atpaperService.authQrcode("30", s);//qr인증
+//		}
+		
+		//30대
+//		for(User u : threes) {
+//			Paperstate ps = new Paperstate();
+//			ps.setPid(p.getP_id());
+//			ps.setUid(u.getId());
+//			psRepo.save(ps);//paper당 user paperstate 저장
+//			
+//			pa.setDistributed(pa.getDistributed() + 1);//pa distributed ++
+//			paRepo.save(pa);
+//			
+//
+//			State s = new State();
+//			s.setAge(u.getAge());
+//			s.setGender(u.isGender());
+//			s.setPid(p.getP_id());
+//			
+//			int n = (int)(Math.random()*10000 + 1);
+//			if(n < 7000) s.setState(1);
+//			else s.setState(2);
+//			
+//			upaperService.saveState(Integer.toString(u.getId()), s);//삭제 or 차단 or 상세조회
+////			atpaperService.authQrcode("30", s);//qr인증
+//		}
+		
 	
+		p = paper.get(1);
+		pa = paRepo.findByPid(p.getP_id());
+		//16시~18시
+		//10대
+//		for(User u : ones) {
+//			if(u.getId() % 10 != 0) continue;
+//			Paperstate ps = new Paperstate();
+//			ps.setPid(p.getP_id());
+//			ps.setUid(u.getId());
+//			psRepo.save(ps);//paper당 user paperstate 저장
+//			
+//			pa.setDistributed(pa.getDistributed() + 1);//pa distributed ++
+//			paRepo.save(pa);
+//			
+//			
+//			State s = new State();
+//			s.setAge(u.getAge());
+//			s.setGender(u.isGender());
+//			s.setPid(p.getP_id());
+//			
+//			int n = (int)(Math.random()*10000 + 1);
+//			if(n < 5000) s.setState(1);
+//			else s.setState(4);
+//			
+//			upaperService.saveState(Integer.toString(u.getId()), s);//삭제 or 차단 or 상세조회
+////			atpaperService.authQrcode("30", s);//qr인증
+//		}
+		//20대
+//		for(User u : twos) {
+//			Paperstate ps = new Paperstate();
+//			ps.setPid(p.getP_id());
+//			ps.setUid(u.getId());
+//			psRepo.save(ps);//paper당 user paperstate 저장
+//			
+//			pa.setDistributed(pa.getDistributed() + 1);//pa distributed ++
+//			paRepo.save(pa);
+//			
+//			
+//			State s = new State();
+//			s.setAge(u.getAge());
+//			s.setGender(u.isGender());
+//			s.setPid(p.getP_id());
+//			s.setUid(u.getId());
+//			
+//			int n = (int)(Math.random()*10000 + 1);
+//			if(n < 2000) s.setState(1);
+//			else if(n < 8000) s.setState(2);
+//			else if(n > 8500) s.setState(4);
+//			else s.setState(3);
+//			
+//			if(s.getState() == 3) atpaperService.authQrcode("30", s);//qr인증
+//			else upaperService.saveState(Integer.toString(u.getId()), s);//삭제 or 차단 or 상세조회
+//		}
+		//30대
+		for(User u : threes) {
+//			if(psRepo.findByUidAndPid(p.getP_id(), Integer.toString(u.getId())) != null) {
+//				System.out.println(u.getId());
+//				continue;
+//			}
+//			else {
+//				System.out.println(u.getId());
+//				return;
+//			}
+			if(u.getId() < 23) continue;
+			Paperstate ps = new Paperstate();
+			ps.setPid(p.getP_id());
+			ps.setUid(u.getId());
+			psRepo.save(ps);//paper당 user paperstate 저장
+			
+			pa.setDistributed(pa.getDistributed() + 1);//pa distributed ++
+			paRepo.save(pa);
+			
+			
+			State s = new State();
+			s.setAge(u.getAge());
+			s.setGender(u.isGender());
+			s.setPid(p.getP_id());
+			s.setUid(u.getId());
+			
+			int n = (int)(Math.random()*10000 + 1);
+			if(n < 3000) s.setState(1);
+			else if(n < 8000) s.setState(2);
+			else if(n > 9500) s.setState(4);
+			else s.setState(3);
+			
+			if(s.getState() == 3) atpaperService.authQrcode("30", s);//qr인증
+			else upaperService.saveState(Integer.toString(u.getId()), s);//삭제 or 차단 or 상세조회
+		}
+		//40대
+		for(User u : fours) {
+			if(u.getId() % 2 == 0) continue;
+			Paperstate ps = new Paperstate();
+			ps.setPid(p.getP_id());
+			ps.setUid(u.getId());
+			psRepo.save(ps);//paper당 user paperstate 저장
+			
+			pa.setDistributed(pa.getDistributed() + 1);//pa distributed ++
+			paRepo.save(pa);
+			
+			
+			State s = new State();
+			s.setAge(u.getAge());
+			s.setGender(u.isGender());
+			s.setPid(p.getP_id());
+			s.setUid(u.getId());
+			
+			int n = (int)(Math.random()*10000 + 1);
+			if(n < 7000) s.setState(1);
+			else s.setState(2);
+			
+			upaperService.saveState(Integer.toString(u.getId()), s);//삭제 or 차단 or 상세조회
+//			atpaperService.authQrcode("30", s);//qr인증
+		}
+		//50대
+		for(User u : fives) {
+			Paperstate ps = new Paperstate();
+			ps.setPid(p.getP_id());
+			ps.setUid(u.getId());
+			psRepo.save(ps);//paper당 user paperstate 저장
+			
+			pa.setDistributed(pa.getDistributed() + 1);//pa distributed ++
+			paRepo.save(pa);
+			
+			
+			State s = new State();
+			s.setAge(u.getAge());
+			s.setGender(u.isGender());
+			s.setPid(p.getP_id());
+			s.setUid(u.getId());
+			
+			int n = (int)(Math.random()*10000 + 1);
+			if(n < 4000) s.setState(1);
+			else if(n < 7000) s.setState(2);
+			else if(n > 8500) s.setState(4);
+			else s.setState(3);
+			
+			if(s.getState() == 3) atpaperService.authQrcode("30", s);//qr인증
+			else upaperService.saveState(Integer.toString(u.getId()), s);//삭제 or 차단 or 상세조회
+		}
+		
+		
+		
+		
+		
+		
+		//연극,영화,극장 등록
+		//10,20,30 대 많이
+		//40 여자 많이
+		//40~50 적게
+		/*
+		 * 10개 paper
+		 * 시간대 : 10,11,12,13,14,15,16,17,18,19,20
+		 */
+		
+		
+		//성인오락, 경마
+		//40,50 남자 많이
+		//10 차단
+		//20,30 & 40대 여자 삭제 및 차단 가끔 조회해서 포인트
+		/*
+		 * 10개 paper
+		 * 시간대 : 10,15,16,17,18,19,20,21,22,23
+		 */
+		
+	}
 	
 }

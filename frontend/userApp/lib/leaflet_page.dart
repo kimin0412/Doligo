@@ -2,19 +2,26 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:userApp/leaflet_detail_page.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:http/http.dart' as http;
 
+import 'main.dart';
+
 class LeafletPage extends StatefulWidget {
+  static const routeName = '/leafFlet';
 
   @override
   _LeafletPageState createState() => _LeafletPageState();
 }
 
 class _LeafletPageState extends State<LeafletPage> {
+
+  Set<Circle> circles;
+
 
   Container MyArticles(String imageVal, String heading, String subHeading) {
     return Container(
@@ -37,9 +44,10 @@ class _LeafletPageState extends State<LeafletPage> {
     );
   }
 
-  var url = 'http://k3a401.p.ssafy.io:8080/create';
+  var _listviewData = null;
+  var _userInfo;
 
-  int _point = -1;     // 적립 포인트
+  var url = 'http://k3a401.p.ssafy.io:8080/create';
 
   Completer<GoogleMapController> _controller = Completer(); // ?
   MapType _googleMapType = MapType.normal;
@@ -53,15 +61,9 @@ class _LeafletPageState extends State<LeafletPage> {
   void initState() {
     super.initState();
 
-    // 나중에 적립 포인트 가져오는 부분도 여기서 구현한다!!
-    //
-    //
-    //
-    //
-
-      // 현재 위치를 얻어와 초기화 한다.
-      _getUserLocation();
-
+    // 현재 위치를 얻어와 초기화 한다.
+    _getUserLocation();
+    _getUserInfo();
   }
 
   void _getUserLocation() async {
@@ -69,6 +71,16 @@ class _LeafletPageState extends State<LeafletPage> {
 
     setState(() {
       currentPostion = LatLng(position.latitude, position.longitude);
+
+      circles = Set.from([Circle(
+        circleId: CircleId('MyCircle'),
+        center: LatLng(currentPostion.latitude, currentPostion.longitude),
+        radius: 80,
+        fillColor: Color(0x448B6DFF),
+        strokeWidth: 1,
+        strokeColor: Colors.purple,
+      )]);
+      _getNearLeafletList();
     });
   }
 
@@ -81,7 +93,7 @@ class _LeafletPageState extends State<LeafletPage> {
         // the App.build method, and use it to set our appbar title.
         title: Text('포인트 바로 받기'),
       ),
-      body: _buildBody(),
+      body: _userInfo == null ? Container() : _buildBody(),
     );
   }
 
@@ -120,7 +132,7 @@ class _LeafletPageState extends State<LeafletPage> {
                             padding: EdgeInsets.only(right: 15),
                             width: 400,
                             child: Text(
-                              '$_point Point',
+                              '${_userInfo['point']} Point',
                               style: TextStyle(
                                 color: Colors.lightBlue,
                                 fontSize: 25,
@@ -146,12 +158,13 @@ class _LeafletPageState extends State<LeafletPage> {
                             mapType: _googleMapType,
                             initialCameraPosition: CameraPosition(
                               target: currentPostion,
-                              zoom: 14,
+                              zoom: 17,
                             ),
                             onMapCreated: _onMapCreated,
                             myLocationEnabled: true,
                             markers: _markers,
-                            zoomControlsEnabled: false,
+                            zoomControlsEnabled: true,
+                            circles: circles,
                           ),
                         ],
                       ),
@@ -166,14 +179,13 @@ class _LeafletPageState extends State<LeafletPage> {
                     itemCount: _listviewData == null ? 0 : _listviewData.length,
                     itemBuilder: (BuildContext context, int index) {
                       return GestureDetector(
-                        child: MyArticles(_listviewData[index]['imageVal'], _listviewData[index]['heading'], _listviewData[index]['subHeading']),
+                        child: MyArticles(_listviewData[index]['p_image'], _listviewData[index]['marketname'], _listviewData[index]['marketaddress']),
                         onTap: () {
                           Navigator.pushNamed(
                             context,
                             LeafletDetailPage.routeName,
-                            arguments: ScreenArguments(1, _listviewData[index]['imageVal'], _listviewData[index]['heading'],
-                                37.498295, 127.026437, false, false),
-                          );
+                            arguments: _listviewData[index]['p_id'],
+                          ).then(refreshPage);
                         },
                       );
                     },
@@ -188,34 +200,63 @@ class _LeafletPageState extends State<LeafletPage> {
     );
   }
 
+  void _getUserInfo() async {
+    String _token = await FlutterSecureStorage().read(key: 'token');
+    final response = await http.get('${MyApp.commonUrl}/token/user',
+        headers: {
+          'Authorization': 'Bearer $_token'
+        }
+    );
+
+    setState(() {
+      _userInfo = json.decode(response.body)['data'];
+      print('userInfo : $_userInfo');
+    });
+  }
+
+  void _getNearLeafletList() async {
+    String _token = await FlutterSecureStorage().read(key: 'token');
+    print(_token);
+    int _radius = 80;
+    final response = await http.get('${MyApp.commonUrl}/token/user/paper/'
+        '${currentPostion.latitude}/${currentPostion.longitude}/$_radius',
+        headers: {
+          'Authorization': 'Bearer $_token'
+        }
+    );
+
+    print(currentPostion.toString());
+    print('leaflet List : ${response.body}');
+
+    setState(() {
+      _listviewData = json.decode(response.body)['data'];
+
+
+      // print('길이? : ${_listviewData.length}');
+      for(int i = 0; i < _listviewData.length; i++) {
+        _markers.add(Marker(
+          markerId: MarkerId('$i'),
+          position: LatLng(double.parse(_listviewData[i]['lat']), double.parse(_listviewData[i]['lon'])),
+          infoWindow: InfoWindow(title: _listviewData[i]['marketname']),
+        ));
+      }
+
+    });
+  }
+
   void _onMapCreated(GoogleMapController controller) {
     setState(() {
       _controller.complete(controller);
     });
   }
 
-  var _listviewData = [
-    {'imageVal' : 'https://cdn.shopify.com/s/files/1/1060/9112/products/Covid-19-01_8e003b8d-7115-41a2-b51c-1ef6d249d745_1024x1024.jpg?v=1583432489',
-      'heading' : 'corona',
-      'subHeading' : 'nineteen'
-    },
-    {'imageVal' : 'https://cdn.shopify.com/s/files/1/1060/9112/products/Covid-19-01_8e003b8d-7115-41a2-b51c-1ef6d249d745_1024x1024.jpg?v=1583432489',
-      'heading' : 'corona',
-      'subHeading' : 'nineteen'
-    },
-    {'imageVal' : 'https://cdn.shopify.com/s/files/1/1060/9112/products/Covid-19-01_8e003b8d-7115-41a2-b51c-1ef6d249d745_1024x1024.jpg?v=1583432489',
-      'heading' : 'corona',
-      'subHeading' : 'nineteen'
-    },
-    {'imageVal' : 'https://cdn.shopify.com/s/files/1/1060/9112/products/Covid-19-01_8e003b8d-7115-41a2-b51c-1ef6d249d745_1024x1024.jpg?v=1583432489',
-      'heading' : 'corona',
-      'subHeading' : 'nineteen'
-    },
-    {'imageVal' : 'https://cdn.shopify.com/s/files/1/1060/9112/products/Covid-19-01_8e003b8d-7115-41a2-b51c-1ef6d249d745_1024x1024.jpg?v=1583432489',
-      'heading' : 'corona',
-      'subHeading' : 'nineteen'
-    },
-  ];
+
+
+  FutureOr refreshPage(Object value) {
+    _getUserLocation();
+    _getUserInfo();
+    _getNearLeafletList();
+  }
 }
 
 
