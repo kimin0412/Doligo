@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:userApp/Screens/Login/login_screen.dart';
 import 'package:userApp/Screens/Welcome/welcome_screen.dart';
+import 'package:userApp/adblock_setting_page.dart';
 import 'package:userApp/leaflet_detail_page.dart';
 import 'package:userApp/private_info_setting_page.dart';
 import 'package:userApp/tap_page.dart';
@@ -53,7 +54,24 @@ class SettingTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-        if(_name == Constants.logout) {
+        if(_name == Constants.notifySet) {
+          Fluttertoast.showToast(
+              msg: '준비중입니다^^',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.grey,
+              textColor: Colors.white,
+              fontSize: 16.0
+          );
+        }
+        else if(_name == Constants.privateInfoSet) {
+          Navigator.pushNamed(context, PrivateInfoSettingPage.routeName);
+        }
+        else if(_name == Constants.adBlockSet) {
+          Navigator.pushNamed(context, AdblockSettingPage.routeName);
+        }
+        else if(_name == Constants.logout) {
           FlutterSecureStorage().delete(key: 'token');    // token 삭제
           Fluttertoast.showToast(
               msg: '로그아웃이 되었습니다',
@@ -67,12 +85,6 @@ class SettingTile extends StatelessWidget {
           Navigator.pushAndRemoveUntil(context,
               MaterialPageRoute(builder: (BuildContext context) => WelcomeScreen()), (route) => false
           );
-        }
-        else if(_name == Constants.adBlockSet) {
-          // Navigator.pushNamed(context, routeName);
-        }
-        else if(_name == Constants.privateInfoSet) {
-          Navigator.pushNamed(context, PrivateInfoSettingPage.routeName);
         }
       },
       leading: SizedBox(
