@@ -50,16 +50,12 @@ class _PointHistoryPage extends State<PointHistoryPage> {
     super.initState();
 
     _getUserInfo();
+    _getUserPointHistory();
 
   }
 
   @override
   Widget build(BuildContext context) {
-
-    setState(() {
-      _getUserPointHistory();   // 데이터 초기화
-    });
-
 
     return _userInfo == null ? Scaffold() : Scaffold(
       appBar: AppBar(
@@ -214,13 +210,15 @@ class _PointHistoryPage extends State<PointHistoryPage> {
       var tmp = jsonDecode(response.body)['data'];
       // print('tmp : $tmp');
       items.clear();
-      for(int i = 0; i < tmp.length; i++) {
-        // items.add(PointHistoryItem(DateFormat('yyyy-MM-dd').parse('${tmp[i]['created']}'.substring(0, 10)), '전단지 받기', tmp[i]['point'], tmp[i]['totalpoint']));
-        items.add(PointHistoryItem(
-            DateTime.now(), tmp[i]['point'] > 0 ? '전단지 받기' : '기프티콘 구매', tmp[i]['point'],
-            tmp[i]['totalpoint']));
-        // print('$i번째 : ${items[i].toString()}');
-      }
+      setState(() {
+        for(int i = 0; i < tmp.length; i++) {
+          // items.add(PointHistoryItem(DateFormat('yyyy-MM-dd').parse('${tmp[i]['created']}'.substring(0, 10)), '전단지 받기', tmp[i]['point'], tmp[i]['totalpoint']));
+          items.add(PointHistoryItem(
+              DateTime.now(), tmp[i]['point'] > 0 ? '전단지 받기' : '기프티콘 구매', tmp[i]['point'],
+              tmp[i]['totalpoint']));
+          // print('$i번째 : ${items[i].toString()}');
+        }
+      });
     }
   }
 
