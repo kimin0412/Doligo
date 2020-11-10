@@ -41,6 +41,7 @@ dependencies:
   flutter_secure_storage: ^3.3.5
   fluttertoast: ^7.1.1
   jwt_decoder: ^1.0.3
+  intl: ^0.16.0
 
 dev_dependencies:
   flutter_test:
@@ -61,6 +62,12 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/loadingText.gif
+    - assets/loadingCoin.gif
+
+#flutter_native_splash:
+#  image: assets/icons/doligo_logo.svg
+#  color: "8B6DFF"
 
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

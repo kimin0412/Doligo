@@ -9,8 +9,18 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:userApp/leaflet_page.dart';
 import 'package:userApp/main.dart';
-import 'package:userApp/success_anouncement_page.dart';
+
+class Constants {
+  static const String delete = '전단지 차단';        // 삭제
+  static const String noSubscribe = '광고주 차단';   // 차단
+
+  static const List<String> choices = <String>[
+    delete,
+    noSubscribe
+  ];
+}
 
 class LeafletDetailPage extends StatefulWidget {
   static const routeName = '/leafFletDetail';
@@ -62,10 +72,69 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(_detailLeaflet['advertiser']['marketname']),
-
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: choiceAction,
+            itemBuilder: (BuildContext context) {
+              return Constants.choices.map((String choice){
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+            icon: Icon(Icons.notifications),
+          )
+        ],
       ),
       body: _buildBody(_detailLeaflet),
     );
+  }
+
+  void choiceAction(String choice) async {
+    switch(choice) {
+      case Constants.delete:
+        print('$choice WORKING');
+        await dislike(choice);
+        break;
+      case Constants.noSubscribe:
+        print('$choice WORKING');
+        await dislike(choice);
+        break;
+    }
+  }
+
+  Future dislike(String choice) async {
+    int _state = choice == '전단지 차단' ? 1 : 4;
+    String _toastMessage = choice == '전단지 차단' ? '해당 전단지를 차단하였습니다.' : '해당 광고주를 차단하였습니다.';
+    final response = await http.post('${MyApp.commonUrl}/token/user/state',
+      body: jsonEncode({
+        "age": _userInfo['age'],
+        "gender": _userInfo['gender'],
+        "pid": _detailLeaflet['p_id'],
+        "state": _state,
+        "uid": _userInfo['id'],
+      }),
+      headers: {
+        'Authorization' : 'Bearer $_token',
+        'Content-Type' : 'application/json'
+      },
+    );
+
+
+    print('차단 결과 : ${response.statusCode}');
+
+    Fluttertoast.showToast(
+        msg: _toastMessage,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.grey,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+
+    Navigator.pop(context);
   }
 
   _buildBody(var _detailLeaflet) {
@@ -324,7 +393,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
               child: Text('OK'),
               onPressed: () async {
                 // 쿠폰 저장 http 호출
-                _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : () {};
+                _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
                 final response = await http.post('${MyApp.commonUrl}/token/user/coupon/${_detailLeaflet['p_id']}',
                     headers: {
                       'Authorization' : 'Bearer $_token'
@@ -355,7 +424,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
   }
 
   void _getDetailLeaflet(int args) async {
-    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : () {};
+    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
     final response = await http.get('${MyApp.commonUrl}/token/user/paper/$args',
         headers: {
           'Authorization': 'Bearer $_token'
@@ -387,7 +456,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
   }
 
   void _getUserInfo() async {
-    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : () {};
+    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
     print('token : $_token');
     final response = await http.get('${MyApp.commonUrl}/token/user',
         headers: {
@@ -399,4 +468,39 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
 
   }
 
+}
+
+class SliverMultilineAppBar extends StatelessWidget {
+  final String title;
+  final Widget leading;
+  final List<Widget> actions;
+
+  SliverMultilineAppBar({this.title, this.leading, this.actions});
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+
+    double availableWidth = mediaQuery.size.width - 160;
+    if (actions != null) {
+      availableWidth -= 32 * actions.length;
+    }
+    if (leading != null) {
+      availableWidth -= 32;
+    }
+    return SliverAppBar(
+      expandedHeight: 120.0,
+      forceElevated: true,
+      leading: leading,
+      actions: actions,
+      flexibleSpace: FlexibleSpaceBar(
+        title: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: availableWidth,
+          ),
+          child: Text(title, textScaleFactor: .8,),
+        ),
+      ),
+    );
+  }
 }

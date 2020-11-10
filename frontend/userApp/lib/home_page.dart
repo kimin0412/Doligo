@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -66,7 +67,7 @@ class _HomepageState extends State<Homepage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(builder: (context) => PointHistoryPage()),
-                                  )
+                                  ).then(refreshPage)
                                 },
                                 borderRadius: BorderRadius.circular(8.0),
                                 child: Container(
@@ -108,21 +109,24 @@ class _HomepageState extends State<Homepage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
                             ),
-                            child: Column(
-                              children: <Widget>[
-                                Padding(padding: EdgeInsets.all(8.0)),
-                                ListTile(
-                                  title: Text(
-                                      '내 적립포인트',
-                                      style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)
+                            child: InkWell(
+                              onTap: null,
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(padding: EdgeInsets.all(8.0)),
+                                  ListTile(
+                                    title: Text(
+                                        '내 적립포인트',
+                                        style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)
+                                    ),
+                                    subtitle: Text('${_userInfo['point']} Point',
+                                      style: TextStyle(color: Colors.lightBlue, fontSize: 30),
+                                      textAlign: TextAlign.right,
+                                    ),
                                   ),
-                                  subtitle: Text('${_userInfo['point']} Point',
-                                    style: TextStyle(color: Colors.lightBlue, fontSize: 30),
-                                    textAlign: TextAlign.right,
-                                  ),
-                                ),
-                                Padding(padding: EdgeInsets.all(8.0)),
-                              ],
+                                  Padding(padding: EdgeInsets.all(8.0)),
+                                ],
+                              ),
                             ),
                           ),  // 오늘의 잔여 횟수 및 & 적립포인트 Card
                           Padding(padding: EdgeInsets.all(8.0)),
@@ -136,7 +140,7 @@ class _HomepageState extends State<Homepage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => LeafletPage()),
-                                )
+                                ).then(refreshPage)
                               },
                               borderRadius: BorderRadius.circular(8.0),
                               child: Container(
@@ -177,7 +181,7 @@ class _HomepageState extends State<Homepage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(builder: (context) => MyCouponPage()),
-                                )
+                                ).then(refreshPage)
                               },
                               child: Column(
                                   children: <Widget>[
@@ -213,7 +217,7 @@ class _HomepageState extends State<Homepage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(builder: (context) => MarketPage()),
-                                    )
+                                    ).then(refreshPage)
                                   },
                                   borderRadius: BorderRadius.circular(8.0),
                                   child: Container(
@@ -265,7 +269,8 @@ class _HomepageState extends State<Homepage> {
 
   }
 
-
-
+  FutureOr refreshPage(Object value) {
+    _getUserInfo();
+  }
 }
 
