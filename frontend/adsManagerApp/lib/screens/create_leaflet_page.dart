@@ -558,7 +558,6 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
               ],
             )
           ),
-
         ],
       )
     );
@@ -578,8 +577,8 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
         'partner_user_id':'partner_user_id',
         'item_name' : '광고비 결제',
         'quantity': '1',
-        'total_amount':'22222',
-        'vat_amount' : '2222',
+        'total_amount': _leaflet.cost,
+        'vat_amount' : '0',
         'tax_free_amount' : '0',
         'approval_url' : '$SERVER_IP/api' ,
         'cancel_url' : '$SERVER_IP/api' ,
