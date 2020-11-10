@@ -1,4 +1,3 @@
 /src/main/resources/application.properties
-/taget/classes/application.properties
-/target
+/target/
 /logs

@@ -9,4 +9,7 @@ public interface IDataInsertService {
 	public void insertMarket() throws IOException;
 	public void insertUser() throws IOException;
 	public void insertAdvertiser() throws IOException;
+	public void insertPaper() throws IOException;
+	public void insertOtherUser() throws Exception;
+	public void insertUserAction() throws Exception;
 }

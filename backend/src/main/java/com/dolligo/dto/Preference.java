@@ -18,7 +18,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class Preference {
@@ -28,7 +27,7 @@ public class Preference {
     private int id;				//pk
     private int uid;			//fk  일반유저 아이디(userId)
     private int mid;			//fk  상권종류 아이디(marketTypeId)
-    private boolean isprefer;	//선호여부	=> 0 : 비선호, 1 : 선호
+    private int isprefer;	//선호여부	=> 0 : 비선호, n : 선호 정도(가중치)
     
     @Transient
     private String mname;	//상권 중분류 이름
@@ -41,7 +40,7 @@ public class Preference {
 	}
     
     public Preference() {};
-	public Preference(int uid, int mid, boolean isprefer) {
+	public Preference(int uid, int mid, int isprefer) {
 		super();
 		this.uid = uid;
 		this.mid = mid;
@@ -65,10 +64,10 @@ public class Preference {
 	public void setMid(int mid) {
 		this.mid = mid;
 	}
-	public boolean isIsprefer() {
+	public int getIsprefer() {
 		return isprefer;
 	}
-	public void setIsprefer(boolean isprefer) {
+	public void setIsprefer(int isprefer) {
 		this.isprefer = isprefer;
 	}
 	@Override

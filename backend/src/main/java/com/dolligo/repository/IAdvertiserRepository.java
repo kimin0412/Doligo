@@ -10,6 +10,9 @@ import com.dolligo.dto.Advertiser;
 public interface IAdvertiserRepository extends JpaRepository<Advertiser, Integer>{
 	@Query(value = "select * from advertiser where email = ?1 ", nativeQuery = true)
 	Advertiser getAdvertiserByEmail(String email);
+	
+//	AdvertiserMapping findById(int aid);
+	
     
 	//이메일 중복체크
 	@Query(value = "select count(email) from advertiser where email = ?1", nativeQuery = true)

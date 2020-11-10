@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -33,8 +34,9 @@ public class User {
 	@Column
     private int id;				//pk
     private String email;		//이메일
+    private String nickname;	//닉네임
     private String password;	//비밀번호
-    private boolean gender;		//성별 => 여 : 0, 남 : 1
+    private boolean gender;		//성별 => 여 : true, 남 : false
     private int age;			//나이 => 년생으로(뒤에 숫자 두개)
     private int point;			//포인트
 
@@ -55,6 +57,12 @@ public class User {
 	}
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	public String getNickname() {
+		return nickname;
+	}
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
 	}
 	public String getPassword() {
 		return password;
@@ -96,11 +104,10 @@ public class User {
 	}
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", email=" + email + ", password=" + password + ", gender=" + gender + ", age=" + age
-				+ ", point=" + point + ", preferences=" + preferences + ", prefercode=" + prefercode + "]";
+		return "User [id=" + id + ", email=" + email + ", nickname=" + nickname + ", password=" + password + ", gender="
+				+ gender + ", age=" + age + ", point=" + point + ", preferences=" + preferences + ", prefercode="
+				+ prefercode + "]";
 	}
-	
-	
 	
     
     
