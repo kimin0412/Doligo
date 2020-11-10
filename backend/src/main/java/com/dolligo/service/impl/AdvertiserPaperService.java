@@ -217,20 +217,20 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 		//preference 갱신
 		pfRepo.save(pf);
 		//advertiserAnalysis 갱신
-//		aaRepo.save(new AdvertiserAnalysis(pid
-//										, paper.getP_mtid()
-//										, state.isGender()
-//										, state.getAge()
-//										, state.getState()));
-//		
-		AdvertiserAnalysis aaa = new AdvertiserAnalysis();
-		aaa.setAid(paper.getP_aid());
-		aaa.setMtid(paper.getP_mtid());
-		aaa.setGender(state.isGender());
-		aaa.setAge(state.getAge());
-		aaa.setState(state.getState());
-		aaa.setTime(LocalDateTime.of(2020,11,6, 16,10,00));
-		aaRepo.save(aaa);
+		aaRepo.save(new AdvertiserAnalysis(pid
+										, paper.getP_mtid()
+										, state.isGender()
+										, state.getAge()
+										, state.getState()));
+		
+//		AdvertiserAnalysis aaa = new AdvertiserAnalysis();
+//		aaa.setAid(paper.getP_aid());
+//		aaa.setMtid(paper.getP_mtid());
+//		aaa.setGender(state.isGender());
+//		aaa.setAge(state.getAge());
+//		aaa.setState(state.getState());
+//		aaa.setTime(LocalDateTime.of(2020,11,6, 23,10,00));
+//		aaRepo.save(aaa);
 	}
 
 }
