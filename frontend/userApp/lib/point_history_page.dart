@@ -50,7 +50,7 @@ class _PointHistoryPage extends State<PointHistoryPage> {
     super.initState();
 
     _getUserInfo();
-    _getUserPointHistory();
+    _getUserPointHistory('0');
 
   }
 
@@ -67,12 +67,12 @@ class _PointHistoryPage extends State<PointHistoryPage> {
     );
   }
 
-  String newValue = '전체';
+  String newValue = '0';
   _buildBody() {
 
-    List<String> choices = ['전체', '${DateTime.now().month.toString()}월',
-      '${(DateTime.now().month - 1 < 1 ? DateTime.now().month - 1 + 12 : DateTime.now().month - 1).toString()}월',
-      '${(DateTime.now().month - 2 < 1 ? DateTime.now().month - 2 + 12 : DateTime.now().month - 2).toString()}월',
+    List<String> choices = ['0', '${DateTime.now().month.toString()}',
+      '${(DateTime.now().month - 1 < 1 ? DateTime.now().month - 1 + 12 : DateTime.now().month - 1).toString()}',
+      '${(DateTime.now().month - 2 < 1 ? DateTime.now().month - 2 + 12 : DateTime.now().month - 2).toString()}',
     ];
 
 
@@ -126,13 +126,14 @@ class _PointHistoryPage extends State<PointHistoryPage> {
                   setState(() {
                     newValue;
                     print('val : $newValue');
+                    _getUserPointHistory(newValue);
                   });
                 },
                 items: choices
-                    .map<DropdownMenuItem<String>>((String value) {
+                    .map<DropdownMenuItem<String>>((String _value) {
                   return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value, style: TextStyle(fontWeight: FontWeight.bold)),
+                    value: _value,
+                    child: Text(_value == '0' ? '전체' : _value + '월', style: TextStyle(fontWeight: FontWeight.bold)),
                   );
                 }).toList(),
               ),
@@ -198,9 +199,9 @@ class _PointHistoryPage extends State<PointHistoryPage> {
     });
   }
 
-  void _getUserPointHistory() async {
+  void _getUserPointHistory(String newValue) async {
     _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
-    final response = await http.get('${MyApp.commonUrl}/token/user/point',
+    final response = await http.get('${MyApp.commonUrl}/token/user/point/$newValue',
         headers: {
           'Authorization' : 'Bearer $_token'
         }
@@ -212,11 +213,9 @@ class _PointHistoryPage extends State<PointHistoryPage> {
       items.clear();
       setState(() {
         for(int i = 0; i < tmp.length; i++) {
-          // items.add(PointHistoryItem(DateFormat('yyyy-MM-dd').parse('${tmp[i]['created']}'.substring(0, 10)), '전단지 받기', tmp[i]['point'], tmp[i]['totalpoint']));
-          items.add(PointHistoryItem(
-              DateTime.now(), tmp[i]['point'] > 0 ? '전단지 받기' : '기프티콘 구매', tmp[i]['point'],
-              tmp[i]['totalpoint']));
-          // print('$i번째 : ${items[i].toString()}');
+          items.add(PointHistoryItem(DateFormat("yyyy-MM-ddTHH:mm").parse('${tmp[i]['created']}'.substring(0, 16)).add(new Duration(hours: 9)), '전단지 받기', tmp[i]['point'], tmp[i]['totalPoint']));
+
+          print('$i번째 : ${items[i].toString()}');
         }
       });
     }
