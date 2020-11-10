@@ -13,7 +13,7 @@ class _TabPageState extends State<TabPage> {
 
   List _pages = [
     Homepage(),
-    LeafletPage(),
+    // LeafletPage(),
     SettingPage(),
   ];
 
@@ -26,7 +26,7 @@ class _TabPageState extends State<TabPage> {
         currentIndex: _selectedIndex,
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-            BottomNavigationBarItem(icon: Icon(Icons.ballot), label: '전단지'),
+            // BottomNavigationBarItem(icon: Icon(Icons.ballot), label: '전단지'),
             BottomNavigationBarItem(icon: Icon(Icons.settings), label: '설정')
           ]),
     );

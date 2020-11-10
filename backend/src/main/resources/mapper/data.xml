@@ -6,22 +6,40 @@
 <mapper namespace="com.dolligo.repository.IDataInsertRepository">
  
 	<insert id="insertMarket" parameterType="MarketType">
-		INSERT INTO Markettype(largecode, largename, mediumcode, mediumname)
+		INSERT INTO markettype(largecode, largename, mediumcode, mediumname)
 		VALUES(#{largecode}, #{largename}, #{mediumcode}, #{mediumname})
 	</insert>
 	
 	<insert id="insertUser" useGeneratedKeys="true"	keyProperty="id"	parameterType="User">
-		INSERT INTO User(gender, age, point)
+		INSERT INTO user(gender, age, point)
 		VALUES(#{gender}, #{age}, #{point})
 	</insert>
 	
 	<insert id="insertPreference"	parameterType="Preference">
-		INSERT INTO Preference(uid, mid, isprefer)
+		INSERT INTO preference(uid, mid, isprefer)
 		VALUES(#{uid}, (select id from Markettype where mediumname = #{mname}), #{isprefer})
 	</insert>
 	
 	<insert id="insertAdvertiser"	parameterType="Advertiser">
-		INSERT INTO Advertiser(mtid, marketname, marketbranch, marketaddress, lat, lon)
+		INSERT INTO advertiser(mtid, marketname, marketbranch, marketaddress, lat, lon)
 		VALUES((select id from Markettype where mediumcode = #{mediumcode}), #{marketname}, #{marketbranch}, #{marketaddress}, #{lat}, #{lon})
 	</insert>
+	
+	<select id="getAds"	parameterType="int"	resultType="Advertiser">
+		SELECT * from advertiser WHERE mtid = ${mtid}
+	</select>
+	
+	<insert id="insertPaper"	useGeneratedKeys="true"	keyProperty="p_id"	parameterType="Paper">
+		insert into paper (p_aid, p_mtid, p_image, p_point, p_coupon, lat, lon, sheets)
+		values (#{p_aid}, #{p_mtid}, #{p_image}, #{p_point}, #{p_coupon}, #{lat}, #{lon}, #{sheets});
+	</insert>
+	
+	<insert id="insertPaperAnalysis"	parameterType="int">
+		insert into paperanalysis (pid)
+		values (#{pid});
+	</insert>
+	
+	<select id="selectUsers"	parameterType="int"	resultType="user">
+		select * from user where age between ${start} and ${end}
+	</select>
 </mapper>
