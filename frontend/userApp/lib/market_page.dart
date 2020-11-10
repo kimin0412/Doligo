@@ -82,37 +82,51 @@ class _MarketPage extends State<MarketPage> {
                                     SizedBox(
                                         width: 50.0,
                                         height: 50.0,
-                                        child: Icon(Icons.card_giftcard,
-                                            color: Colors.black54, size: 50.0)),
-                                  ],
+                                        child: Icon(Icons.account_circle,
+                                            color: Colors.black, size: 50.0)),
+                                    title: Text('${_userInfo['nickname']}님 어서오세요!',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold)),
+                                    subtitle: Text('브론즈?',
+                                        style: TextStyle(color: Colors.black)),
+                                    trailing: Wrap(
+                                      spacing: 12,
+                                      children: <Widget>[
+                                        SizedBox(
+                                            width: 50.0,
+                                            height: 50.0,
+                                            child: Icon(Icons.card_giftcard,
+                                                color: Colors.black54, size: 50.0)),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          )), // 회원 정보 Card
-                      Padding(padding: EdgeInsets.all(8.0)),
-                      // ListView(
-                      //     scrollDirection: Axis.vertical,
-                      //     shrinkWrap: true,
-                      //     children: <Widget>[
-                      //       new GridView.count(
-                      //         scrollDirection: Axis.horizontal,
-                      //         //스크롤 방향 조절
-                      //         crossAxisSpacing: 10,
-                      //         mainAxisSpacing: 10,
-                      //         crossAxisCount: 6,
-                      //         //로우 혹은 컬럼수 조절 (필수값)
-                      //         children: List.generate(100, (index) {
-                      //           return Container(
-                      //             child: Text("Item $index",
-                      //                 style: Theme.of(context).textTheme.body1),
-                      //             color: Colors.green,
-                      //           );
-                      //         }),
-                      //       ),
-                      //     ]),
-                    ],
-                  ))),
-                )));
+                              )), // 회원 정보 Card
+                          Padding(padding: EdgeInsets.all(8.0)),
+                          // ListView(
+                          //     scrollDirection: Axis.vertical,
+                          //     shrinkWrap: true,
+                          //     children: <Widget>[
+                          //       new GridView.count(
+                          //         scrollDirection: Axis.horizontal,
+                          //         //스크롤 방향 조절
+                          //         crossAxisSpacing: 10,
+                          //         mainAxisSpacing: 10,
+                          //         crossAxisCount: 6,
+                          //         //로우 혹은 컬럼수 조절 (필수값)
+                          //         children: List.generate(100, (index) {
+                          //           return Container(
+                          //             child: Text("Item $index",
+                          //                 style: Theme.of(context).textTheme.body1),
+                          //             color: Colors.green,
+                          //           );
+                          //         }),
+                          //       ),
+                          //     ]),
+                        ],
+                      ))),
+            )));
   }
 
   void _getUserInfo() async {
