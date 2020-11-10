@@ -121,7 +121,7 @@ class _LeafletPageState extends State<LeafletPage> {
                             child: Text(
                               '내 적립포인트',
                               style: TextStyle(
-                                color: Colors.lightBlue,
+                                color: Colors.black87,
                                 fontSize: 17,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -134,7 +134,7 @@ class _LeafletPageState extends State<LeafletPage> {
                             child: Text(
                               '${_userInfo['point']} Point',
                               style: TextStyle(
-                                color: Colors.lightBlue,
+                                color: Colors.black87,
                                 fontSize: 25,
                                 fontWeight: FontWeight.normal,
                               ),

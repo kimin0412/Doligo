@@ -91,7 +91,7 @@ class _PointHistoryPage extends State<PointHistoryPage> {
                                 style: TextStyle(fontSize: 20)
                             ),
                           ],
-                          style: TextStyle(color: Colors.lightBlue)
+                          style: TextStyle(color: Colors.black87)
                       )
                   ),
                   Text.rich(
@@ -105,7 +105,7 @@ class _PointHistoryPage extends State<PointHistoryPage> {
                                 text: ' point'
                             ),
                           ],
-                          style: TextStyle(color: Colors.lightBlue)
+                          style: TextStyle(color: Colors.black87)
                       )
                   ),
                 ],
