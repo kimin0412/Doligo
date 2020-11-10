@@ -69,13 +69,13 @@ class _MarketPage extends State<MarketPage> {
                                     width: 50.0,
                                     height: 50.0,
                                     child: Icon(Icons.account_circle,
-                                        color: Colors.black87, size: 50.0)),
+                                        color: Colors.black, size: 50.0)),
                                 title: Text('${_userInfo['nickname']}님 어서오세요!',
                                     style: TextStyle(
-                                        color: Colors.black87,
+                                        color: Colors.black,
                                         fontWeight: FontWeight.bold)),
                                 subtitle: Text('브론즈?',
-                                    style: TextStyle(color: Colors.black87)),
+                                    style: TextStyle(color: Colors.black)),
                                 trailing: Wrap(
                                   spacing: 12,
                                   children: <Widget>[
