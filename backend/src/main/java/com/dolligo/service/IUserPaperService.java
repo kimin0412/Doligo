@@ -22,6 +22,7 @@ public interface IUserPaperService {
 	List<PaperForList> getPaperList(String uid, String lat, String lon, int radius) throws Exception;
 	
 	// 전단지 상세보기
+	@Transactional
 	Paper getPaperDetail(String uid, int pid);
 	
 	// 상태값 변경(바로 삭제, 상세 조회 후 포인트받기 버튼 클릭, qr인증, 차단)

@@ -134,36 +134,28 @@ public class UserPaperService implements IUserPaperService {
 		}
 		for(int i = 0; i < papers.size(); i++) {
 			PaperForList p = papers.get(i);
-			//반경 안에 포함 안되면 삭제
+			//반경 안에 포함 안되면 제외
 			if(!isIncluded(p, Double.parseDouble(lat), Double.parseDouble(lon), radius)) {
 				papers.remove(i--);
 				continue;
 			}
 			
-			//차단한 광고주 전단지 삭제
+			//차단한 광고주 전단지 제외
 			if(blockAid.contains(p.getP_aid())) {
 				papers.remove(i--);
 				continue;
 			}
 			
+			Paperanalysis pa = paRepo.findByPid(p.getP_id());
+			//이미 배포 장 수가 넘었다면 제외
+			if(pa.getDistributed() >= p.getSheets()) {
+				papers.remove(i--);
+				continue;
+			}
+			
 			Paperstate ps = psRepo.findByUidAndPid(p.getP_id(), uid);
-			if(ps == null) {//처음 받는 전단지
-				//뿌린 전단지 숫자 ++
-				Paperanalysis pa = paRepo.findByPid(p.getP_id());
-				if(pa.getDistributed() >= p.getSheets()) {//이미 배포 장 수가 넘었다면 제외
-					papers.remove(i--);
-					continue;
-				}
-				pa.setDistributed(pa.getDistributed() + 1);
-				paRepo.saveAndFlush(pa);
-				
-				p.setFirst(true);
-				//Paperstate 객체 생성
-				ps = new Paperstate();
-				ps.setUid(Integer.parseInt(uid));
-				ps.setPid(p.getP_id());
-				psRepo.saveAndFlush(ps);
-			} else if(ps.getState() == 1) {//사용자가 이미 삭제한 전단지 삭제 => uid, pid로 paperstate 검색 후 state = 1이면 삭제한 기록
+			//사용자가 이미 삭제한 전단지 제외 => uid, pid로 paperstate 검색 후 state = 1이면 삭제한 기록
+			if(ps != null && ps.getState() == 1) {
 				papers.remove(i--);
 				continue;
 			}
@@ -221,9 +213,23 @@ public class UserPaperService implements IUserPaperService {
     	}
 		Coupon c = cpRepo.findByPidAndUid(uid, pid);
 		Paperstate ps = psRepo.findByUidAndPid(pid, uid);
+		Paperanalysis pa = paRepo.findByPid(pid);
+		
+		if(ps == null) {//처음 받는 전단지
+			//뿌린 전단지 숫자 ++
+			pa.setDistributed(pa.getDistributed() + 1);
+			paRepo.saveAndFlush(pa);
+			
+			//Paperstate 객체 생성
+			ps = new Paperstate();
+			ps.setUid(Integer.parseInt(uid));
+			ps.setPid(pid);
+			psRepo.saveAndFlush(ps);
+		}
+		
 		Paper paper = p.get();
 		paper.setCoupon(c);
-		if(ps != null) paper.setGetpoint(ps.isIsget());
+		paper.setGetpoint(ps.isIsget());
 
 		return paper;
 	}
