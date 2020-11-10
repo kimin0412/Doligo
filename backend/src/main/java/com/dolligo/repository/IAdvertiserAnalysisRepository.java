@@ -13,10 +13,10 @@ public interface IAdvertiserAnalysisRepository extends JpaRepository<AdvertiserA
 	@Query(value = "select * from advertiseranalysis where aid = ?1", nativeQuery = true)
 	List<AdvertiserAnalysis> getAllAdvertiserAnalysis(int aid);
 //	
-	@Query(value = "select count(*) from advertiseranalysis where aid = ?1 and gender=1 and (state=2 or state=3)", nativeQuery = true)
+	@Query(value = "select count(*) from advertiseranalysis where aid = ?1 and gender=0 and (state=2 or state=3)", nativeQuery = true)
 	int getGenderMan(int aid);
 	
-	@Query(value = "select count(*) from advertiseranalysis where aid = ?1 and gender=0 and (state=2 or state=3)", nativeQuery = true)
+	@Query(value = "select count(*) from advertiseranalysis where aid = ?1 and gender=1 and (state=2 or state=3)", nativeQuery = true)
 	int getGenderWoman(int aid);
 	
 //	@Query(value = "select count(case when aid = ?1 and state=1 and (CAST(time as time) >= ?2 and CAST(time as time) < ?3) then 1 end) as deleteCnt, "
