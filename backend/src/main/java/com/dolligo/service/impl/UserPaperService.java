@@ -104,7 +104,7 @@ public class UserPaperService implements IUserPaperService {
 			LocalDateTime today = LocalDateTime.now();
 			
 			LocalDateTime start = LocalDateTime.of(today.getYear(), month, 1, 0, 0);
-			LocalDateTime end = LocalDateTime.of(today.getYear(), month+1 == 13 ? 1 : month+1, 0, 23, 59).minusDays(1);
+			LocalDateTime end = LocalDateTime.of(today.getYear(), month+1 == 13 ? 1 : month+1, 1, 23, 59).minusDays(1);
 			return pointRepo.findAllByUidForMonth(uid, start, end);
 		}
 	}
@@ -126,7 +126,7 @@ public class UserPaperService implements IUserPaperService {
 		
 		// 3. uid로 나의 상권 preference 정보(order by mid) 가져와 내 전단지 리스트와 비교하면서 isprefer 가중치 값 paper 객체에 저장
 		List<Preference> prefers = pfRepo.findAllByUid(uid);
-
+		
 		int preferIdx = 0;
 		
 		for(Block b : blocks) {
