@@ -40,32 +40,46 @@ class _MarketPage extends State<MarketPage> {
     return _userInfo == null
         ? Container()
         : Container(
-        child: Padding(
-            padding: EdgeInsets.all(8.0),
-            child: SafeArea(
-              child: SingleChildScrollView(
-                  child: Center(
-                      child: Column(
-                        children: <Widget>[
-                          Card(
-                              elevation: 4.0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              child: InkWell(
-                                onTap: () => {
-                                  // Navigator.push(
-                                  // context,
-                                  // MaterialPageRoute(builder: (context) => PointHistoryPage()),
-                                  // ).then(refreshPage)
-                                },
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: Container(
-                                  height: 100,
-                                  alignment: Alignment.center,
-                                  margin: EdgeInsets.all(5),
-                                  child: ListTile(
-                                    leading: SizedBox(
+            child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: SafeArea(
+                  child: SingleChildScrollView(
+                      child: Center(
+                          child: Column(
+                    children: <Widget>[
+                      Card(
+                          elevation: 4.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: InkWell(
+                            onTap: () => {
+                              // Navigator.push(
+                              // context,
+                              // MaterialPageRoute(builder: (context) => PointHistoryPage()),
+                              // ).then(refreshPage)
+                            },
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Container(
+                              height: 100,
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.all(5),
+                              child: ListTile(
+                                leading: SizedBox(
+                                    width: 50.0,
+                                    height: 50.0,
+                                    child: Icon(Icons.account_circle,
+                                        color: Colors.black, size: 50.0)),
+                                title: Text('${_userInfo['nickname']}님 어서오세요!',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold)),
+                                subtitle: Text('브론즈?',
+                                    style: TextStyle(color: Colors.black)),
+                                trailing: Wrap(
+                                  spacing: 12,
+                                  children: <Widget>[
+                                    SizedBox(
                                         width: 50.0,
                                         height: 50.0,
                                         child: Icon(Icons.account_circle,

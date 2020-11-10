@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/svg.dart';
@@ -19,6 +20,9 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
 
   var _userInfo;
+
+  FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  String _profileImageURL = null;
 
   @override
   void initState() {
@@ -63,12 +67,7 @@ class _HomepageState extends State<Homepage> {
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                               child: InkWell(
-                                onTap: () =>{
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => PointHistoryPage()),
-                                  ).then(refreshPage)
-                                },
+                                onTap: null,
                                 borderRadius: BorderRadius.circular(8.0),
                                 child: Container(
                                   height: 100,
@@ -78,26 +77,27 @@ class _HomepageState extends State<Homepage> {
                                     leading: SizedBox(
                                         width: 50.0,
                                         height: 50.0,
-                                        child: Icon(Icons.account_circle,
-                                            color: Colors.black87,
-                                            size: 50.0)
+                                        child: CircleAvatar(
+                                          radius: 70,
+                                          child: ClipOval(
+                                            child: _profileImageURL == null ?
+                                            Image.network(
+                                              'https://i.pinimg.com/474x/7d/56/56/7d5656879b5d6ed45779f89c4e89c91a.jpg', height: 150,
+                                              width: 150,
+                                              fit: BoxFit.cover,
+                                            ) :
+                                            Image.network(
+                                              _profileImageURL, height: 150,
+                                              width: 150,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
                                     ),
                                     title: Text('${_userInfo['nickname']}님 어서오세요!',
-                                        style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                                     subtitle: Text('브론즈?',
-                                        style: TextStyle(color: Colors.black87)),
-                                    trailing: Wrap(
-                                      spacing: 12,
-                                      children: <Widget>[
-                                        SizedBox(
-                                            width: 50.0,
-                                            height: 50.0,
-                                            child: Icon(Icons.swap_vert_circle,
-                                                color: Colors.black54,
-                                                size: 50.0)
-                                        ),
-                                      ],
-                                    ),
+                                        style: TextStyle(color: Colors.black)),
                                   ),
                                 ),
                               )
@@ -110,17 +110,22 @@ class _HomepageState extends State<Homepage> {
                               borderRadius: BorderRadius.circular(20.0),
                             ),
                             child: InkWell(
-                              onTap: null,
+                                onTap: () =>{
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => PointHistoryPage()),
+                                  ).then(refreshPage)
+                                },
                               child: Column(
                                 children: <Widget>[
                                   Padding(padding: EdgeInsets.all(8.0)),
                                   ListTile(
                                     title: Text(
                                         '내 적립포인트',
-                                        style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)
                                     ),
                                     subtitle: Text('${_userInfo['point']} Point',
-                                      style: TextStyle(color: Colors.black87, fontSize: 30),
+                                      style: TextStyle(color: Colors.black, fontSize: 30),
                                       textAlign: TextAlign.right,
                                     ),
                                   ),
@@ -148,9 +153,9 @@ class _HomepageState extends State<Homepage> {
                                     children: <Widget>[
                                       ListTile(
                                         title: Text('포인트 바로 받기 >',
-                                            style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+                                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                                         subtitle: Text('원하는 전단지만 보고 바로 적립',
-                                            style: TextStyle(color: Colors.black87)),
+                                            style: TextStyle(color: Colors.black)),
                                         trailing: Wrap(
                                           spacing: 12,
                                           children: <Widget>[
@@ -187,9 +192,9 @@ class _HomepageState extends State<Homepage> {
                                   children: <Widget>[
                                     ListTile(
                                       title: Text('내 쿠폰 확인하기 >',
-                                          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                                       subtitle: Text('전단지에서 받은 쿠폰 모두 확인',
-                                          style: TextStyle(color: Colors.black87)),
+                                          style: TextStyle(color: Colors.black)),
                                       trailing: Wrap(
                                         spacing: 12,
                                         children: <Widget>[
@@ -227,9 +232,9 @@ class _HomepageState extends State<Homepage> {
                                         children: <Widget>[
                                           ListTile(
                                             title: Text('쇼핑하기 >',
-                                                style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+                                                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                                             subtitle: Text('모았으면 쓰자! 포인트로 쇼핑타임',
-                                                style: TextStyle(color: Colors.black87)),
+                                                style: TextStyle(color: Colors.black)),
                                             trailing: Wrap(
                                               spacing: 12,
                                               children: <Widget>[
@@ -271,10 +276,29 @@ class _HomepageState extends State<Homepage> {
       print('userInfo : $_userInfo');
     });
 
+    _getProfileImage();
   }
 
   FutureOr refreshPage(Object value) {
     _getUserInfo();
+  }
+
+  Future<String> _getProfileImage() async {
+    StorageReference storageReference = _firebaseStorage.ref().child("profile/${_userInfo['id']}");
+
+    try {
+      String _src = await storageReference.getDownloadURL();
+
+      setState(() {
+        _profileImageURL = _src;
+      });
+      return _src;
+    } on Exception catch (e) {
+      // TODO
+      print('에러가 났어요.');
+      return null;
+    }
+
   }
 }
 

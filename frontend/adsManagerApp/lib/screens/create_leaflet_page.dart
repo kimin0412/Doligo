@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:android_intent/android_intent.dart';
+import 'package:aws_s3/aws_s3.dart';
 import 'package:dolligo_ads_manager/components/custom_time_picker.dart';
 import 'package:dolligo_ads_manager/constants.dart';
 import 'package:dolligo_ads_manager/models/advertiser_model.dart';
@@ -602,7 +603,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
     _leaflet.lat = currentPosition.latitude.toStringAsFixed(5);
     _leaflet.lon = currentPosition.longitude.toStringAsFixed(5);
 
-    if(_leaflet.p_image == null){
+    if(_leafletImage == null){
       showToast('전단지 이미지를 등록해주세요');
       return;
     }
@@ -611,6 +612,27 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
       showToast('전단지 매수는 0보다 커야 합니다.');
       return;
     }
+
+    // AwsS3 awsS3 = AwsS3(
+    //     file: File(_leafletImage.path),
+    //     fileNameWithExt: "www",
+    //     awsFolderPath: 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Upload/Paper/',
+    //     poolId:  'ap-northeast-2:4985e7e4-3205-4085-8e76-368daf8dc9b7',
+    //     bucketName: 'plog-image');
+
+    String imageName = _advertiser.id.toString() + '_' + DateTime.now().toIso8601String();
+
+    AwsS3 awsS3 = AwsS3(
+        awsFolderPath: "Upload/Paper",
+        file: File(_leafletImage.path),
+        fileNameWithExt: imageName,
+        poolId: 'ap-northeast-2:4985e7e4-3205-4085-8e76-368daf8dc9b7',
+        region: Regions.AP_NORTHEAST_2,
+        bucketName: 'plog-image');
+
+    String re = await awsS3.uploadFile;
+
+    _leaflet.p_image = "https://plog-image.s3.ap-northeast-2.amazonaws.com/Upload/Paper/" + imageName;
 
     _pay_kakao();
     var response = await http.post(
