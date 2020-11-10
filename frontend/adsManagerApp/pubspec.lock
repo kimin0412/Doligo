@@ -29,6 +29,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.5.0-nullsafety.1"
+  aws_s3:
+    dependency: "direct main"
+    description:
+      name: aws_s3
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1+hotfix.5"
   basic_utils:
     dependency: transitive
     description:
@@ -714,13 +721,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.2"
-  webview_flutter:
-    dependency: "direct main"
-    description:
-      name: webview_flutter
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.7"
   win32:
     dependency: transitive
     description:
