@@ -90,26 +90,26 @@ class _MarketPage extends State<MarketPage> {
                             ),
                           )), // 회원 정보 Card
                       Padding(padding: EdgeInsets.all(8.0)),
-                      // ListView(
-                      //     scrollDirection: Axis.vertical,
-                      //     shrinkWrap: true,
-                      //     children: <Widget>[
-                      //       new GridView.count(
-                      //         scrollDirection: Axis.horizontal,
-                      //         //스크롤 방향 조절
-                      //         crossAxisSpacing: 10,
-                      //         mainAxisSpacing: 10,
-                      //         crossAxisCount: 6,
-                      //         //로우 혹은 컬럼수 조절 (필수값)
-                      //         children: List.generate(100, (index) {
-                      //           return Container(
-                      //             child: Text("Item $index",
-                      //                 style: Theme.of(context).textTheme.body1),
-                      //             color: Colors.green,
-                      //           );
-                      //         }),
-                      //       ),
-                      //     ]),
+                      ListView(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          children: <Widget>[
+                            new GridView.count(
+                              scrollDirection: Axis.horizontal,
+                              //스크롤 방향 조절
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 10,
+                              crossAxisCount: 6,
+                              //로우 혹은 컬럼수 조절 (필수값)
+                              children: List.generate(100, (index) {
+                                return Container(
+                                  child: Text("Item $index",
+                                      style: Theme.of(context).textTheme.body1),
+                                  color: Colors.green,
+                                );
+                              }),
+                            ),
+                          ]),
                     ],
                           ))),
                 )));

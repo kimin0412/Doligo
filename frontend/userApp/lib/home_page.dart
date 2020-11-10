@@ -20,6 +20,9 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
 
   var _userInfo;
+  var _pointInfo = [];
+  int pointCnt = 0;
+  double co2Cnt = 0.0;
 
   FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   String _profileImageURL = null;
@@ -96,8 +99,32 @@ class _HomepageState extends State<Homepage> {
                                     ),
                                     title: Text('${_userInfo['nickname']}님 어서오세요!',
                                         style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-                                    subtitle: Text('브론즈?',
-                                        style: TextStyle(color: Colors.black)),
+                                    subtitle:
+                                        Row(
+                                            children: <Widget>[
+                                              // FlutterLogo(),
+                                              Text('현재까지 ${co2Cnt.toStringAsFixed(3)}g의 CO2를 흡수했습니당', style: TextStyle(fontSize: 14),),
+                                              // Icon(Icons.sentiment_very_satisfied),
+                                              SvgPicture.asset(
+                                                "assets/icons/sprout_1.svg",
+                                                height: 25,
+                                                alignment: Alignment.centerLeft,
+                                              ),
+                                            ]
+                                        )
+                                      // SizedBox(
+                                      //   width: 100.0,
+                                      //   height: 30.0,
+                                      //   childre
+                                      //   child: SvgPicture.asset(
+                                      //     "assets/icons/pay_point.svg",
+                                      //     height: 30,
+                                      //     alignment: Alignment.centerLeft,
+                                      //   ),
+                                      // ),
+
+                                    // Text('브론즈?',
+                                    //     style: TextStyle(color: Colors.black)),
                                   ),
                                 ),
                               )
@@ -278,6 +305,26 @@ class _HomepageState extends State<Homepage> {
 
     _getProfileImage();
   }
+
+  void _getPointInfo() async {
+    String _token = await FlutterSecureStorage().read(key: 'token');
+    print('token : $_token');
+    final response = await http.get('${MyApp.commonUrl}/token/user/point/0',
+        headers: {
+          'Authorization': 'Bearer $_token'
+        }
+    );
+
+    setState(() {
+      _pointInfo = json.decode(response.body)['data'];
+      pointCnt = _pointInfo.length;
+      co2Cnt = pointCnt * 0.66;
+      // print('pointInfo : $_pointInfo');
+    });
+
+  }
+
+
 
   FutureOr refreshPage(Object value) {
     _getUserInfo();
