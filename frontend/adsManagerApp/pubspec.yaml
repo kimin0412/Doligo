@@ -43,10 +43,16 @@ dependencies:
   flutter_secure_storage: ^3.3.5
   fluttertoast: ^4.0.1
   jwt_decoder: ^1.0.3
+  flutter_datetime_picker: ^1.4.0
+  intl: ^0.16.1
+  android_intent: ^0.3.7+7
+  cached_network_image: ^2.3.3
+  pull_to_refresh: ^1.6.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

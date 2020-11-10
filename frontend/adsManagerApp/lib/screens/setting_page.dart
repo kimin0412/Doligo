@@ -1,11 +1,9 @@
-import 'dart:convert';
-
 import 'package:dolligo_ads_manager/constants.dart';
+import 'package:dolligo_ads_manager/screens/revise_advertiser_page.dart';
 import 'package:dolligo_ads_manager/screens/welcome/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:jwt_decoder/jwt_decoder.dart';
 
 class SettingPage extends StatefulWidget {
   @override
@@ -49,7 +47,18 @@ class _SettingPage extends State<SettingPage> {
             ),
           ),
           // SettingTile('결제 내역', Icons.add_alert, logout),
-          // SettingTile('점포 관리', Icons.person, logout),
+          SettingTile('점포 관리', Icons.person,
+              () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return ReviseAdvPage();
+                  },
+                ),
+              );
+            },
+          ),
           SettingTile('로그아웃', Icons.star,
               logout
               // (){

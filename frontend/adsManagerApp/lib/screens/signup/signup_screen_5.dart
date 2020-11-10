@@ -31,10 +31,6 @@ class _SignUpScreen5 extends State<SignUpScreen5> {
   Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
   int _markerIdCounter = 0;
 
-  User selectedUser;
-  List<User> users = <User>[const User('Foo', 'ee'), const User('Bar', 'bb')];
-
-
   @override
   void initState() {
     // TODO: implement initState
@@ -123,8 +119,8 @@ class _SignUpScreen5 extends State<SignUpScreen5> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text('위도 : ${currentPosition.longitude}'),
-                Text('경도 : ${currentPosition.latitude}'),
+                Text('위도 : ${currentPosition.latitude}'),
+                Text('경도 : ${currentPosition.longitude}'),
               ],
             ),
             RoundedButton(
@@ -227,11 +223,4 @@ class _SignUpScreen5 extends State<SignUpScreen5> {
       print('실패');
     }
   }
-}
-
-class User {
-  const User(this.name,this.aa);
-
-  final String name;
-  final String aa;
 }

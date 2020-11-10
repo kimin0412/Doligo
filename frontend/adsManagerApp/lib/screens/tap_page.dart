@@ -11,7 +11,7 @@ class TabPage extends StatefulWidget {
 class _TabPage extends State<TabPage> {
   int _selectedIndex = 0;
 
-  List _pages = [
+  List<Widget> _pages = [
     AdvDashboardPage(),
     Leafletpage(),
     SettingPage(),
@@ -20,7 +20,11 @@ class _TabPage extends State<TabPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: _pages[_selectedIndex]),
+      // body: Center(child: _pages[_selectedIndex]),\
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: _onItemTapped,
         currentIndex: _selectedIndex,
