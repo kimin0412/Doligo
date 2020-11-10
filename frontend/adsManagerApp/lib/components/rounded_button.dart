@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:dolligo_ads_manager/constants.dart';
 
-class RoundedButton extends StatelessWidget {
+class RoundedButton extends StatefulWidget {
   final String text;
   final Function press;
   final Color color, textColor;
+
   const RoundedButton({
     Key key,
     this.text,
@@ -12,6 +13,12 @@ class RoundedButton extends StatelessWidget {
     this.color = kPrimaryColor,
     this.textColor = Colors.white,
   }) : super(key: key);
+
+  @override
+  _RoundedButtonState createState() => _RoundedButtonState();
+}
+
+class _RoundedButtonState extends State<RoundedButton> {
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +30,11 @@ class RoundedButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(29),
         child: FlatButton(
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-          color: color,
-          onPressed: press,
+          color: widget.color,
+          onPressed: widget.press,
           child: Text(
-            text,
-            style: TextStyle(color: textColor),
+            widget.text,
+            style: TextStyle(color: widget.textColor),
           ),
         ),
       ),

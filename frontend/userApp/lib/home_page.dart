@@ -79,13 +79,13 @@ class _HomepageState extends State<Homepage> {
                                         width: 50.0,
                                         height: 50.0,
                                         child: Icon(Icons.account_circle,
-                                            color: Colors.lightBlue,
+                                            color: Colors.black87,
                                             size: 50.0)
                                     ),
                                     title: Text('${_userInfo['nickname']}님 어서오세요!',
-                                        style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)),
+                                        style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
                                     subtitle: Text('브론즈?',
-                                        style: TextStyle(color: Colors.lightBlue)),
+                                        style: TextStyle(color: Colors.black87)),
                                     trailing: Wrap(
                                       spacing: 12,
                                       children: <Widget>[
@@ -93,7 +93,7 @@ class _HomepageState extends State<Homepage> {
                                             width: 50.0,
                                             height: 50.0,
                                             child: Icon(Icons.swap_vert_circle,
-                                                color: Colors.lightBlue,
+                                                color: Colors.black54,
                                                 size: 50.0)
                                         ),
                                       ],
@@ -109,21 +109,24 @@ class _HomepageState extends State<Homepage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
                             ),
-                            child: Column(
-                              children: <Widget>[
-                                Padding(padding: EdgeInsets.all(8.0)),
-                                ListTile(
-                                  title: Text(
-                                      '내 적립포인트',
-                                      style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)
+                            child: InkWell(
+                              onTap: null,
+                              child: Column(
+                                children: <Widget>[
+                                  Padding(padding: EdgeInsets.all(8.0)),
+                                  ListTile(
+                                    title: Text(
+                                        '내 적립포인트',
+                                        style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)
+                                    ),
+                                    subtitle: Text('${_userInfo['point']} Point',
+                                      style: TextStyle(color: Colors.black87, fontSize: 30),
+                                      textAlign: TextAlign.right,
+                                    ),
                                   ),
-                                  subtitle: Text('${_userInfo['point']} Point',
-                                    style: TextStyle(color: Colors.lightBlue, fontSize: 30),
-                                    textAlign: TextAlign.right,
-                                  ),
-                                ),
-                                Padding(padding: EdgeInsets.all(8.0)),
-                              ],
+                                  Padding(padding: EdgeInsets.all(8.0)),
+                                ],
+                              ),
                             ),
                           ),  // 오늘의 잔여 횟수 및 & 적립포인트 Card
                           Padding(padding: EdgeInsets.all(8.0)),
@@ -145,9 +148,9 @@ class _HomepageState extends State<Homepage> {
                                     children: <Widget>[
                                       ListTile(
                                         title: Text('포인트 바로 받기 >',
-                                            style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)),
+                                            style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
                                         subtitle: Text('원하는 전단지만 보고 바로 적립',
-                                            style: TextStyle(color: Colors.lightBlue)),
+                                            style: TextStyle(color: Colors.black87)),
                                         trailing: Wrap(
                                           spacing: 12,
                                           children: <Widget>[
@@ -184,7 +187,9 @@ class _HomepageState extends State<Homepage> {
                                   children: <Widget>[
                                     ListTile(
                                       title: Text('내 쿠폰 확인하기 >',
-                                          style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)),
+                                          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+                                      subtitle: Text('전단지에서 받은 쿠폰 모두 확인',
+                                          style: TextStyle(color: Colors.black87)),
                                       trailing: Wrap(
                                         spacing: 12,
                                         children: <Widget>[
@@ -222,7 +227,9 @@ class _HomepageState extends State<Homepage> {
                                         children: <Widget>[
                                           ListTile(
                                             title: Text('쇼핑하기 >',
-                                                style: TextStyle(color: Colors.lightBlue, fontWeight: FontWeight.bold)),
+                                                style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+                                            subtitle: Text('모았으면 쓰자! 포인트로 쇼핑타임',
+                                                style: TextStyle(color: Colors.black87)),
                                             trailing: Wrap(
                                               spacing: 12,
                                               children: <Widget>[

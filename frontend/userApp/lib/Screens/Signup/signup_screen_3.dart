@@ -78,6 +78,7 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
                             color: Colors.white,
                             elevation: 10.0,
                             child: InkWell(
+                                splashColor: kPrimaryColor,
                                 onTap: () => setState(() => choices[index].isSelected = !choices[index].isSelected),
                                 child: Center(
                                   child: Column(

@@ -154,7 +154,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                             width: 350,
                             child: Text('전단지',
                               style: TextStyle(
-                                color: Colors.lightBlue,
+                                color: Colors.black87,
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -181,7 +181,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                             width: 350,
                             child: Text('위치',
                               style: TextStyle(
-                                color: Colors.lightBlue,
+                                color: Colors.black87,
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -224,7 +224,7 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                             width: 350,
                             child: Text('쿠폰',
                               style: TextStyle(
-                                color: Colors.lightBlue,
+                                color: Colors.black87,
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),

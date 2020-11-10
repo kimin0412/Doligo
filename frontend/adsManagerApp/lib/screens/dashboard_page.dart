@@ -1,6 +1,16 @@
-import 'package:dolligo_ads_manager/screens/create_leaflet_page.dart';
+import 'dart:convert';
+
+import 'package:dolligo_ads_manager/constants.dart';
+import 'package:dolligo_ads_manager/models/advertiser_model.dart';
+import 'package:dolligo_ads_manager/models/dashboard_model.dart';
+import 'package:dolligo_ads_manager/models/statatics.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:qrscan/qrscan.dart';
+import 'package:http/http.dart' as http;
 
 
 class AdvDashboardPage extends StatefulWidget {
@@ -8,103 +18,51 @@ class AdvDashboardPage extends StatefulWidget {
   _AdvDashboardPage createState() => _AdvDashboardPage();
 }
 
-class _AdvDashboardPage extends State<AdvDashboardPage> {
+class _AdvDashboardPage extends State<AdvDashboardPage>{
+  String _output = 'Empty Scan Code';
+  String jwt;
+
   List<charts.Series<Task, String>> _seriesPieData;
+  List<charts.Series<Task, String>> _seriesPieData1;
+  List<charts.Series<Task, String>> _seriesPieData2;
+  List<Task> pieData1 = List();
+  List<Task> pieData2 = List();
+  List<TimeStack> sl1 = List();
+  List<TimeStack> sl2 = List();
+  List<TimeStack> sl3 = List();
+  List<TimeStack> sl4 = List();
+  int iMaxAge;
+  String maxAge = "";
+  String maxGender = "";
+  int iMaxTime;
+  String maxTime = "";
+  Statistic nowLeaflet = new Statistic();
+  Dashboard dashboard;
   String pieDropdownValue;
   String timeSeriesDropdownValue;
+  Advertiser _advertiser = Advertiser();
+  RefreshController _controller;
 
-  List<charts.Series<TimeStack, DateTime>> _seriesStackListData;
+  List<charts.Series> _seriesStackListData;
 
   void _generateData() {
     pieDropdownValue = '연령별';
     timeSeriesDropdownValue = '시간별';
-
-    var pieData = [
-      Task('10대', 33.3, Colors.red),
-      Task('20대', 12.0, Colors.deepPurpleAccent),
-      Task('30대', 11.3, Colors.amber),
-      Task('40대', 28.9, Colors.lightBlueAccent),
-      Task('50대 이상', 10.4, Colors.black12),
-    ];
-
-    var stackListData1 = [
-      TimeStack(DateTime.utc(1989, 11, 9, 14), 70),
-      TimeStack(DateTime.utc(1989, 11, 9, 15), 70),
-      TimeStack(DateTime.utc(1989, 11, 9, 16), 82),
-      TimeStack(DateTime.utc(1989, 11, 9, 17), 100),
-      TimeStack(DateTime.utc(1989, 11, 9, 18), 120),
-      TimeStack(DateTime.utc(1989, 11, 9, 19), 135),
-      TimeStack(DateTime.utc(1989, 11, 9, 20), 142),
-      TimeStack(DateTime.utc(1989, 11, 9, 21), 88),
-      TimeStack(DateTime.utc(1989, 11, 9, 22), 60),
-    ];
-
-    var stackListData2 = [
-      TimeStack(DateTime.utc(1989, 11, 9, 14), 30),
-      TimeStack(DateTime.utc(1989, 11, 9, 15), 40),
-      TimeStack(DateTime.utc(1989, 11, 9, 16), 66),
-      TimeStack(DateTime.utc(1989, 11, 9, 17), 58),
-      TimeStack(DateTime.utc(1989, 11, 9, 18), 37),
-      TimeStack(DateTime.utc(1989, 11, 9, 19), 60),
-      TimeStack(DateTime.utc(1989, 11, 9, 20), 60),
-      TimeStack(DateTime.utc(1989, 11, 9, 21), 10),
-      TimeStack(DateTime.utc(1989, 11, 9, 22), 30),
-    ];
-
-    var stackListData3 = [
-      TimeStack(DateTime.utc(1989, 11, 9, 14), 4),
-      TimeStack(DateTime.utc(1989, 11, 9, 15), 11),
-      TimeStack(DateTime.utc(1989, 11, 9, 16), 5),
-      TimeStack(DateTime.utc(1989, 11, 9, 17), 8),
-      TimeStack(DateTime.utc(1989, 11, 9, 18), 2),
-      TimeStack(DateTime.utc(1989, 11, 9, 19), 4),
-      TimeStack(DateTime.utc(1989, 11, 9, 20), 1),
-      TimeStack(DateTime.utc(1989, 11, 9, 21), 1),
-      TimeStack(DateTime.utc(1989, 11, 9, 22), 3),
-    ];
-
-    _seriesPieData.add(
-      charts.Series(
-        data: pieData,
-        domainFn: (Task task, _) => task.task,
-        measureFn: (Task task, _) => task.taskValue,
-        colorFn: (Task task, _) => charts.ColorUtil.fromDartColor(task.color),
-        id:'Daily Task',
-        labelAccessorFn: (Task task, _) => '${task.taskValue}',
-      )
-    );
-
-    _seriesStackListData.add(
-        charts.Series<TimeStack, DateTime>(
-          data: stackListData1,
-          id: '배포수',
-          domainFn: (TimeStack task, _) => task.time,
-          measureFn: (TimeStack task, _) => task.value,
-          colorFn: (datum, index) => charts.ColorUtil.fromDartColor(Colors.black45),
-        ));
-    _seriesStackListData.add(
-        charts.Series<TimeStack, DateTime>(
-          data: stackListData2,
-          id: '클릭수',
-          domainFn: (TimeStack task, _) => task.time,
-          measureFn: (TimeStack task, _) => task.value,
-        ));
-    _seriesStackListData.add(
-        charts.Series<TimeStack, DateTime>(
-          data: stackListData3,
-          id: '클릭수',
-          domainFn: (TimeStack task, _) => task.time,
-          measureFn: (TimeStack task, _) => task.value,
-        ));
-
   }
 
   @override
   void initState(){
     super.initState();
-    _seriesPieData = new List<charts.Series<Task, String>>();
-    _seriesStackListData = new List<charts.Series<TimeStack, DateTime>>();
+    _controller = new RefreshController();
+    nowLeaflet.visit = 0;
+    nowLeaflet.block = 0;
+    nowLeaflet.interest = 0;
+    nowLeaflet.distributed = 0;
+    _seriesPieData1 = new List<charts.Series<Task, String>>();
+    _seriesPieData2 = new List<charts.Series<Task, String>>();
+    _seriesStackListData = new List<charts.Series<TimeStack, int>>();
     _generateData();
+    _getDashboard();
   }
 
   @override
@@ -116,17 +74,13 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: _buildBody(),
+
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your onPressed code here!
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreateLeafletPage()),
-          );
-        },
-        child: Icon(Icons.add, color: Colors.white),
-        backgroundColor: Colors.deepPurpleAccent,
-      )
+        heroTag: "qrscan",
+        onPressed: () => _scan(),
+        tooltip: 'scan',
+        child: const Icon(Icons.camera_alt),
+      ),
     );
   }
 
@@ -146,9 +100,21 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
                         color: Colors.deepPurpleAccent,
                         size: 50.0)
                 ),
-                title: Text('이건수님의 대시보드'),
-                subtitle: Text('dddd'),
-              ),
+                title:  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                            text: _advertiser.marketname,
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold, )
+                        ),
+                        TextSpan(
+                          text: '의 대시보드',
+                        ),
+                      ],
+                    )
+                ),
+              )
             ),
             Card(
               margin: EdgeInsets.fromLTRB(20,0,20,20),
@@ -160,9 +126,9 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
                         TextSpan(
                           children: [
                             TextSpan(
-                                text: '20대 여성',
+                                text: '$maxAge $maxGender',
                                 style: TextStyle(
-                                    decoration: TextDecoration.underline, fontSize: 30, fontWeight: FontWeight.bold, color: Colors.deepPurpleAccent)
+                                    fontSize: 30, fontWeight: FontWeight.bold, color: Colors.deepPurpleAccent)
                             ),
                             TextSpan(
                               text: '에게 인기가 많습니다',
@@ -178,10 +144,10 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
                         TextSpan(
                           children: [
                             TextSpan(
-                              text: '효과적인 광고 시간은',
+                              text: '효과적인 광고 시간은 ',
                             ),
                             TextSpan(
-                                text: '17 - 18시',
+                                text: maxTime,
                                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.deepPurpleAccent)
                             ),
                             TextSpan(
@@ -199,27 +165,18 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
               margin: EdgeInsets.fromLTRB(20,0,20,20),
               child: Column(
                 children: [
-                  ListTile(
-                    title: Text('현재 배포 중인 전단지', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    trailing: Wrap(
-                      spacing: 12,
-                      children: <Widget>[
-                        SizedBox(
-                            width: 50.0,
-                            height: 50.0,
-                            child: Icon(Icons.double_arrow,
-                                color: Colors.deepPurpleAccent,
-                                size: 50.0)
-                        ),
-                      ],
-                    ),
+                  Center(
+                    child: Container(
+                      margin: EdgeInsets.all(15),
+                      child: Text('현재 배포 중인 전단지', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    )
                   ),
                   Divider(
                     height: 1,
                     color: Colors.grey,
                   ),
                   Container(
-                    margin: EdgeInsets.all(5),
+                    margin: EdgeInsets.all(10),
                     child: IntrinsicHeight(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -227,7 +184,7 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
                           Column(
                             children: [
                               Text('배포', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                              Text('1350', style: TextStyle(fontSize: 15)),
+                                Text('${nowLeaflet.distributed}', style: TextStyle(fontSize: 15)),
                             ],
                           ),
                           VerticalDivider(
@@ -237,7 +194,7 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
                           Column(
                             children: [
                               Text('클릭', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                              Text('700', style: TextStyle(fontSize: 15)),
+                              Text('${nowLeaflet.interest}', style: TextStyle(fontSize: 15)),
                             ],
                           ),
                           VerticalDivider(
@@ -246,8 +203,18 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
                           ),
                           Column(
                             children: [
-                              Text('총 매수', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                              Text('2000', style: TextStyle(fontSize: 15)),
+                              Text('차단', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                              Text('${nowLeaflet.block}', style: TextStyle(fontSize: 15)),
+                            ],
+                          ),
+                          VerticalDivider(
+                            width: 1,
+                            color: Colors.grey,
+                          ),
+                          Column(
+                            children: [
+                              Text('방문', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                              Text('${nowLeaflet.visit}', style: TextStyle(fontSize: 15)),
                             ],
                           ),
                         ],
@@ -257,7 +224,7 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
                 ],
               )
             ),
-            Card(
+            _seriesPieData != null ? Card(
               child: Column(
                 children: [
                   Container(
@@ -268,6 +235,15 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
                       onChanged: (String newValue) {
                         setState(() {
                           pieDropdownValue = newValue;
+                          if(newValue == '성별'){
+                            setState(() {
+                              _seriesPieData = _seriesPieData2;
+                            });
+                          } else {
+                            setState(() {
+                              _seriesPieData = _seriesPieData1;
+                            });
+                          }
                         });
                       },
                       items: <String>['연령별', '성별']
@@ -308,8 +284,16 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
                   )
                 ],
               ),
+            )
+            : Card(child:
+              Center(
+                  child: Container(
+                    margin: EdgeInsets.all(30),
+                    child: Text('데이터가 없습니다', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  )
+              ),
             ),
-            Card(
+            _seriesStackListData.length > 0 ? Card(
               child: Column(
                 children: [
                   Container(
@@ -322,7 +306,7 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
                           timeSeriesDropdownValue = newValue;
                         });
                       },
-                      items: <String>['시간별', '날짜별']
+                      items: <String>['시간별']
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
@@ -333,34 +317,205 @@ class _AdvDashboardPage extends State<AdvDashboardPage> {
                   ),
                   SizedBox(
                     height: 300.0,
-                    child: charts.TimeSeriesChart(
+                    child: charts.LineChart(
                       _seriesStackListData,
                       defaultRenderer: new charts.LineRendererConfig(includeArea: true, stacked: false),
                       animate: true,
+                      behaviors: [
+                        new charts.SeriesLegend(
+                        )
+                      ],
                     ),
                   )
                 ],
               ),
-            ),
+            )
+            : Text('')
           ],
         ),
       ),
     );
   }
+
+  Future _scan() async {
+    //스캔 시작 - 이때 스캔 될때까지 blocking
+
+    print('fff');
+    String barcode = await scan();
+    //스캔 완료하면 _output 에 문자열 저장하면서 상태 변경 요청.
+    setState(() => _output = barcode);
+
+    showToast('qr코드가 인증 되었습니다.');
+    print("ddddddjioweiojwejiowejio");
+    print(barcode);
+
+    var _adv = await http.post('$SERVER_IP/api/token/advertiser/paper/qrcode',
+        headers: {'Authorization' : 'Bearer $jwt'},
+        body:jsonEncode(barcode));
+
+    print(_adv.body);
+  }
+
+  void _getDashboard() async{
+    jwt = await FlutterSecureStorage().read(key: 'jwt');
+
+    print(jwt);
+
+    var _adv = await http.get('$SERVER_IP/api/token/advertiser',
+        headers: {'Authorization' : 'Bearer $jwt'});
+
+    setState(() {
+      _advertiser = Advertiser.fromJson(jsonDecode(_adv.body)['data']);
+    });
+    // _advertiser
+
+    var response = await http.get('$SERVER_IP/api/token/advertiser/paper/dashboard',
+        headers: {'Authorization' : 'Bearer $jwt'});
+
+    dashboard = Dashboard.fromJson(json.decode(response.body));
+
+    pieData1.add(Task("10대", dashboard.ca.teen, Colors.red));
+    pieData1.add(Task("20대", dashboard.ca.second, Colors.amber));
+    pieData1.add(Task("30대", dashboard.ca.third, Colors.lightBlueAccent));
+    pieData1.add(Task("40대", dashboard.ca.forth, Colors.greenAccent));
+    pieData1.add(Task("50대 이상", dashboard.ca.above, Colors.indigo));
+
+    pieData2.add(Task("남성", dashboard.cg.m, Colors.blue));
+    pieData2.add(Task("여성", dashboard.cg.w, Colors.red));
+
+
+    _seriesPieData1.add(
+        charts.Series(
+          data: pieData1,
+          domainFn: (Task task, _) => task.task,
+          measureFn: (Task task, _) => task.taskValue,
+          colorFn: (Task task, _) => charts.ColorUtil.fromDartColor(task.color),
+          id:'연령별',
+          labelAccessorFn: (Task task, _) => '${task.taskValue}',
+        )
+    );
+
+    _seriesPieData2.add(
+        charts.Series(
+          data: pieData2,
+          domainFn: (Task task, _) => task.task,
+          measureFn: (Task task, _) => task.taskValue,
+          colorFn: (Task task, _) => charts.ColorUtil.fromDartColor(task.color),
+          id:'성별',
+          labelAccessorFn: (Task task, _) => '${task.taskValue}',
+        )
+    );
+
+    List<TimeStack> sl1 = List();
+    List<TimeStack> sl2 = List();
+    List<TimeStack> sl3 = List();
+    List<TimeStack> sl4 = List();
+
+    iMaxTime = 0;
+    dashboard.tg.asMap().forEach((index, _tg) {
+      if(iMaxTime < _tg.pointCnt){
+        iMaxTime = _tg.pointCnt;
+        maxTime = "$index - ${index + 1}시";
+      }
+      sl1.add(TimeStack(index, _tg.pointCnt));
+      sl2.add(TimeStack(index, _tg.blockCnt));
+      sl3.add(TimeStack(index, _tg.deleteCnt));
+      sl4.add(TimeStack(index, _tg.visitCnt));
+    });
+
+    if(mounted) {
+      setState(() {
+        iMaxAge = dashboard.ca.teen;
+        maxAge = "10대";
+        if (iMaxAge < dashboard.ca.second) {
+          iMaxAge = dashboard.ca.second;
+          maxAge = "20대";
+        }
+        if (iMaxAge < dashboard.ca.third) {
+          iMaxAge = dashboard.ca.third;
+          maxAge = "30대";
+        }
+        if (iMaxAge < dashboard.ca.forth) {
+          iMaxAge = dashboard.ca.forth;
+          maxAge = "40대";
+        }
+        if (iMaxAge < dashboard.ca.above) {
+          iMaxAge = dashboard.ca.above;
+          maxAge = "50대 이상";
+        }
+
+        if (dashboard.cg.m > dashboard.cg.w) {
+          maxGender = "남성";
+        } else {
+          maxGender = "여성";
+        }
+
+        _seriesPieData = _seriesPieData1;
+
+        _seriesStackListData.clear();
+        _seriesStackListData.add(
+            charts.Series<TimeStack, int>(
+              data: sl1,
+              id: '클릭',
+              domainFn: (TimeStack task, _) => task.time,
+              measureFn: (TimeStack task, _) => task.value,
+              colorFn: (datum, index) =>
+                  charts.ColorUtil.fromDartColor(Colors.black45),
+            ));
+        _seriesStackListData.add(
+            charts.Series<TimeStack, int>(
+              data: sl4,
+              id: '방문',
+              domainFn: (TimeStack task, _) => task.time,
+              measureFn: (TimeStack task, _) => task.value,
+            ));
+        _seriesStackListData.add(
+            charts.Series<TimeStack, int>(
+              data: sl3,
+              id: '무시',
+              domainFn: (TimeStack task, _) => task.time,
+              measureFn: (TimeStack task, _) => task.value,
+            ));
+        _seriesStackListData.add(
+            charts.Series<TimeStack, int>(
+              data: sl2,
+              id: '차단',
+              domainFn: (TimeStack task, _) => task.time,
+              measureFn: (TimeStack task, _) => task.value,
+            ));
+
+        nowLeaflet = dashboard.recent;
+        // nowLeaflet.distributed = dashboard.recent.distributed;
+        // nowLeaflet.distributed = dashboard.recent.block;
+        // nowLeaflet.distributed = dashboard.recent.visit;
+      });
+    }
+  }
+
+  void showToast(String message){
+    Fluttertoast.cancel();
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT
+    );
+  }
 }
+
+
 
 
 class Task{
   String task;
-  double taskValue;
+  int taskValue;
   Color color;
 
   Task(this.task, this.taskValue, this.color);
 }
 
 class TimeStack{
-  DateTime time;
+  int time;
   int value;
 
   TimeStack(this.time, this.value);
 }
+

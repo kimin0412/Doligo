@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -41,7 +42,10 @@ public class Paperstate {
     								 */
     private boolean visited;		//가게 방문 여부
     private boolean isget;			//포인트 회수 여부(상세조회 페이지에서 '포인트받기' 버튼 눌렀는지 여부)
+    
+    @Transient
     private int point;				//직전 상태 변경으로 얻은 포인트
+    @Transient
     private int totalpoint;			//이 전단지로 얻은 포인트 총 양
     
     
