@@ -77,7 +77,7 @@ public class UserPaperService implements IUserPaperService {
 	private RedisTemplate<String, Object> redisTemplate;
 
 	//정각에cache db 갱신
-	@Scheduled(cron = "0 0 * * * *")//매일 정각에 수행(cron : "초 분 시 일 월 요일") 0 0 * * * *
+	@Scheduled(cron = "0 * * * * *")//매일 정각에 수행(cron : "초 분 시 일 월 요일") 0 0 * * * *
 	public void upadteCache() {
 		LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 		//현재 시간에 유효한 광고 목록 가져옴
@@ -90,7 +90,7 @@ public class UserPaperService implements IUserPaperService {
 		String timeKey = Integer.toString(now.getHour());
 		//redis에 갱신(현재 시간 row에 유효한 광고 목록 넣음)
 		redisTemplate.opsForValue().set(timeKey, validPapers);
-		redisTemplate.expire(timeKey, 1, TimeUnit.HOURS);//1시간 후 만료 Hours
+		redisTemplate.expire(timeKey, 1, TimeUnit.MINUTES);//1시간 후 만료 Hours
 		
 		logger.info(timeKey+"H : valid paper data update in redis");
 	}
