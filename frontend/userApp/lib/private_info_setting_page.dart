@@ -1,14 +1,18 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'Screens/Signup/signup_screen_2.dart';
 import 'constants.dart';
 import 'main.dart';
+
+import 'package:firebase_storage/firebase_storage.dart';
 
 class PrivateInfoSettingPage extends StatefulWidget {
   static const String routeName = '/privateInfoSetting';
@@ -40,6 +44,12 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
     2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
   ];
 
+
+  File _image;
+  FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  String _profileImageURL = null;
+
+
   @override
   void initState() {
     // TODO: implement initState
@@ -52,11 +62,12 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
     genders.add(new Gender("Male", MdiIcons.genderMale, false));
     genders.add(new Gender("Female", MdiIcons.genderFemale, false));
     genders.add(new Gender("Others", MdiIcons.genderTransgender, false));
+
+
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -64,7 +75,7 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
         leading: GestureDetector(
           child: Icon(Icons.arrow_back_outlined),
           onTap: () {
-            if(isChanged) {
+            if (isChanged) {
               showAlertDialog(context, 'exit');
             } else {
               Navigator.pop(context);
@@ -98,7 +109,8 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
     );
   }
 
-  int isDisabled() => isChanged && _nickname.length > 0 ? 0xffffffff : 0x77ffffff;
+  int isDisabled() =>
+      isChanged && _nickname.length > 0 ? 0xffffffff : 0x77ffffff;
 
   void showAlertDialog(BuildContext context, String s) async {
     String _title = '내 정보 수정';
@@ -115,7 +127,7 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
             FlatButton(
               child: Text('OK'),
               onPressed: () {
-                if(s == 'save') {
+                if (s == 'save') {
                   print('저장');
                 }
                 Navigator.pop(context);
@@ -150,11 +162,26 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                     children: <Widget>[
                       CircleAvatar(
                         radius: 70,
-                        child: ClipOval(child: Image.asset('images/girl.jpg', height: 150, width: 150, fit: BoxFit.cover,),),
+                        child: ClipOval(
+                          child: _profileImageURL == null ?
+                          Image.network(
+                            'https://i.pinimg.com/474x/7d/56/56/7d5656879b5d6ed45779f89c4e89c91a.jpg', height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
+                          ) :
+                          Image.network(
+                            _profileImageURL, height: 150,
+                            width: 150,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                      Positioned(bottom: 1, right: 1 ,child: Container(
+                      Positioned(bottom: 1, right: 1, child: Container(
                         height: 40, width: 40,
-                        child: Icon(Icons.add_a_photo, color: Colors.white,),
+                        child: GestureDetector(
+                          child: Icon(Icons.add_a_photo, color: Colors.white,),
+                          onTap: _uploadProfileImage,
+                        ),
                         decoration: BoxDecoration(
                             color: Colors.deepOrange,
                             borderRadius: BorderRadius.all(Radius.circular(20))
@@ -181,7 +208,9 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                       labelText: '닉네임',
                     ),
                     validator: (String value) {
-                      return value.contains('@') ? 'Do not use the @ char.' : null;
+                      return value.contains('@')
+                          ? 'Do not use the @ char.'
+                          : null;
                     },
                   ),
                   SizedBox(height: 15,),
@@ -199,7 +228,7 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                               splashColor: kPrimaryColor,
                               onTap: () {
                                 setState(() {
-                                  if(index == 2) {
+                                  if (index == 2) {
                                     Fluttertoast.showToast(
                                         msg: '당신은 사람이 아닙니까?',
                                         toastLength: Toast.LENGTH_SHORT,
@@ -210,10 +239,13 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                                         fontSize: 16.0
                                     );
                                   } else {
-                                    genders.forEach((gender) => gender.isSelected = false);
+                                    genders.forEach((gender) =>
+                                    gender.isSelected = false);
                                     genders[index].isSelected = true;
-                                    if(index == 0) _isFemale = false;      // 남자면 false
-                                    else if(index == 1) _isFemale = true;  // 여자면 true
+                                    if (index == 0)
+                                      _isFemale = false; // 남자면 false
+                                    else if (index == 1)
+                                      _isFemale = true; // 여자면 true
                                   }
                                 });
                               },
@@ -221,14 +253,14 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                             );
                           }
                       )
-                  ),  // gender selector
+                  ), // gender selector
                   Container(
                       height: 100,
                       width: 600,
                       alignment: Alignment.center,
                       child:
                       DropdownButton<int>(
-                        hint:  Text("출생년도를 골라주세요."),
+                        hint: Text("출생년도를 골라주세요."),
                         value: _selectedYear,
                         onChanged: (int Value) {
                           setState(() {
@@ -236,14 +268,14 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                           });
                         },
                         items: userYears.map((int year) {
-                          return  DropdownMenuItem<int>(
+                          return DropdownMenuItem<int>(
                             value: year,
                             child: Row(
                               children: <Widget>[
                                 SizedBox(width: 10,),
                                 Text(
                                   year.toString(),
-                                  style:  TextStyle(color: Colors.black),
+                                  style: TextStyle(color: Colors.black),
                                 ),
                               ],
                             ),
@@ -265,7 +297,9 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                       // code when the user saves the form.
                     },
                     validator: (String value) {
-                      return value.contains('@') ? 'Do not use the @ char.' : null;
+                      return value.contains('@')
+                          ? 'Do not use the @ char.'
+                          : null;
                     },
                   ),
                   TextFormField(
@@ -278,7 +312,9 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                       // code when the user saves the form.
                     },
                     validator: (String value) {
-                      return value.contains('@') ? 'Do not use the @ char.' : null;
+                      return value.contains('@')
+                          ? 'Do not use the @ char.'
+                          : null;
                     },
                   ),
                   TextFormField(
@@ -291,7 +327,9 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                       // code when the user saves the form.
                     },
                     validator: (String value) {
-                      return value.contains('@') ? 'Do not use the @ char.' : null;
+                      return value.contains('@')
+                          ? 'Do not use the @ char.'
+                          : null;
                     },
                   ),
 
@@ -304,8 +342,25 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
     );
   }
 
+  Widget _buildFirebase() {
+    // return StreamBuilder(
+    //   stream: Firestore.instance.collection('post').snapshots(),
+    //   builder: (context, snapshot) {
+    //     if (!snapshot.hasData) {
+    //       return Center(child: CircularProgressIndicator());
+    //     }
+    //
+    //     var items = snapshot.data.documents ?? []; // null이 안되게끔 처리하는 기법
+    //
+    //     return GridView.builder(gridDelegate: null, itemBuilder: null);
+    //   },
+    // );
+  }
+
+
   void _getUserInfo() async {
-    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
+    _token =
+    _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
     final response = await http.get('${MyApp.commonUrl}/token/user',
         headers: {
           'Authorization': 'Bearer $_token'
@@ -319,5 +374,57 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
       genders[_userInfo['gender'] ? 1 : 0].isSelected = true;
       _selectedYear = _userInfo['age'];
     });
+
+    _getProfileImage();
+  }
+
+  Future<String> _getProfileImage() async {
+    StorageReference storageReference = _firebaseStorage.ref().child("profile/${_userInfo['id']}");
+
+    try {
+      String _src = await storageReference.getDownloadURL();
+
+      setState(() {
+        _profileImageURL = _src;
+      });
+      return _src;
+    } on Exception catch (e) {
+      // TODO
+      print('에러가 났어요.');
+      return null;
+    }
+
+  }
+  Future _uploadProfileImage() async {
+    File image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    if(image != null) {
+      setState(() {
+        _image = image;
+      });
+
+      // 프로필 사진을 업로드할 경로와 파일명을 정의. 사용자의 uid를 이용하여 파일명의 중복 가능성 제거
+      StorageReference storageReference =
+      _firebaseStorage.ref().child("profile/${_userInfo['id']}");
+
+      // 파일 업로드
+      StorageUploadTask storageUploadTask = storageReference.putFile(_image);
+
+      // 파일 업로드 완료까지 대기
+      await storageUploadTask.onComplete;
+
+      // 업로드한 사진의 URL 획득
+      String downloadURL = await storageReference.getDownloadURL();
+
+      // 업로드된 사진의 URL을 페이지에 반영
+      setState(() {
+        _profileImageURL = downloadURL;
+      });
+      return _profileImageURL;
+    } else {
+      print('선택이 안되었습니다..');
+      return null;
+    }
+
   }
 }
