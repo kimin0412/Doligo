@@ -9,12 +9,13 @@ import com.dolligo.dto.Coupon;
 import com.dolligo.dto.Paper;
 import com.dolligo.dto.PaperForList;
 import com.dolligo.dto.Paperstate;
+import com.dolligo.dto.PointLog;
 import com.dolligo.dto.State;
 
 public interface IUserPaperService {
 
 	//포인트 적립 내역 확인
-	List<Paperstate> getPointHistory(String uid);
+	List<PointLog> getPointHistory(String uid, int month);
 	
 	// 주변 전단지 목록 가져오기
 	@Transactional
@@ -41,6 +42,9 @@ public interface IUserPaperService {
 
 	// 차단 해제하기
 	void cancelBlockPaper(String uid, int aid);
+
+	// 푸시 알림 눌러서 포인트 받기
+	void getPointByPush(String uid);
 	
 	//기프티콘 목록
 	//기프티콘 상세

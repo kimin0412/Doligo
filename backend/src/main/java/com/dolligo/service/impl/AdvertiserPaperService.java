@@ -19,6 +19,7 @@ import com.dolligo.dto.Paper;
 import com.dolligo.dto.PaperForPost;
 import com.dolligo.dto.Paperanalysis;
 import com.dolligo.dto.Paperstate;
+import com.dolligo.dto.PointLog;
 import com.dolligo.dto.Preference;
 import com.dolligo.dto.State;
 import com.dolligo.dto.TimeGraph;
@@ -31,6 +32,7 @@ import com.dolligo.repository.IPaperAnalysisRepository;
 import com.dolligo.repository.IPaperForPostRepository;
 import com.dolligo.repository.IPaperRepository;
 import com.dolligo.repository.IPaperStateRepository;
+import com.dolligo.repository.IPointLogRepository;
 import com.dolligo.repository.IPreferenceRepository;
 import com.dolligo.repository.ITimeGraphRepository;
 import com.dolligo.repository.IUserRepository;
@@ -59,6 +61,8 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 	private IPreferenceRepository pfRepo;
 	@Autowired
 	private IPaperForPostRepository pfpRepo;
+	@Autowired
+	private IPointLogRepository pointRepo;
 	
 	@Override
 	public Paperanalysis getRecentAnalysis(int aid) {
@@ -197,12 +201,23 @@ public class AdvertiserPaperService implements IAdvertiserPaperService {
 			throw new ApplicationException("이미 방문 포인트를 얻은 전단지입니다.");
 		}
 		ps.setState(3);
-		ps.setPoint(50);
-		ps.setTotalpoint(ps.getTotalpoint() + 50);
+//		ps.setPoint(50);
+//		ps.setTotalpoint(ps.getTotalpoint() + 50);
 		ps.setVisited(true);
 		
 		user.setPoint(user.getPoint() + 50);//방문 포인트 ++
 		uRepo.save(user);
+		
+		//포인트 내역 추가
+		PointLog pl = new PointLog();
+		pl.setDescription("방문 포인트");
+		pl.setPoint(50);
+		pl.setTotalPoint(user.getPoint());
+		pl.setSid(1);//전단지로 포인트 얻음
+		pl.setSource(paper.getP_id());
+		pl.setUid(Integer.parseInt(uid));
+		pointRepo.save(pl);
+		
 		
 		//paperAnalysis 갱신
 		pa.setVisit(pa.getVisit() + 1);

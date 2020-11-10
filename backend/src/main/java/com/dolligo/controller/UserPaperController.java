@@ -26,6 +26,7 @@ import com.dolligo.dto.Coupon;
 import com.dolligo.dto.Paper;
 import com.dolligo.dto.PaperForList;
 import com.dolligo.dto.Paperstate;
+import com.dolligo.dto.PointLog;
 import com.dolligo.dto.State;
 import com.dolligo.service.IJwtService;
 import com.dolligo.service.IUserPaperService;
@@ -51,15 +52,15 @@ public class UserPaperController {
 	
 	
 	// 포인트 적립 내역 확인 test
-	@ApiOperation(value = "포인트 적립 내역 확인")
-	@GetMapping("/point")
-	public ResponseEntity<HashMap<String, Object>> getPointHistory(HttpServletRequest request) throws Exception {
+	@ApiOperation(value = "포인트 적립 내역 확인", notes = "month => 0 : 전체 내역 요청 , 1~12 : 월 별 내역 요청")
+	@GetMapping("/point/{month}")
+	public ResponseEntity<HashMap<String, Object>> getPointHistory(@PathVariable("month") int month, HttpServletRequest request) throws Exception {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		
 		String uid = getUid(request.getHeader("Authorization"));
 		
 		
-		List<Paperstate> pointHistory = upaperService.getPointHistory(uid);
+		List<PointLog> pointHistory = upaperService.getPointHistory(uid, month);
 		
 		map.put("data", pointHistory);
   		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
@@ -82,6 +83,19 @@ public class UserPaperController {
 		map.put("data", papers);
   		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
 	}
+	
+	// 푸시 눌러 포인트 받기
+	@ApiOperation(value = "푸시알림 눌러서 포인트 받기")
+	@GetMapping("/paper/push")
+	public ResponseEntity<HashMap<String, Object>> getPointByPush(HttpServletRequest request) throws Exception {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		String uid = getUid(request.getHeader("Authorization"));
+		upaperService.getPointByPush(uid);
+		
+		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
+	}
+	
 	
 	// 전단지 상세보기 test
 	@ApiOperation(value = "전단지 상세보기")

@@ -1,5 +1,6 @@
 package com.dolligo.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -24,6 +25,7 @@ import com.dolligo.dto.Paper;
 import com.dolligo.dto.PaperForList;
 import com.dolligo.dto.Paperanalysis;
 import com.dolligo.dto.Paperstate;
+import com.dolligo.dto.PointLog;
 import com.dolligo.dto.Preference;
 import com.dolligo.dto.State;
 import com.dolligo.dto.User;
@@ -37,6 +39,7 @@ import com.dolligo.repository.IPaperAnalysisRepository;
 import com.dolligo.repository.IPaperForListRepository;
 import com.dolligo.repository.IPaperRepository;
 import com.dolligo.repository.IPaperStateRepository;
+import com.dolligo.repository.IPointLogRepository;
 import com.dolligo.repository.IPreferenceRepository;
 import com.dolligo.repository.IUserRepository;
 import com.dolligo.service.IUserPaperService;
@@ -60,6 +63,8 @@ public class UserPaperService implements IUserPaperService {
 	private IPaperForListRepository plRepo;
 	@Autowired
 	private IUserRepository uRepo;
+	@Autowired
+	private IPointLogRepository pointRepo;
 	
 	
 	@Autowired
@@ -93,8 +98,15 @@ public class UserPaperService implements IUserPaperService {
 
 	// 포인트 내역 가져오기(paperstate + paper + advertiser) test
 	@Override
-	public List<Paperstate> getPointHistory(String uid) {
-		return psRepo.findPointList(uid);
+	public List<PointLog> getPointHistory(String uid, int month) {
+		if(month == 0) return pointRepo.findAllByUid(uid);
+		else {
+			LocalDateTime today = LocalDateTime.now();
+			
+			LocalDateTime start = LocalDateTime.of(today.getYear(), month, 1, 0, 0);
+			LocalDateTime end = LocalDateTime.of(today.getYear(), month+1 == 13 ? 1 : month+1, 0, 23, 59).minusDays(1);
+			return pointRepo.findAllByUidForMonth(uid, start, end);
+		}
 	}
 
 	// 주변 전단지 목록 가져오기(내 위치 위도, 경도, 반경(m))
@@ -102,11 +114,11 @@ public class UserPaperService implements IUserPaperService {
 	public List<PaperForList> getPaperList(String uid, String lat, String lon, int radius) throws Exception {
 		// 1. 현재 시간 가져와서 현재 시간에 유효한 전단지 리스트 redis에서 꺼내옴
 		Object tmp = redisTemplate.opsForValue().get(Integer.toString(LocalTime.now(ZoneId.of("Asia/Seoul")).getHour()));
-		System.out.println(Integer.toString(LocalTime.now(ZoneId.of("Asia/Seoul")).getHour()));
+//		System.out.println(Integer.toString(LocalTime.now(ZoneId.of("Asia/Seoul")).getHour()));
+		
 		if(tmp == null) return null;
 		List<PaperForList> papers = (List<PaperForList>) tmp;
 //		for(PaperForList p : papers) System.out.println(p);
-		User user = uRepo.findById(Integer.parseInt(uid)).get();
 		
 		// 2. 가져온 데이터 중 범위 벗어나는 전단지 & 차단한 광고주의 전단지 & 삭제한 전단지 제외
 		List<Block> blocks = blockRepo.findAllByUid(uid);//차단 목록
@@ -145,15 +157,11 @@ public class UserPaperService implements IUserPaperService {
 				pa.setDistributed(pa.getDistributed() + 1);
 				paRepo.saveAndFlush(pa);
 				
-				user.setPoint(user.getPoint() + 1);//전단지 받으면 자동 1 포인트 갱신
-				uRepo.save(user);
-				
 				p.setFirst(true);
 				//Paperstate 객체 생성
 				ps = new Paperstate();
 				ps.setUid(Integer.parseInt(uid));
 				ps.setPid(p.getP_id());
-				ps.setTotalpoint(1);
 				psRepo.saveAndFlush(ps);
 			} else if(ps.getState() == 1) {//사용자가 이미 삭제한 전단지 삭제 => uid, pid로 paperstate 검색 후 state = 1이면 삭제한 기록
 				papers.remove(i--);
@@ -253,12 +261,22 @@ public class UserPaperService implements IUserPaperService {
 			}
 			//paperstate 갱신 : state = 2(추가 포인트 지급 O => 이미지 or 애니메이션 각자 다르게?), isget = true
 			ps.setState(2);
-			ps.setPoint(paper.getP_point());
-			ps.setTotalpoint(ps.getTotalpoint() + paper.getP_point());
+//			ps.setPoint(paper.getP_point());
+//			ps.setTotalpoint(ps.getTotalpoint() + paper.getP_point());
 			ps.setIsget(true);
 			
 			user.setPoint(user.getPoint() + paper.getP_point());//포인트 갱신
 			uRepo.save(user);
+			
+			//포인트 내역 추가
+			PointLog pl = new PointLog();
+			pl.setDescription("전단지 조회 포인트");
+			pl.setPoint(paper.getP_point());
+			pl.setTotalPoint(user.getPoint());
+			pl.setSid(1);//전단지로 포인트 얻음
+			pl.setSource(paper.getP_id());
+			pl.setUid(Integer.parseInt(uid));
+			pointRepo.save(pl);
 
 			//paperAnalysis 갱신
 			pa.setInterest(pa.getInterest() + 1);
@@ -355,6 +373,25 @@ public class UserPaperService implements IUserPaperService {
 	@Override
 	public void cancelBlockPaper(String uid, int aid) {
 		blockRepo.deleteByUidAndAid(uid, aid);
+		
+	}
+
+
+	// 푸시 눌러서 포인트 받기
+	@Override
+	public void getPointByPush(String uid) {
+		User user = uRepo.findById(Integer.parseInt(uid)).get();
+		user.setPoint(user.getPoint() + 10);//포인트 갱신
+		uRepo.save(user);
+		
+		//포인트 내역 추가
+		PointLog pl = new PointLog();
+		pl.setDescription("전단지 조회 포인트");
+		pl.setPoint(10);
+		pl.setTotalPoint(user.getPoint());
+		pl.setSid(1);//전단지로 포인트 얻음
+		pl.setUid(Integer.parseInt(uid));
+		pointRepo.save(pl);
 		
 	}
 	
