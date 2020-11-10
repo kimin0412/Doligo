@@ -86,7 +86,7 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
                             setState(() {
                               if(index == 2) {
                                 Fluttertoast.showToast(
-                                    msg: '당신은 사람이 아닙니까?',
+                                    msg: '추후에 업데이트 될 예정입니다!\n현재는 데이터의 수집을 위해\n남/여 중에 선택해주세요! 😢',
                                     toastLength: Toast.LENGTH_SHORT,
                                     gravity: ToastGravity.BOTTOM,
                                     timeInSecForIosWeb: 1,
