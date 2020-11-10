@@ -61,7 +61,7 @@ class _Leafletpage extends State<Leafletpage> {
           itemBuilder: (context, index){
             Statistic leaflet = leafletList[index];
 
-            return Stack(
+            return leaflet.paper.p_image != null ? Stack(
               children: [
                 Card(
                   margin: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 0),
@@ -222,7 +222,7 @@ class _Leafletpage extends State<Leafletpage> {
                   )
                 )
               ],
-            );
+            ) : Container();
           },
         ),
       ),

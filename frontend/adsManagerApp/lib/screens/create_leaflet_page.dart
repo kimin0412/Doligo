@@ -29,7 +29,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
   String jwt;
   PickedFile _leafletImage;
   ImagePicker imagePicker;
-  Completer<GoogleMapController> _controller = Completer(); // ?
+  Completer<GoogleMapController> _controller; // ?
   MapType _googleMapType = MapType.normal;
   LatLng currentPosition;
   Map<MarkerId, Marker> _markers = <MarkerId, Marker>{};
@@ -46,8 +46,9 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
   @override
   void initState(){
     super.initState();
-    currentPosition = LatLng(37.4999067, 127.0373917);
+
     imagePicker = new ImagePicker();
+    _controller = Completer(); // ?
 
     _leaflet  = Leaflet();
     _leaflet.starttime = DateTime.now();
@@ -210,7 +211,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
                   margin: EdgeInsets.fromLTRB(10,0,10,10),
                   padding: EdgeInsets.all(15.0),
                   decoration: new BoxDecoration(color: Colors.white),
-                  child:
+                  child: currentPosition == null ? Container() :
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -218,10 +219,6 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
                       Text('경도 : ${currentPosition.longitude.toStringAsFixed(5)}'),
                     ],
                   ),
-                  // Text(
-                  //   "${_advertiser.marketaddress}",
-                  //   style: TextStyle(fontSize: 15),
-                  // ),
                 ),
               ],
             ),
@@ -246,11 +243,11 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
                     ),
                   ),
                 ),
+                _leafletImage != null ? Center(
+                  child: Image.file(File(_leafletImage.path))
+                ) : Divider( thickness: 1 ,),
                 Container(
-                  // alignment: Alignment.centerLeft,
                   margin: EdgeInsets.fromLTRB(10,0,10,10),
-                  // padding: EdgeInsets.fromLTRB(10,0,0,0),
-                  // decoration: new BoxDecoration(color: Colors.white),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -260,6 +257,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
                         child: Text(
                           _leafletImage != null ? "${_leafletImage.path}" : "이미지가 없습니다",
                           style: TextStyle(fontSize: 15),
+                          overflow: TextOverflow.ellipsis,
                         ),
                         width: size.width * 0.6,
                       ),
@@ -551,7 +549,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
                     child:RaisedButton(
                       child: Text('카카오페이로 결제하기', style: TextStyle(fontSize : 20,color: Colors.white),),
                       color: Colors.deepPurpleAccent,
-                      onPressed: _pay_kakao,
+                      onPressed: sendLeaflet,
                     ),
                   )
                 ),
@@ -590,23 +588,49 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
 
     Map<String, dynamic> result = jsonDecode(res.body);
 
+    print(result);
     AndroidIntent intent = AndroidIntent(
       action: 'action_view',
       data: result['next_redirect_app_url'],
       arguments: {'txn_id': result['tid']},
     );
 
-    await intent.launch();
-    // \print(res.body['next_redirect_app_url']);
+    var r = await intent.launch();
   }
 
   void sendLeaflet() async {
+    _leaflet.lat = currentPosition.latitude.toStringAsFixed(5);
+    _leaflet.lon = currentPosition.longitude.toStringAsFixed(5);
+
+    if(_leaflet.p_image == null){
+      showToast('전단지 이미지를 등록해주세요');
+      return;
+    }
+
+    if(_leaflet.sheets <= 0){
+      showToast('전단지 매수는 0보다 커야 합니다.');
+      return;
+    }
+
+    _pay_kakao();
     var response = await http.post(
       '$SERVER_IP/api/token/advertiser/paper',
-      headers: {'Authorization' : 'Bearer $jwt'},
-      body:jsonEncode(_leaflet)
+      headers: {'Content-Type': "application/json",
+        'Authorization' : 'Bearer $jwt'},
+      body:json.encode(_leaflet.toJson(),toEncodable: (item){
+        if(item is DateTime) {
+          return item.toIso8601String();
+        }
+        return item;
+      })
     );
 
+    if(response.statusCode == 200){
+      showToast("전단지 등록 성공");
+      Navigator.pop(context);
+    } else {
+      showToast("전단지 등록에 실패했습니다.");
+    }
   }
 
   void _cameraMove(CameraPosition cameraPosition) async {
@@ -676,11 +700,11 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
     _advertiser = Advertiser.fromJson(jsonDecode(response.body)['data']);
 
     _leaflet.p_mtid = _advertiser.mtid;
+    _leaflet.p_aid = _advertiser.id;
 
     setState(() {
       currentPosition = LatLng(double.parse(_advertiser.lat), double.parse(_advertiser.lon));
     });
-    print(jwt);
   }
 
   void showToast(String message){
