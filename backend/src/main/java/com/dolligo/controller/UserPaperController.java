@@ -114,18 +114,18 @@ public class UserPaperController {
 	}
 	
 	
-//	// 전단지 차단하기
-//	@ApiOperation(value = "전단지 차단하기 => 광고주를 차단")
-//	@PostMapping("/block")
-//	public ResponseEntity<HashMap<String, Object>> blockPaper(@RequestBody State state, HttpServletRequest request) throws Exception {
-//		HashMap<String, Object> map = new HashMap<String, Object>();
-//		
-//		String uid = getUid(request.getHeader("Authorization"));
-//		
-//		upaperService.blockPaper(uid, state);
-//		
-//  		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
-//	}
+	// 광고주 차단 해제하기
+	@ApiOperation(value = "광고주 차단 해제")
+	@DeleteMapping("/block/{advertiser_id}")
+	public ResponseEntity<HashMap<String, Object>> deleteBlockPaper(@PathVariable("advertiser_id") int aid, HttpServletRequest request) throws Exception {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+		String uid = getUid(request.getHeader("Authorization"));
+		
+		upaperService.cancelBlockPaper(uid, aid);
+		
+  		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
+	}
 	
 	
 	// 차단한 가게 목록 확인 test

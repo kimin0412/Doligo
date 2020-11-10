@@ -349,5 +349,13 @@ public class UserPaperService implements IUserPaperService {
 	public void useCoupon(String uid, int cid) {
 		cpRepo.deleteById(cid);
 	}
+
+
+	// 차단 해제하기
+	@Override
+	public void cancelBlockPaper(String uid, int aid) {
+		blockRepo.deleteByUidAndAid(uid, aid);
+		
+	}
 	
 }

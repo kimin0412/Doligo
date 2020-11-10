@@ -38,6 +38,9 @@ public interface IUserPaperService {
 	
 	// 쿠폰 사용하기 => 가게 주인이 쿠폰 사용 버튼 대신 누름
 	void useCoupon(String uid, int cid);
+
+	// 차단 해제하기
+	void cancelBlockPaper(String uid, int aid);
 	
 	//기프티콘 목록
 	//기프티콘 상세
