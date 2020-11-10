@@ -511,6 +511,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
                     onChanged: (value) {
                       setState(() {
                         _leaflet.sheets = int.parse(value);
+                        _leaflet.cost = _leaflet.sheets * cost;
                       });
                     },
                   ),
@@ -534,11 +535,11 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
                 ListTile(
                   title:  Text('전단지 x ${_leaflet.sheets}', style: TextStyle(fontSize: 18)),
                   subtitle: Text('1매당 ${cost}원'),
-                  trailing: Text('${_leaflet.sheets * cost}원', style: TextStyle(fontSize: 18)),
+                  trailing: Text('${_leaflet.cost}원', style: TextStyle(fontSize: 18)),
                 ),
                 ListTile(
                   title:  Text('결제 금액', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: kPrimaryColor)),
-                  trailing: Text('${_leaflet.sheets * cost}원', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: kPrimaryColor)),
+                  trailing: Text('${_leaflet.cost}원', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: kPrimaryColor)),
                 ),
                 SizedBox(height: size.height * 0.05),
                 Container(
@@ -599,6 +600,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
   }
 
   void sendLeaflet() async {
+    _leaflet.p_point = 15;
     _leaflet.lat = currentPosition.latitude.toStringAsFixed(5);
     _leaflet.lon = currentPosition.longitude.toStringAsFixed(5);
 
