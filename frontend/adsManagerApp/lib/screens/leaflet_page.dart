@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dolligo_ads_manager/constants.dart';
 import 'package:dolligo_ads_manager/models/advertiser_model.dart';
-import 'package:dolligo_ads_manager/models/leaflet_model.dart';
 import 'package:dolligo_ads_manager/models/statatics.dart';
 import 'package:dolligo_ads_manager/screens/create_leaflet_page.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +20,19 @@ class _Leafletpage extends State<Leafletpage> {
   List<Statistic> leafletList = List();
   Advertiser advertiser = Advertiser();
   final DateFormat formatter = DateFormat('MM.dd hh시');
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
+
+
+  Future<Null> refreshList() async {
+    refreshKey.currentState?.show(atTop: false);
+    await _getLeafletList();
+
+    setState(() {
+
+    });
+
+    return null;
+  }
 
   @override
   void initState(){
@@ -53,7 +65,10 @@ class _Leafletpage extends State<Leafletpage> {
   }
 
   Widget _buildBody(){
-    return Container(
+    return RefreshIndicator(
+      backgroundColor: kPrimaryColor,
+      key: refreshKey,
+      onRefresh: refreshList,
       child: Center(
         child: ListView.builder(
           scrollDirection: Axis.vertical,
@@ -67,6 +82,7 @@ class _Leafletpage extends State<Leafletpage> {
                   margin: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 0),
                   elevation: 4.0,
                   shape: RoundedRectangleBorder(
+                    side: new BorderSide(color: kPrimaryColor, width: 1.0),
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: InkWell(
@@ -88,12 +104,6 @@ class _Leafletpage extends State<Leafletpage> {
                             alignment: Alignment.topCenter,
                             errorWidget: (context, url, error) => Icon(Icons.error),
                           ),
-                          // child: Image.network(
-                          //     leaflet.paper.p_image,
-                          //     height: 150,
-                          //     fit:BoxFit.fitWidth,
-                          //   alignment: Alignment.topCenter,
-                          // ),
                         ),
                         ListTile(
                           title: Text(advertiser.marketname, style: TextStyle(fontWeight: FontWeight.bold)),
@@ -125,7 +135,7 @@ class _Leafletpage extends State<Leafletpage> {
                                         children: [
                                           ListTile(
                                             title : Text(advertiser.marketname, style: TextStyle(fontWeight: FontWeight.bold),),
-                                            subtitle: Text(leaflet.paper.p_coupon, style: TextStyle(color: Colors.lightBlue)),
+                                            subtitle: Text(leaflet.paper.p_coupon ?? "쿠폰 없음", style: TextStyle(color: Colors.lightBlue)),
                                             contentPadding: EdgeInsets.all(0),
                                           ),
                                           Row(
@@ -232,8 +242,6 @@ class _Leafletpage extends State<Leafletpage> {
   void _getLeafletList() async{
     String jwt = await FlutterSecureStorage().read(key: 'jwt');
 
-    print(jwt);
-
     var response = await http.get('$SERVER_IP/api/token/advertiser/paper/statistic',
         headers: {'Authorization' : 'Bearer $jwt'});
 
@@ -241,7 +249,6 @@ class _Leafletpage extends State<Leafletpage> {
       leafletList = List<Map>.from(json.decode(response.body)['data']).map((m)=> Statistic.fromJson(m)).toList();
       advertiser = Advertiser.fromJson(json.decode(response.body)['data'][0]['paper']['advertiser']);
     });
-
   }
 }
 

@@ -47,7 +47,6 @@ dependencies:
   intl: ^0.16.1
   android_intent: ^0.3.7+7
   cached_network_image: ^2.3.3
-  pull_to_refresh: ^1.6.2
   aws_s3: ^0.1.1+hotfix.5
 
 dev_dependencies:
