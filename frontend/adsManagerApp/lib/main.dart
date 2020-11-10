@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:dolligo_ads_manager/screens/root_page.dart';
-import 'package:dolligo_ads_manager/screens/signup/signup_screen_3.dart';
 import 'package:dolligo_ads_manager/screens/signup/signup_screen_4.dart';
+import 'package:dolligo_ads_manager/screens/signup/signup_screen_5.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -23,8 +23,8 @@ class MyApp extends StatelessWidget {
       ),
       home: SplashScreen(),
       routes: {
-        SignUpScreen3.routeName:(context) => SignUpScreen3(),
-        SignUpScreen4.routeName:(context) => SignUpScreen4()
+        SignUpScreen4.routeName:(context) => SignUpScreen4(),
+        SignUpScreen5.routeName:(context) => SignUpScreen5(),
       },
     );
   }

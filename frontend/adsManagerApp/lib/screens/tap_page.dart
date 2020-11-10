@@ -1,4 +1,6 @@
 import 'package:dolligo_ads_manager/screens/dashboard_page.dart';
+import 'package:dolligo_ads_manager/screens/leaflet_page.dart';
+import 'package:dolligo_ads_manager/screens/setting_page.dart';
 import 'package:flutter/material.dart';
 
 class TabPage extends StatefulWidget {
@@ -9,16 +11,20 @@ class TabPage extends StatefulWidget {
 class _TabPage extends State<TabPage> {
   int _selectedIndex = 0;
 
-  List _pages = [
+  List<Widget> _pages = [
     AdvDashboardPage(),
-    AdvDashboardPage(),
-    AdvDashboardPage(),
+    Leafletpage(),
+    SettingPage(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: _pages[_selectedIndex]),
+      // body: Center(child: _pages[_selectedIndex]),\
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         onTap: _onItemTapped,
         currentIndex: _selectedIndex,
