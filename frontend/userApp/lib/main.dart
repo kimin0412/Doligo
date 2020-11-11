@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:userApp/Screens/Signup/signup_screen_2.dart';
 import 'package:userApp/adblock_setting_page.dart';
+import 'package:userApp/market_page_detail.dart';
 import 'package:userApp/leaflet_detail_page.dart';
+import 'package:userApp/market_page.dart';
 import 'package:userApp/private_info_setting_page.dart';
 import 'package:userApp/root_page.dart';
 
@@ -37,6 +39,8 @@ class MyApp extends StatelessWidget {
         LeafletDetailPage.routeName:(context) => LeafletDetailPage(),
         SignUpScreen2.routeName:(context) => SignUpScreen2(),
         SignUpScreen3.routeName:(context) => SignUpScreen3(),
+        MarketPage.routeName:(context) => MarketPage(),
+        MarketPageDetail.routeName:(context) => MarketPageDetail(),
       },
     );
   }
