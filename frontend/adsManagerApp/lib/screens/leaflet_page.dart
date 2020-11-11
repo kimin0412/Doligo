@@ -134,7 +134,7 @@ class _Leafletpage extends State<Leafletpage> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           ListTile(
-                                            title : Text(advertiser.marketname, style: TextStyle(fontWeight: FontWeight.bold),),
+                                            title : Text(advertiser.marketname, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
                                             subtitle: Text(leaflet.paper.p_coupon ?? "쿠폰 없음", style: TextStyle(color: Colors.lightBlue)),
                                             contentPadding: EdgeInsets.all(0),
                                           ),
@@ -145,15 +145,21 @@ class _Leafletpage extends State<Leafletpage> {
                                               Text(leaflet.distributed.toString() + ' / ' + leaflet.paper.sheets.toString())
                                             ],
                                           ),
-                                          SizedBox(height: 10),
+                                          // SizedBox(height: 10),
                                           DataTable(
-
                                             columns: [
-                                              DataColumn(label: Center(child: Text('관심', style: TextStyle(fontWeight: FontWeight.bold),))),
-                                              DataColumn(label: Center(child: Text('방문', style: TextStyle(fontWeight: FontWeight.bold),))),
-                                              DataColumn(label: Center(child: Text('무시', style: TextStyle(fontWeight: FontWeight.bold),))),
+                                              DataColumn(label: Center()),
+                                              DataColumn(label: Center()),
+                                              DataColumn(label: Center()),
                                             ],
                                             rows: [
+                                              DataRow(
+                                                  cells: [
+                                                    DataCell(Center(child: Text('관심', style: TextStyle(fontWeight: FontWeight.bold),))),
+                                                    DataCell(Center(child: Text('방문', style: TextStyle(fontWeight: FontWeight.bold),))),
+                                                    DataCell(Center(child: Text('무시', style: TextStyle(fontWeight: FontWeight.bold),))),
+                                                  ]
+                                              ),
                                               DataRow(
                                                   cells: [
                                                     DataCell(
@@ -177,17 +183,17 @@ class _Leafletpage extends State<Leafletpage> {
                                                   cells: [
                                                     DataCell(
                                                         Center(
-                                                            child: leaflet.distributed != 0 ? Text((leaflet.interest * 100 / leaflet.distributed).toStringAsFixed(2) + '%', style: TextStyle(color: Colors.lightBlue),) : Text('0.0%')
+                                                            child: leaflet.distributed != 0 ? Text((leaflet.interest * 100 / leaflet.distributed).toStringAsFixed(1) + '%', style: TextStyle(color: Colors.lightBlue),) : Text('0.0%')
                                                         )
                                                     ),
                                                     DataCell(
                                                         Center(
-                                                            child: leaflet.distributed != 0 ? Text((leaflet.visit * 100  / leaflet.distributed).toStringAsFixed(2) + '%', style: TextStyle(color: Colors.lightBlue),) : Text('0.0%')
+                                                            child: leaflet.distributed != 0 ? Text((leaflet.visit * 100  / leaflet.distributed).toStringAsFixed(1) + '%', style: TextStyle(color: Colors.lightBlue),) : Text('0.0%')
                                                         )
                                                     ),
                                                     DataCell(
                                                         Center(
-                                                            child: leaflet.distributed != 0 ? Text((leaflet.block * 100  / leaflet.distributed).toStringAsFixed(2) + '%', style: TextStyle(color: Colors.red),) : Text('0.0%')
+                                                            child: leaflet.distributed != 0 ? Text((leaflet.block * 100  / leaflet.distributed).toStringAsFixed(1) + '%', style: TextStyle(color: Colors.red),) : Text('0.0%')
                                                         )
                                                     ),
                                                   ]
@@ -197,9 +203,9 @@ class _Leafletpage extends State<Leafletpage> {
                                         ],
                                       ),
                                       actions: [
-                                        FlatButton(
+                                        RaisedButton(
                                             onPressed: () => Navigator.pop(context),
-                                            child: Text("닫기", style: TextStyle(color: kPrimaryColor),),
+                                            child: Text("닫기", style: TextStyle(color: Colors.black),),
                                           color: kPrimaryLightColor,
                                         )
                                       ],
