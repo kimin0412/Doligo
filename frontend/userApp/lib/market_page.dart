@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
-import 'package:userApp/category/market_page_1.dart';
 import 'package:userApp/constants.dart';
-import 'package:userApp/category/market_page_0.dart';
+import 'package:userApp/market_page_detail.dart';
 
 import 'main.dart';
 
@@ -21,6 +21,8 @@ class Category {
 }
 
 class MarketPage extends StatefulWidget {
+  static const routeName = '/market';
+
   @override
   _MarketPage createState() => _MarketPage();
 }
@@ -28,6 +30,8 @@ class MarketPage extends StatefulWidget {
 class _MarketPage extends State<MarketPage> {
   var _userInfo;
   List<Category> categoryList;
+  FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  String _profileImageURL = null;
 
   @override
   void initState() {
@@ -85,132 +89,151 @@ class _MarketPage extends State<MarketPage> {
         ? Container()
         : Container(
             child: Padding(
-              padding: EdgeInsets.all(15.0),
-              child: SafeArea(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      Card(
-                          elevation: 4.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          child: Container(
-                            height: 100,
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.all(5),
-                            child: ListTile(
-                              leading: SizedBox(
-                                  width: 50.0,
-                                  height: 50.0,
-                                  child: Icon(Icons.account_circle,
-                                      color: Colors.black87, size: 50.0)),
-                              title: Text('${_userInfo['nickname']}님의 적립 포인트',
-                                  style: TextStyle(
-                                      color: Colors.black87,
-                                      fontWeight: FontWeight.bold)),
-                              subtitle: Text('${_userInfo['point']} Point',
-                                  style: TextStyle(color: Colors.black87)),
-                              trailing: Wrap(
-                                spacing: 12,
-                                children: <Widget>[
-                                  SizedBox(
-                                      width: 50.0,
-                                      height: 50.0,
-                                      child: Icon(Icons.card_giftcard,
-                                          color: Colors.black54, size: 50.0)),
-                                ],
+            padding: EdgeInsets.all(15.0),
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Card(
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        child: Container(
+                          height: 100,
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.all(5),
+                          child: ListTile(
+                            leading: SizedBox(
+                              width: 50.0,
+                              height: 50.0,
+                              child: CircleAvatar(
+                                radius: 70,
+                                child: ClipOval(
+                                  child: _profileImageURL == null
+                                      ? Image.network(
+                                          'https://i.pinimg.com/474x/7d/56/56/7d5656879b5d6ed45779f89c4e89c91a.jpg',
+                                          height: 150,
+                                          width: 150,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : Image.network(
+                                          _profileImageURL,
+                                          height: 150,
+                                          width: 150,
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
                               ),
                             ),
+                            title: Text('${_userInfo['nickname']}님의 적립 포인트',
+                                style: TextStyle(
+                                    color: Colors.black87,
+                                    fontWeight: FontWeight.bold)),
+                            subtitle: Text('${_userInfo['point']} Point',
+                                style: TextStyle(color: Colors.black87)),
+                            trailing: Wrap(
+                              spacing: 12,
+                              children: <Widget>[
+                                SizedBox(
+                                    width: 50.0,
+                                    height: 50.0,
+                                    child: Icon(Icons.card_giftcard,
+                                        color: Colors.black54, size: 50.0)),
+                              ],
+                            ),
+                          ),
+                        )),
+                    Padding(padding: EdgeInsets.all(8.0)),
+                    Center(
+                      child: Container(
+                          height: 500,
+                          width: 350,
+                          alignment: Alignment.center,
+                          child: GridView.count(
+                            crossAxisCount: 2,
+                            children:
+                                List.generate(categoryList.length, (index) {
+                              return Center(
+                                  child: Card(
+                                color: Colors.white,
+                                elevation: 10.0,
+                                child: InkWell(
+                                    splashColor: kPrimaryColor,
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        MarketPageDetail.routeName,
+                                        arguments: index,
+                                      ).then(refreshPage);
+                                    },
+                                    child: Center(
+                                      child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            SizedBox(
+                                                width: 80.0,
+                                                height: 80.0,
+                                                child: categoryList[index]
+                                                        .isSelected
+                                                    ? SvgPicture.asset(
+                                                        categoryList[index]
+                                                            .icon,
+                                                        height: 80)
+                                                    : SvgPicture.asset(
+                                                        categoryList[index]
+                                                            .icon,
+                                                        height: 80)),
+                                            Text(categoryList[index].title,
+                                                style: new TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                          ]),
+                                    )),
+                              ));
+                            }),
                           )),
-                      Padding(padding: EdgeInsets.all(8.0)),
-                      Center(
-                        child: Container(
-                            height: 500,
-                            width: 350,
-                            alignment: Alignment.center,
-                            child: GridView.count(
-                              crossAxisCount: 2,
-                              children:
-                                  List.generate(categoryList.length, (index) {
-                                return Center(
-                                    child: Card(
-                                  color: Colors.white,
-                                  elevation: 10.0,
-                                  child: InkWell(
-                                      splashColor: kPrimaryColor,
-                                      onTap: () => {
-                                            if (index == 0)
-                                              {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          MarketPage0()),
-                                                ).then(refreshPage)
-                                              }
-                                            else if (index == 1)
-                                              {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          MarketPage1()),
-                                                ).then(refreshPage)
-                                              }
-                                          },
-                                      child: Center(
-                                        child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                  width: 80.0,
-                                                  height: 80.0,
-                                                  child: categoryList[index]
-                                                          .isSelected
-                                                      ? SvgPicture.asset(
-                                                          categoryList[index]
-                                                              .icon,
-                                                          height: 80)
-                                                      : SvgPicture.asset(
-                                                          categoryList[index]
-                                                              .icon,
-                                                          height: 80)),
-                                              Text(categoryList[index].title,
-                                                  style: new TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold)),
-                                            ]),
-                                      )),
-                                ));
-                              }),
-                            )),
-                      ), // 쿠폰 ListView
-                    ],
-                  ),
+                    ), // 쿠폰 ListView
+                  ],
                 ),
               ),
-            ));
+            ),
+          ));
   }
 
   void _getUserInfo() async {
     String _token = await FlutterSecureStorage().read(key: 'token');
     print('token : $_token');
     final response = await http.get('${MyApp.commonUrl}/token/user',
-        headers: {
-          'Authorization': 'Bearer $_token'
-        }
-    );
+        headers: {'Authorization': 'Bearer $_token'});
 
     setState(() {
       _userInfo = json.decode(response.body)['data'];
-      print('userInfo : $_userInfo');
+      // print('userInfo : $_userInfo');
     });
   }
 
   FutureOr refreshPage(Object value) {
     _getUserInfo();
+  }
+
+  Future<String> _getProfileImage() async {
+    StorageReference storageReference =
+        _firebaseStorage.ref().child("profile/${_userInfo['id']}");
+
+    try {
+      String _src = await storageReference.getDownloadURL();
+
+      setState(() {
+        _profileImageURL = _src;
+      });
+      return _src;
+    } on Exception catch (e) {
+      // TODO
+      print('에러가 났어요.');
+      return null;
+    }
   }
 }
