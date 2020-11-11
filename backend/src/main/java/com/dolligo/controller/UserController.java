@@ -204,6 +204,20 @@ public class UserController {
 	  		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.ACCEPTED);
       }
 
+      //현금화 하기
+      @ApiOperation(value = "현금화 하기")// token
+      @PostMapping("/token/user/cash/{cash_amount}")
+      public ResponseEntity<HashMap<String, Object>> makeCash(@PathVariable("cash_amount") int amount, HttpServletRequest request) throws Exception {
+    	  HashMap<String, Object> map = new HashMap<String, Object>();
+    	  
+    	  String token = request.getHeader("Authorization").split(" ")[1];
+    	  
+    	  Map<String, Object> claims = jwtService.get(token);
+    	  userService.makeCash((String)claims.get("uid"), amount);
+    	  
+    	  return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.ACCEPTED);
+      }
+
       
       //비밀번호 확인(마이페이지 들어갈 때)
       @ApiOperation(value = "비밀번호 확인", notes = "- Authorization header => 'Bearer [token]'\n"
