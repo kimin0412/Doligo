@@ -48,7 +48,8 @@ dependencies:
   google_sign_in: ^4.5.6
   flutter_signin_button: ^0.2.5
 
-  firebase_storage: ^3.0.10
+#  firebase_storage: ^3.0.10
+  workmanager: ^0.2.0
 
 
 dev_dependencies:

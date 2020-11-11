@@ -2,6 +2,7 @@ package com.dolligo.service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dolligo.dto.PointLog;
 import com.dolligo.dto.User;
 
 public interface IUserService {
@@ -22,5 +23,9 @@ public interface IUserService {
 	//비번 확인
 	public boolean checkPassword(String uid, String password) throws Exception;
 	public void sendTmpPasswordEmail(String password, String email) throws Exception;
+	
+	// 현금화 하기
+	@Transactional
+	PointLog makeCash(String uid, int amount);
 
 }

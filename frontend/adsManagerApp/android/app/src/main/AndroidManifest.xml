@@ -12,8 +12,7 @@
 
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="돌리Go! (광고주용)"
-        android:icon="@mipmap/launcher_icon">
+        android:label="돌리Go! (광고주용)">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDtWmYTc3L8-S6_vTBy8wty7HPNtEZ7EiQ"
