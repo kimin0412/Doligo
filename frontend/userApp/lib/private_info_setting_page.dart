@@ -215,6 +215,10 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                   ),
                   SizedBox(height: 15,),
                   Container(
+                    child: Text('성별'),
+                    alignment: Alignment.centerLeft,
+                  ),
+                  Container(
                       height: 100,
                       width: 600,
                       alignment: Alignment.center,
@@ -242,10 +246,14 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                                     genders.forEach((gender) =>
                                     gender.isSelected = false);
                                     genders[index].isSelected = true;
-                                    if (index == 0)
+                                    if (index == 0) {
                                       _isFemale = false; // 남자면 false
-                                    else if (index == 1)
+                                      isChanged = true;
+                                    }
+                                    else if (index == 1) {
                                       _isFemale = true; // 여자면 true
+                                      isChanged = true;
+                                    }
                                   }
                                 });
                               },
@@ -254,84 +262,97 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                           }
                       )
                   ), // gender selector
+                  SizedBox(height: 15,),
+                  Container(
+                    child: Text('출생년도 변경'),
+                    alignment: Alignment.centerLeft,
+                  ),
                   Container(
                       height: 100,
                       width: 600,
                       alignment: Alignment.center,
                       child:
-                      DropdownButton<int>(
-                        hint: Text("출생년도를 골라주세요."),
-                        value: _selectedYear,
-                        onChanged: (int Value) {
-                          setState(() {
-                            _selectedYear = Value;
-                          });
-                        },
-                        items: userYears.map((int year) {
-                          return DropdownMenuItem<int>(
-                            value: year,
-                            child: Row(
-                              children: <Widget>[
-                                SizedBox(width: 10,),
-                                Text(
-                                  year.toString(),
-                                  style: TextStyle(color: Colors.black),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          DropdownButton<int>(
+                            hint: Text("출생년도를 골라주세요."),
+                            value: _selectedYear,
+                            onChanged: (int Value) {
+                              setState(() {
+                                _selectedYear = Value;
+                                isChanged = true;
+                              });
+                            },
+                            items: userYears.map((int year) {
+                              return DropdownMenuItem<int>(
+                                value: year,
+                                child: Row(
+                                  children: <Widget>[
+                                    SizedBox(width: 10,),
+                                    Text(
+                                      year.toString(),
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
+                              );
+                            }).toList(),
+                          ),
+                          // SizedBox(width: 10,),
+                          Text('* 나이 : ${DateTime.now().year - _selectedYear + 1}살')
+                        ],
                       )), // year choice
-                  SizedBox(height: 15,),
-                  Container(
-                    child: Text('비밀번호 변경'),
-                    alignment: Alignment.centerLeft,
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.vpn_key),
-                      labelText: '현재 비밀번호',
-                    ),
-                    onSaved: (String value) {
-                      // This optional block of code can be used to run
-                      // code when the user saves the form.
-                    },
-                    validator: (String value) {
-                      return value.contains('@')
-                          ? 'Do not use the @ char.'
-                          : null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.vpn_key),
-                      labelText: '새로운 비밀번호',
-                    ),
-                    onSaved: (String value) {
-                      // This optional block of code can be used to run
-                      // code when the user saves the form.
-                    },
-                    validator: (String value) {
-                      return value.contains('@')
-                          ? 'Do not use the @ char.'
-                          : null;
-                    },
-                  ),
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      icon: Icon(Icons.vpn_key),
-                      labelText: '새로운 비밀번호 체크',
-                    ),
-                    onSaved: (String value) {
-                      // This optional block of code can be used to run
-                      // code when the user saves the form.
-                    },
-                    validator: (String value) {
-                      return value.contains('@')
-                          ? 'Do not use the @ char.'
-                          : null;
-                    },
-                  ),
+                  // SizedBox(height: 15,),
+                  // Container(
+                  //   child: Text('비밀번호 변경'),
+                  //   alignment: Alignment.centerLeft,
+                  // ),
+                  // TextFormField(
+                  //   decoration: const InputDecoration(
+                  //     icon: Icon(Icons.vpn_key),
+                  //     labelText: '현재 비밀번호',
+                  //   ),
+                  //   onSaved: (String value) {
+                  //     // This optional block of code can be used to run
+                  //     // code when the user saves the form.
+                  //   },
+                  //   validator: (String value) {
+                  //     return value.contains('@')
+                  //         ? 'Do not use the @ char.'
+                  //         : null;
+                  //   },
+                  // ),
+                  // TextFormField(
+                  //   decoration: const InputDecoration(
+                  //     icon: Icon(Icons.vpn_key),
+                  //     labelText: '새로운 비밀번호',
+                  //   ),
+                  //   onSaved: (String value) {
+                  //     // This optional block of code can be used to run
+                  //     // code when the user saves the form.
+                  //   },
+                  //   validator: (String value) {
+                  //     return value.contains('@')
+                  //         ? 'Do not use the @ char.'
+                  //         : null;
+                  //   },
+                  // ),
+                  // TextFormField(
+                  //   decoration: const InputDecoration(
+                  //     icon: Icon(Icons.vpn_key),
+                  //     labelText: '새로운 비밀번호 체크',
+                  //   ),
+                  //   onSaved: (String value) {
+                  //     // This optional block of code can be used to run
+                  //     // code when the user saves the form.
+                  //   },
+                  //   validator: (String value) {
+                  //     return value.contains('@')
+                  //         ? 'Do not use the @ char.'
+                  //         : null;
+                  //   },
+                  // ),
 
                 ],
               ),
@@ -390,7 +411,7 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
       return _src;
     } on Exception catch (e) {
       // TODO
-      print('에러가 났어요.');
+      print('프로필 사진을 파이어베이스에서 가져오는 걸 실패하였습니다..!');
       return null;
     }
 
