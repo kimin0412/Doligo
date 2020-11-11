@@ -8,7 +8,7 @@ import com.dolligo.dto.PointLog;
 public interface IUserGifticonService {
 	
 	//아직 구매 안된 기프티콘 목록 조회
-	public List<Gifticon> getAllGifticons();
+	public List<Gifticon> getAllGifticons(int cid);
 	
 	//기프티콘 상세 조회
 	public Gifticon getGifticon(int gid);

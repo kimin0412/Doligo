@@ -34,8 +34,8 @@ public class UserGifticonService implements IUserGifticonService{
 	
 	//기프티콘 목록 가져오기
 	@Override
-	public List<Gifticon> getAllGifticons() {
-		return giftRepo.findAllValidGift();
+	public List<Gifticon> getAllGifticons(int cid) {
+		return giftRepo.findAllValidGift(cid);
 	}
 
 	//기프티콘 상세 조회
@@ -65,6 +65,10 @@ public class UserGifticonService implements IUserGifticonService{
 			throw new ApplicationException("기프티콘 정보 찾을 수 없음");
 		}
 		Gifticon gift = tmp.get();
+		
+		if(gift.isPurchase()) {
+			throw new ApplicationException("이미 구매된 기프티콘입니다.");
+		}
 		
 		if(user.getPoint() < gift.getPrice()) {
 			throw new ApplicationException("보유한 포인트 초과해서 기프티콘 구매 시도");

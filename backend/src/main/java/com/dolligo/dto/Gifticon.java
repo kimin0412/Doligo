@@ -36,6 +36,7 @@ public class Gifticon {
 	private boolean purchase;			// 구매 여부 => false : 아직 구매 X, true : 누군가 구매
 	private String image;				// 기프티콘 이미지 url
 	private String code;				// 기프티콘 코드(쿠폰번호)
+	private int category;				// 기프티콘 카테고리 1~6
 	
 	public int getId() {
 		return id;
@@ -80,11 +81,19 @@ public class Gifticon {
 	public void setCode(String code) {
 		this.code = code;
 	}
+	
+	public int getCategory() {
+		return category;
+	}
+	public void setCategory(int category) {
+		this.category = category;
+	}
 	@Override
 	public String toString() {
 		return "Gifticon [id=" + id + ", name=" + name + ", price=" + price + ", validDate=" + validDate + ", purchase="
-				+ purchase + ", image=" + image + ", code=" + code + "]";
+				+ purchase + ", image=" + image + ", code=" + code + ", category=" + category + "]";
 	}
+	
 	
 	
     
