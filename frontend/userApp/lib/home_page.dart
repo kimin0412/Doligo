@@ -34,6 +34,7 @@ class _HomepageState extends State<Homepage> {
 
     // 로그인한 유저의 정보를 가져와 환영 문구와 적립 포인트 들을 초기화 한다.
     _getUserInfo();
+    _getPointInfo();
   }
 
   @override
@@ -320,14 +321,15 @@ class _HomepageState extends State<Homepage> {
       pointCnt = _pointInfo.length;
       co2Cnt = pointCnt * 0.66;
       // print('pointInfo : $_pointInfo');
+      print('pointInfo : $_pointInfo');
     });
 
   }
 
 
-
   FutureOr refreshPage(Object value) {
     _getUserInfo();
+    _getPointInfo();
   }
 
   Future<String> _getProfileImage() async {
