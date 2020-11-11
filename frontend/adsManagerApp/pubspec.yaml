@@ -48,6 +48,7 @@ dependencies:
   android_intent: ^0.3.7+7
   cached_network_image: ^2.3.3
   aws_s3: ^0.1.1+hotfix.5
+  progress_dialog: ^1.2.4
 
 dev_dependencies:
   flutter_test:

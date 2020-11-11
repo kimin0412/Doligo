@@ -20,7 +20,7 @@ class AdvDashboardPage extends StatefulWidget {
 class _AdvDashboardPage extends State<AdvDashboardPage>{
   String _output = 'Empty Scan Code';
   String jwt;
-
+  bool isLoading;
   List<charts.Series<Task, String>> _seriesPieData;
   List<charts.Series<Task, String>> _seriesPieData1;
   List<charts.Series<Task, String>> _seriesPieData2;
@@ -58,8 +58,9 @@ class _AdvDashboardPage extends State<AdvDashboardPage>{
 
   @override
   void initState(){
-    refreshKey = GlobalKey<RefreshIndicatorState>();
     super.initState();
+    refreshKey = GlobalKey<RefreshIndicatorState>();
+    isLoading = false;
     nowLeaflet.visit = 0;
     nowLeaflet.block = 0;
     nowLeaflet.interest = 0;
@@ -120,291 +121,306 @@ class _AdvDashboardPage extends State<AdvDashboardPage>{
   }
 
   Widget _buildBody(){
-    return RefreshIndicator(
-      backgroundColor: kPrimaryColor,
-      key: refreshKey,
-      onRefresh: refreshList,
-      child: Center(
-        child: ListView(
-          scrollDirection: Axis.vertical,
-          children: [
-            Card(
-              shape: RoundedRectangleBorder(
-                side: new BorderSide(color: kPrimaryColor, width: 1.0),
-                borderRadius: BorderRadius.circular(5.0),
-
-              ),
-              margin: EdgeInsets.all(20),
-              child: Container(
-                margin: EdgeInsets.all(15),
-                alignment: Alignment.center,
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                          text: _advertiser == null ? "marketname" : _advertiser.marketname ?? "marketname",
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold, )
-                      ),
-                      TextSpan(
-                        text: '의 대시보드',
-                      ),
-                    ],
-                  ),
-                )
-              )
-            ),
-            Card(
-              shape: RoundedRectangleBorder(side: new BorderSide(color: kPrimaryColor, width: 1.0), borderRadius: BorderRadius.circular(5.0)),
-              margin: EdgeInsets.fromLTRB(20,0,20,20),
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.fromLTRB(20,20,20,20),
-                    child: Text.rich(
+    return Stack(children: [
+      RefreshIndicator(
+        backgroundColor: kPrimaryColor,
+        key: refreshKey,
+        onRefresh: refreshList,
+        child: Center(
+          child: ListView(
+            scrollDirection: Axis.vertical,
+            children: [
+              Card(
+                margin: EdgeInsets.all(20),
+                child: Container(
+                  margin: EdgeInsets.all(15),
+                  alignment: Alignment.center,
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
                         TextSpan(
-                          children: [
-                            TextSpan(
-                                text: '$maxAge $maxGender',
-                                style: TextStyle(
-                                    fontSize: 30, fontWeight: FontWeight.bold, color: Colors.deepPurpleAccent)
-                            ),
-                            TextSpan(
-                              text: '에게 인기가 많습니다',
-                            ),
-                          ],
-                        )
-                    ),
-                  ),
-
-                  Container(
-                    margin: EdgeInsets.fromLTRB(20,0,20,20),
-                    child: Text.rich(
+                            text: _advertiser == null ? "marketname" : _advertiser.marketname ?? "marketname",
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.bold, )
+                        ),
                         TextSpan(
-                          children: [
-                            TextSpan(
-                              text: '효과적인 광고 시간은 ',
-                            ),
-                            TextSpan(
-                                text: maxTime,
-                                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.deepPurpleAccent)
-                            ),
-                            TextSpan(
-                              text: '입니다',
-                            ),
-                          ],
-                        )
+                          text: '의 대시보드',
+                        ),
+                      ],
                     ),
                   )
-                ],
-
+                )
               ),
-            ),
-            Card(
-
+              Card(
                 shape: RoundedRectangleBorder(side: new BorderSide(color: kPrimaryColor, width: 1.0), borderRadius: BorderRadius.circular(5.0)),
                 margin: EdgeInsets.fromLTRB(20,0,20,20),
-              child: Column(
-                children: [
-                  Center(
-                    child: Container(
-                      margin: EdgeInsets.all(15),
-                      child: Text('현재 배포 중인 전단지', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    )
-                  ),
-                  Divider(
-                    height: 1,
-                    color: Colors.grey,
-                  ),
-                  Container(
-                    margin: EdgeInsets.all(10),
-                    child: IntrinsicHeight(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Column(
+                child: Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.fromLTRB(20,20,20,20),
+                      child: Text.rich(
+                          TextSpan(
                             children: [
-                              Text('배포', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                                Text('${nowLeaflet.distributed ?? 0}', style: TextStyle(fontSize: 15)),
+                              TextSpan(
+                                  text: '$maxAge $maxGender',
+                                  style: TextStyle(
+                                      fontSize: 30, fontWeight: FontWeight.bold, color: Colors.deepPurpleAccent)
+                              ),
+                              TextSpan(
+                                text: '에게 인기가 많습니다',
+                              ),
                             ],
-                          ),
-                          VerticalDivider(
-                            width: 1,
-                            color: Colors.grey,
-                          ),
-                          Column(
-                            children: [
-                              Text('클릭', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                              Text('${nowLeaflet.interest ?? 0}', style: TextStyle(fontSize: 15)),
-                            ],
-                          ),
-                          VerticalDivider(
-                            width: 1,
-                            color: Colors.grey,
-                          ),
-                          Column(
-                            children: [
-                              Text('차단', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                              Text('${nowLeaflet.block ?? 0}', style: TextStyle(fontSize: 15)),
-                            ],
-                          ),
-                          VerticalDivider(
-                            width: 1,
-                            color: Colors.grey,
-                          ),
-                          Column(
-                            children: [
-                              Text('방문', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                              Text('${nowLeaflet.visit ?? 0}', style: TextStyle(fontSize: 15)),
-                            ],
-                          ),
-                        ],
-                      )
-                    )
-                  )
-                ],
-              )
-            ),
-            _seriesPieData != null ? Card(
-              margin: EdgeInsets.fromLTRB(0,0,0,20),
-              color: Color(0xfff1f6FF),
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.fromLTRB(20, 2, 2, 2),
-                    child: DropdownButton<String>(
-                      value: pieDropdownValue,
-                      onChanged: (String newValue) {
-                        setState(() {
-                          pieDropdownValue = newValue;
-                          if(newValue == '성별'){
-                            setState(() {
-                              _seriesPieData = _seriesPieData2;
-                            });
-                          } else {
-                            setState(() {
-                              _seriesPieData = _seriesPieData1;
-                            });
-                          }
-                        });
-                      },
-                      items: <String>['연령별', '성별']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value, style: TextStyle(fontWeight: FontWeight.bold)),
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 300.0,
-                    child: charts.PieChart(
-                      _seriesPieData,
-                      animate: true,
-                      animationDuration: Duration(seconds: 1),
-                      behaviors: [
-                        new charts.DatumLegend(
-                            position: charts.BehaviorPosition.end,
-                            outsideJustification: charts.OutsideJustification.endDrawArea,
-                            horizontalFirst: false,
-                            cellPadding: EdgeInsets.all(4.0),
-                            entryTextStyle: charts.TextStyleSpec(
-                                fontSize: 15
-                            )
-                        )
-                      ],
-                      defaultRenderer: new charts.ArcRendererConfig(
-                          arcWidth: 65,
-                          arcRendererDecorators: [
-                            charts.ArcLabelDecorator(
-                                labelPosition: charts.ArcLabelPosition.inside
-                            )
-                          ]
+                          )
                       ),
                     ),
-                  )
-                ],
+
+                    Container(
+                      margin: EdgeInsets.fromLTRB(20,0,20,20),
+                      child: Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '효과적인 광고 시간은 ',
+                              ),
+                              TextSpan(
+                                  text: maxTime,
+                                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.deepPurpleAccent)
+                              ),
+                              TextSpan(
+                                text: '입니다',
+                              ),
+                            ],
+                          )
+                      ),
+                    )
+                  ],
+
+                ),
               ),
-            )
-            : Card(
-              child: Center(
-                  child: Container(
-                    margin: EdgeInsets.all(30),
-                    child: Text('데이터가 없습니다', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  )
-              ),
-            ),
-            _seriesStackListData.length > 0 ? Card(
-              margin: EdgeInsets.fromLTRB(0,0,0,60),
-              color: Color(0xfff1f6FF),
-              child: Column(
-                children: [
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    padding: EdgeInsets.fromLTRB(20, 2, 2, 2),
-                    child: DropdownButton<String>(
-                      value: timeSeriesDropdownValue,
-                      onChanged: (String newValue) {
-                        setState(() {
-                          timeSeriesDropdownValue = newValue;
-                        });
-                      },
-                      items: <String>['시간별']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value, style: TextStyle(fontWeight: FontWeight.bold)),
-                        );
-                      }).toList(),
+              Card(
+                  shape: RoundedRectangleBorder(side: new BorderSide(color: kPrimaryColor, width: 1.0), borderRadius: BorderRadius.circular(5.0)),
+                  margin: EdgeInsets.fromLTRB(20,0,20,20),
+                child: Column(
+                  children: [
+                    Center(
+                      child: Container(
+                        margin: EdgeInsets.all(15),
+                        child: Text('현재 배포 중인 전단지', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      )
                     ),
-                  ),
-                  SizedBox(
-                    height: 300.0,
-                    child: charts.LineChart(
-                      _seriesStackListData,
-                      defaultRenderer: new charts.LineRendererConfig(includeArea: true, stacked: false),
-                      animate: true,
-                      behaviors: [
-                        new charts.SeriesLegend(
+                    Divider(
+                      height: 1,
+                      color: Colors.grey,
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(10),
+                      child: IntrinsicHeight(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              children: [
+                                Text('배포', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                  Text('${nowLeaflet.distributed ?? 0}', style: TextStyle(fontSize: 15)),
+                              ],
+                            ),
+                            VerticalDivider(
+                              width: 1,
+                              color: Colors.grey,
+                            ),
+                            Column(
+                              children: [
+                                Text('클릭', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                Text('${nowLeaflet.interest ?? 0}', style: TextStyle(fontSize: 15)),
+                              ],
+                            ),
+                            VerticalDivider(
+                              width: 1,
+                              color: Colors.grey,
+                            ),
+                            Column(
+                              children: [
+                                Text('차단', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                Text('${nowLeaflet.block ?? 0}', style: TextStyle(fontSize: 15)),
+                              ],
+                            ),
+                            VerticalDivider(
+                              width: 1,
+                              color: Colors.grey,
+                            ),
+                            Column(
+                              children: [
+                                Text('방문', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                Text('${nowLeaflet.visit ?? 0}', style: TextStyle(fontSize: 15)),
+                              ],
+                            ),
+                          ],
                         )
-                      ],
-                    ),
-                  )
-                ],
+                      )
+                    )
+                  ],
+                )
               ),
-            )
-            : Text('')
-          ],
+              _seriesPieData != null ? Card(
+                margin: EdgeInsets.fromLTRB(0,0,0,20),
+                color: Color(0xfff1f6FF),
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.fromLTRB(20, 2, 2, 2),
+                      child: DropdownButton<String>(
+                        value: pieDropdownValue,
+                        onChanged: (String newValue) {
+                          setState(() {
+                            pieDropdownValue = newValue;
+                            if(newValue == '성별'){
+                              setState(() {
+                                _seriesPieData = _seriesPieData2;
+                              });
+                            } else {
+                              setState(() {
+                                _seriesPieData = _seriesPieData1;
+                              });
+                            }
+                          });
+                        },
+                        items: <String>['연령별', '성별']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value, style: TextStyle(fontWeight: FontWeight.bold)),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 300.0,
+                      child: charts.PieChart(
+                        _seriesPieData,
+                        animate: true,
+                        animationDuration: Duration(seconds: 1),
+                        behaviors: [
+                          new charts.DatumLegend(
+                              position: charts.BehaviorPosition.end,
+                              outsideJustification: charts.OutsideJustification.endDrawArea,
+                              horizontalFirst: false,
+                              cellPadding: EdgeInsets.all(4.0),
+                              entryTextStyle: charts.TextStyleSpec(
+                                  fontSize: 15
+                              )
+                          )
+                        ],
+                        defaultRenderer: new charts.ArcRendererConfig(
+                            arcWidth: 65,
+                            arcRendererDecorators: [
+                              charts.ArcLabelDecorator(
+                                  labelPosition: charts.ArcLabelPosition.inside
+                              )
+                            ]
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              )
+              : Card(
+                child: Center(
+                    child: Container(
+                      margin: EdgeInsets.all(30),
+                      child: Text('데이터가 없습니다', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    )
+                ),
+              ),
+              _seriesStackListData.length > 0 ? Card(
+                margin: EdgeInsets.fromLTRB(0,0,0,60),
+                color: Color(0xfff1f6FF),
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.fromLTRB(20, 2, 2, 2),
+                      child: DropdownButton<String>(
+                        value: timeSeriesDropdownValue,
+                        onChanged: (String newValue) {
+                          setState(() {
+                            timeSeriesDropdownValue = newValue;
+                          });
+                        },
+                        items: <String>['시간별']
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value, style: TextStyle(fontWeight: FontWeight.bold)),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 300.0,
+                      child: charts.LineChart(
+                        _seriesStackListData,
+                        defaultRenderer: new charts.LineRendererConfig(includeArea: true, stacked: false),
+                        animate: true,
+                        behaviors: [
+                          new charts.SeriesLegend(
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )
+              : Text('')
+            ],
+          ),
         ),
       ),
-    );
+      Visibility(
+          visible: isLoading,
+          child: Container(
+            color: Colors.black26,
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: CircularProgressIndicator(),
+                ),
+                Container(
+                  padding: EdgeInsets.all(5.0),
+                  child:
+                  Text('돌리고 데이터를 불러오는 중...', style: TextStyle(color: kPrimaryColor,fontSize: 18, fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                        offset: Offset(1.0, 1.0),
+                        blurRadius: 2.0,
+                        color: Color.fromARGB(255, 255, 255, 255)
+                    )
+                  ]),),
+                )
+              ],
+            )
+          )
+      ),
+    ],);
   }
 
   Future _scan() async {
-    //스캔 시작 - 이때 스캔 될때까지 blocking
-
-    print('fff');
     String barcode = await scan();
     //스캔 완료하면 _output 에 문자열 저장하면서 상태 변경 요청.
     setState(() => _output = barcode);
 
     showToast('qr코드가 인증 되었습니다.');
-    print("ddddddjioweiojwejiowejio");
-    print(barcode);
 
     var _adv = await http.post('$SERVER_IP/api/token/advertiser/paper/qrcode',
         headers: {'Authorization' : 'Bearer $jwt'},
         body:jsonEncode(barcode));
-
-    print(_adv.body);
   }
 
   void _getAdvertiser() async{
     jwt = await FlutterSecureStorage().read(key: 'jwt');
-
-    print(jwt);
 
     var _adv = await http.get('$SERVER_IP/api/token/advertiser',
         headers: {'Authorization' : 'Bearer $jwt'});
@@ -414,8 +430,10 @@ class _AdvDashboardPage extends State<AdvDashboardPage>{
     });
   }
 
-
   void _getDashboard() async{
+    setState(() {
+      isLoading = true;
+    });
     if(_advertiser == null){
       await _getAdvertiser();
     }
@@ -524,6 +542,10 @@ class _AdvDashboardPage extends State<AdvDashboardPage>{
     } else {
       showToast('서버 오류로 정보를 가져오지 못했습니다.');
     }
+
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void showToast(String message){
