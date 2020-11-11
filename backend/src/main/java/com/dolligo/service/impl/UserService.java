@@ -12,11 +12,13 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import com.dolligo.dto.PointLog;
 import com.dolligo.dto.Preference;
 import com.dolligo.dto.User;
 import com.dolligo.exception.ApplicationException;
 import com.dolligo.exception.NotFoundException;
 import com.dolligo.repository.IMarkettypeRepository;
+import com.dolligo.repository.IPointLogRepository;
 import com.dolligo.repository.IPreferenceRepository;
 import com.dolligo.repository.IUserRepository;
 import com.dolligo.service.IUserService;
@@ -32,6 +34,9 @@ public class UserService implements IUserService {
 
     @Autowired
     private IMarkettypeRepository markettypeRepository;
+
+    @Autowired
+    private IPointLogRepository pointRepository;
     
     @Autowired
     private JavaMailSender mailSender;
@@ -156,6 +161,31 @@ public class UserService implements IUserService {
 			e.printStackTrace();
 			throw new ApplicationException(e.getMessage());
 		}
+	}
+
+
+	//현금화 하기
+	@Override
+	public PointLog makeCash(String uid, int amount) {
+		//내가 가진 포인트보다 많은 amount 현금화 시도 => 오류
+		User user = userRepository.findById(Integer.parseInt(uid)).get();
+		if(user.getPoint() < amount) {
+			throw new ApplicationException("보유한 포인트 초과해서 현금화 시도");
+		}
+		
+		user.setPoint(user.getPoint() - amount);
+		
+		//포인트 내역 추가
+		PointLog pl = new PointLog();
+		pl.setDescription("현금화 포인트 차감");
+		pl.setPoint(amount);
+		pl.setTotalPoint(user.getPoint());
+		pl.setSid(3);//현금화로 포인트 차감
+		pl.setSource(0);// 필요없는 정보
+		pl.setUid(Integer.parseInt(uid));
+		pointRepository.save(pl);
+		
+		return pl;
 	}
 
 
