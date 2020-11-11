@@ -1,7 +1,6 @@
 package com.dolligo.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -18,22 +17,19 @@ import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dolligo.dto.Login;
-import com.dolligo.dto.Preference;
+import com.dolligo.dto.PointLog;
 import com.dolligo.dto.TempKey;
 import com.dolligo.dto.User;
 import com.dolligo.exception.ApplicationException;
 import com.dolligo.exception.BadRequestException;
-import com.dolligo.exception.EmptyListException;
 import com.dolligo.exception.NotFoundException;
 import com.dolligo.service.IJwtService;
 import com.dolligo.service.IUserService;
@@ -202,6 +198,21 @@ public class UserController {
 	  		
 	  		map.put("data", userService.update(user));
 	  		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.ACCEPTED);
+      }
+
+      //현금화 하기
+      @ApiOperation(value = "현금화 하기")// token
+      @PostMapping("/token/user/cash/{cash_amount}")
+      public ResponseEntity<HashMap<String, Object>> makeCash(@PathVariable("cash_amount") int amount, HttpServletRequest request) throws Exception {
+    	  HashMap<String, Object> map = new HashMap<String, Object>();
+    	  
+    	  String token = request.getHeader("Authorization").split(" ")[1];
+    	  
+    	  Map<String, Object> claims = jwtService.get(token);
+    	  PointLog pl = userService.makeCash((String)claims.get("uid"), amount);
+    	  
+    	  map.put("data", pl);
+    	  return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.ACCEPTED);
       }
 
       

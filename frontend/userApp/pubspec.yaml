@@ -25,6 +25,8 @@ dependencies:
     sdk: flutter
   material_design_icons_flutter: 4.0.5755
   flutter_staggered_grid_view: "^0.2.2"
+#  commons: ^0.7.8+3
+  awesome_dialog: ^1.2.1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -47,6 +49,7 @@ dependencies:
   flutter_signin_button: ^0.2.5
 
   firebase_storage: ^3.0.10
+  workmanager: ^0.2.0
 
 
 dev_dependencies:
@@ -71,6 +74,7 @@ flutter:
     - assets/icons/
     - assets/loadingText.gif
     - assets/loadingCoin.gif
+    - assets/icons/category/
 
 #flutter_native_splash:
 #  image: assets/icons/doligo_logo.svg

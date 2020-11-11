@@ -15,7 +15,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -74,7 +73,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
 
   Widget _buildBody(){
     Size size = MediaQuery.of(context).size;
-    return Center(
+    return Container(child: Center(
       child: ListView(
         scrollDirection: Axis.vertical,
         children: [
@@ -85,7 +84,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(18,0,18,0),
-            decoration: new BoxDecoration(color: Color(0xffeeeeee), border: Border.all(color: Colors.grey)),
+            decoration: new BoxDecoration(color: Color(0xfff1f6FF), border: Border.all(color: Colors.blueAccent)),
             child: Column(
               children: [
                 ListTile(
@@ -118,7 +117,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(18,10,18,0),
-            decoration: new BoxDecoration(color: Color(0xffeeeeee), border: Border.all(color: Colors.grey)),
+            decoration: new BoxDecoration(color: Color(0xfff1f6FF), border: Border.all(color: Colors.blueAccent)),
             child: Column(
               children: [
                 ListTile(
@@ -151,7 +150,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(18,10,18,0),
-            decoration: new BoxDecoration(color: Color(0xffeeeeee), border: Border.all(color: Colors.grey)),
+            decoration: new BoxDecoration(color: Color(0xfff1f6FF), border: Border.all(color: Colors.blueAccent)),
             child: Column(
               children: [
                 ListTile(
@@ -226,7 +225,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(18,10,18,0),
-            decoration: new BoxDecoration(color: Color(0xffeeeeee), border: Border.all(color: Colors.grey)),
+            decoration: new BoxDecoration(color: Color(0xfff1f6FF), border: Border.all(color: Colors.blueAccent)),
             child: Column(
               children: [
                 ListTile(
@@ -276,7 +275,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(18,10,18,0),
-            decoration: new BoxDecoration(color: Color(0xffeeeeee), border: Border.all(color: Colors.grey)),
+            decoration: new BoxDecoration(color: Color(0xfff1f6FF), border: Border.all(color: Colors.blueAccent)),
             child: Column(
               children: [
                 ListTile(
@@ -383,7 +382,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
 
           Container(
             margin: EdgeInsets.fromLTRB(18,10,18,0),
-            decoration: new BoxDecoration(color: Color(0xffeeeeee), border: Border.all(color: Colors.grey)),
+            decoration: new BoxDecoration(color: Color(0xfff1f6FF), border: Border.all(color: Colors.blueAccent)),
             child: Column(
               children: [
                 ListTile(
@@ -473,7 +472,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
           ),
           Container(
             margin: EdgeInsets.fromLTRB(18,10,18,0),
-            decoration: new BoxDecoration(color: Color(0xffeeeeee), border: Border.all(color: Colors.grey)),
+            decoration: new BoxDecoration(color: Color(0xfff1f6FF), border: Border.all(color: Colors.blueAccent)),
             child: Column(
               children: [
                 ListTile(
@@ -511,6 +510,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
                     onChanged: (value) {
                       setState(() {
                         _leaflet.sheets = int.parse(value);
+                        _leaflet.cost = _leaflet.sheets * cost;
                       });
                     },
                   ),
@@ -534,11 +534,11 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
                 ListTile(
                   title:  Text('전단지 x ${_leaflet.sheets}', style: TextStyle(fontSize: 18)),
                   subtitle: Text('1매당 ${cost}원'),
-                  trailing: Text('${_leaflet.sheets * cost}원', style: TextStyle(fontSize: 18)),
+                  trailing: Text('${_leaflet.cost}원', style: TextStyle(fontSize: 18)),
                 ),
                 ListTile(
                   title:  Text('결제 금액', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: kPrimaryColor)),
-                  trailing: Text('${_leaflet.sheets * cost}원', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: kPrimaryColor)),
+                  trailing: Text('${_leaflet.cost}원', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25, color: kPrimaryColor)),
                 ),
                 SizedBox(height: size.height * 0.05),
                 Container(
@@ -558,9 +558,10 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
               ],
             )
           ),
-
         ],
       )
+    ),
+      // color: Color(0xfff1f6FF),
     );
   }
 
@@ -578,8 +579,8 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
         'partner_user_id':'partner_user_id',
         'item_name' : '광고비 결제',
         'quantity': '1',
-        'total_amount':'22222',
-        'vat_amount' : '2222',
+        'total_amount': _leaflet.cost,
+        'vat_amount' : '0',
         'tax_free_amount' : '0',
         'approval_url' : '$SERVER_IP/api' ,
         'cancel_url' : '$SERVER_IP/api' ,
@@ -600,6 +601,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
   }
 
   void sendLeaflet() async {
+    _leaflet.p_point = 15;
     _leaflet.lat = currentPosition.latitude.toStringAsFixed(5);
     _leaflet.lon = currentPosition.longitude.toStringAsFixed(5);
 
@@ -612,13 +614,6 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
       showToast('전단지 매수는 0보다 커야 합니다.');
       return;
     }
-
-    // AwsS3 awsS3 = AwsS3(
-    //     file: File(_leafletImage.path),
-    //     fileNameWithExt: "www",
-    //     awsFolderPath: 'https://plog-image.s3.ap-northeast-2.amazonaws.com/Upload/Paper/',
-    //     poolId:  'ap-northeast-2:4985e7e4-3205-4085-8e76-368daf8dc9b7',
-    //     bucketName: 'plog-image');
 
     String imageName = _advertiser.id.toString() + '_' + DateTime.now().toIso8601String();
 
