@@ -2,6 +2,7 @@ package com.dolligo.service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dolligo.dto.PointLog;
 import com.dolligo.dto.User;
 
 public interface IUserService {
@@ -25,6 +26,6 @@ public interface IUserService {
 	
 	// 현금화 하기
 	@Transactional
-	void makeCash(String uid, int amount);
+	PointLog makeCash(String uid, int amount);
 
 }

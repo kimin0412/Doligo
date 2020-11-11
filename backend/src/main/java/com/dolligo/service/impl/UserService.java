@@ -166,7 +166,7 @@ public class UserService implements IUserService {
 
 	//현금화 하기
 	@Override
-	public void makeCash(String uid, int amount) {
+	public PointLog makeCash(String uid, int amount) {
 		//내가 가진 포인트보다 많은 amount 현금화 시도 => 오류
 		User user = userRepository.findById(Integer.parseInt(uid)).get();
 		if(user.getPoint() < amount) {
@@ -185,6 +185,7 @@ public class UserService implements IUserService {
 		pl.setUid(Integer.parseInt(uid));
 		pointRepository.save(pl);
 		
+		return pl;
 	}
 
 
