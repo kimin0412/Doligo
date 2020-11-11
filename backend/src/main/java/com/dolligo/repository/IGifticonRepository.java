@@ -11,7 +11,7 @@ import com.dolligo.dto.Gifticon;
 @Repository
 public interface IGifticonRepository extends JpaRepository<Gifticon, Integer>{
 
-	@Query(value = "select * from gifticon where purchase = 0 and valid_date >= date(now())", nativeQuery = true)
-	List<Gifticon> findAllValidGift();
+	@Query(value = "select * from gifticon where category = ?1 and purchase = 0 and valid_date >= date(now())", nativeQuery = true)
+	List<Gifticon> findAllValidGift(int cid);
 	
 }

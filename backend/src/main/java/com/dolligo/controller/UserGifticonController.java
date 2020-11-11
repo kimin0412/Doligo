@@ -44,13 +44,13 @@ public class UserGifticonController {
 	}
 	
 	
-	//아직 구매 안된 기프티콘 목록 조회
-	@ApiOperation(value = "아직 구매 안된 기프티콘 목록 조회")
-	@GetMapping("")
-	public ResponseEntity<HashMap<String, Object>> getAllGifticons(HttpServletRequest request) throws Exception {
+	//아직 구매 안된 기프티콘 목록 조회(카테고리별)
+	@ApiOperation(value = "아직 구매 안된 기프티콘 목록 조회(카테고리별)")
+	@GetMapping("/{category_id}")
+	public ResponseEntity<HashMap<String, Object>> getAllGifticons(@PathVariable("category_id") int cid, HttpServletRequest request) throws Exception {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		
-		List<Gifticon> gifticons = uGiftService.getAllGifticons();
+		List<Gifticon> gifticons = uGiftService.getAllGifticons(cid);
 		
 		map.put("data", gifticons);
 		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
@@ -58,7 +58,7 @@ public class UserGifticonController {
 	
 	//기프티콘 상세 조회
 	@ApiOperation(value = "기프티콘 상세 조회")
-	@GetMapping("/{gifticon_id}")
+	@GetMapping("detail/{gifticon_id}")
 	public ResponseEntity<HashMap<String, Object>> getGifticon(@PathVariable("gifticon_id") int gid, HttpServletRequest request) throws Exception {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		
