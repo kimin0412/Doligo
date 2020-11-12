@@ -14,9 +14,13 @@ public interface IUserGifticonService {
 	//기프티콘 상세 조회
 	public Gifticon getGifticon(int gid);
 	
+	//기프티콘 구매목록에서 상세 조회
+	GifticonPurchase getGifticonDetail(int uid, int id);
+	
 	//기프티콘 구매
 	public PointLog purchaseGifticon(String uid, int gid);
 	
 	//기프티콘 구매 목록 조회
 	public List<GifticonPurchase> getPurchaseList(int uid);
+
 }
