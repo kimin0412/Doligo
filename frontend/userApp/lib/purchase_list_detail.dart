@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
+import 'package:userApp/cash_exchange.dart';
 import 'package:userApp/constants.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:slimy_card/slimy_card.dart';
@@ -84,10 +85,10 @@ class _PurchaseListDetail extends State<PurchaseListDetail> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              detail['gifticon']['validDate'],
+              '${detail['gifticon']['validDate']} 까지 사용가능',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 20.0,
+                fontSize: 18.0,
               ),
             ),
           )
@@ -128,6 +129,13 @@ class _PurchaseListDetail extends State<PurchaseListDetail> {
                           alignment: Alignment.center,
                           margin: EdgeInsets.all(5),
                           child: ListTile(
+                            onTap: () => {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CashExchange()),
+                              ).then(refreshPage)
+                            },
                             leading: SizedBox(
                               width: 50.0,
                               height: 50.0,
@@ -162,7 +170,7 @@ class _PurchaseListDetail extends State<PurchaseListDetail> {
                                 SizedBox(
                                     width: 50.0,
                                     height: 50.0,
-                                    child: Icon(Icons.card_giftcard,
+                                    child: Icon(Icons.import_export_rounded,
                                         color: Colors.black54, size: 50.0)),
                               ],
                             ),
@@ -179,7 +187,7 @@ class _PurchaseListDetail extends State<PurchaseListDetail> {
                           SlimyCard(
                             color: kPrimaryColor,
                             width: 280,
-                            topCardHeight: 300,
+                            topCardHeight: 330,
                             bottomCardHeight: 100,
                             borderRadius: 15,
                             topCardWidget: topCardWidget(),
