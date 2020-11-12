@@ -76,6 +76,7 @@ flutter:
     - assets/loadingText.gif
     - assets/loadingCoin.gif
     - assets/icons/category/
+    - assets/icons/tree/
 
 #flutter_native_splash:
 #  image: assets/icons/doligo_logo.svg
