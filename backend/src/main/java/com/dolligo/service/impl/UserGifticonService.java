@@ -3,6 +3,7 @@ package com.dolligo.service.impl;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,12 +77,13 @@ public class UserGifticonService implements IUserGifticonService {
 		}
 
 //		gift.setPurchase(true);//구매 체크
-		gift.setStock(gift.getStock() - 1); //재고수량 -1
+		gift.setStock(gift.getStock() - 1); // 재고수량 -1
 		giftRepo.save(gift);
 
 		GifticonPurchase gp = new GifticonPurchase();
 		gp.setGid(gift.getId());
 		gp.setUid(Integer.parseInt(uid));
+		gp.setCode(numberGen());
 		giftPurchaseRepo.save(gp);
 
 		user.setPoint(user.getPoint() - gift.getPrice());
@@ -103,6 +105,20 @@ public class UserGifticonService implements IUserGifticonService {
 	public List<GifticonPurchase> getPurchaseList(int uid) {
 		List<GifticonPurchase> list = giftPurchaseRepo.selectPurchaseList(uid);
 		return list;
+	}
+
+	public static String numberGen() {
+		Random rand = new Random();
+		String numStr = ""; // 난수가 저장될 변수
+
+		for (int i = 0; i < 12; i++) {
+			if (i !=0 && i % 4 == 0)
+				numStr += ' ';
+			// 0~9 까지 난수 생성
+			String ran = Integer.toString(rand.nextInt(10));
+			numStr += ran;
+		}
+		return numStr;
 	}
 
 }
