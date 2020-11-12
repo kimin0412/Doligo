@@ -14,12 +14,4 @@ public interface IGifticonPurchaseRepository extends JpaRepository<GifticonPurch
 	@Query(value = "select * from gifticon_purchase where uid = ?1 ", nativeQuery = true)
 	List<GifticonPurchase> selectPurchaseList(int uid);
 	
-//	@Query(value = "select * from gifticon_purchase gp "
-//			+ "join gifticon g on g.id = gp.gid where uid = ?1 ", nativeQuery = true)
-//	List<GifticonPurchase> selectPurchaseList(int uid);
-
-//	@Query(value = "select * from gifticon_purchase where gid in "
-//			+ "( select id from gifticon ) and uid = ?1 ", nativeQuery = true)
-//	List<GifticonPurchase> selectPurchaseList(int uid);
-	
 }
