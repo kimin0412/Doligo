@@ -26,6 +26,7 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
   String _token;
 
   bool isChanged;
+  bool isProfileChanged;
 
   String _nickname;
   String _password1, _password2, _password3;
@@ -56,13 +57,12 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
     super.initState();
 
     isChanged = false;
+    isProfileChanged = false;
 
     _getUserInfo();
 
     genders.add(new Gender("Male", MdiIcons.genderMale, false));
     genders.add(new Gender("Female", MdiIcons.genderFemale, false));
-    genders.add(new Gender("Others", MdiIcons.genderTransgender, false));
-
 
   }
 
@@ -89,17 +89,7 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
               child: Icon(Icons.save, color: Color(isDisabled()),),
               onTap: isChanged && _nickname.length > 0 ? () {
                 showAlertDialog(context, 'save');
-                Fluttertoast.showToast(
-                    msg: '저장되었습니다.',
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 1,
-                    backgroundColor: Colors.grey,
-                    textColor: Colors.white,
-                    fontSize: 16.0
-                );
-                isChanged = false;
-                Navigator.pop(context);
+
               } : null,
             ),
           )
@@ -126,12 +116,53 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
           actions: <Widget>[
             FlatButton(
               child: Text('OK'),
-              onPressed: () {
+              onPressed: () async {
                 if (s == 'save') {
-                  print('저장');
+                  final response = await http.put('${MyApp.commonUrl}/token/user',
+                      headers: {
+                        'Authorization' : 'Bearer $_token',
+                        'Content-Type' : "application/json"
+                      },
+                      body: jsonEncode(
+                          {
+                            "age": _selectedYear,
+                            "email": _userInfo['email'],
+                            "gender": _isFemale,
+                            "id": _userInfo['id'],
+                            "nickname": _nickname,
+                            "password": null,
+                            "point": _userInfo['point'],
+                            "prefercode": _userInfo['prefercode'],
+                            "preferences": _userInfo['preferences']
+                          }
+                      ),
+                  );
+
+                  if(response.statusCode == 200 || response.statusCode == 202) {
+                    _uploadProfileImage();    // 파이어베이스에 이미지 반영
+                    Fluttertoast.showToast(
+                        msg: '저장되었습니다.',
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.grey,
+                        textColor: Colors.white,
+                        fontSize: 16.0
+                    );
+                    setState(() {
+                      isChanged = false;
+                    });
+                  } else {
+                    print('Code : ${response.statusCode}');
+                  }
+                  Navigator.pop(context);
+
+
                 }
-                Navigator.pop(context);
-                Navigator.pop(context);
+                else {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                }
               },
             ),
             FlatButton(
@@ -163,15 +194,16 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                       CircleAvatar(
                         radius: 70,
                         child: ClipOval(
-                          child: _profileImageURL == null ?
+                          child: isProfileChanged ? Image.file(_image, width: 140, height: 140, fit: BoxFit.cover,) :
+                          _profileImageURL == null ?
                           Image.network(
-                            'https://i.pinimg.com/474x/7d/56/56/7d5656879b5d6ed45779f89c4e89c91a.jpg', height: 150,
-                            width: 150,
+                            'https://i.pinimg.com/474x/7d/56/56/7d5656879b5d6ed45779f89c4e89c91a.jpg', height: 140,
+                            width: 140,
                             fit: BoxFit.cover,
                           ) :
                           Image.network(
-                            _profileImageURL, height: 150,
-                            width: 150,
+                            _profileImageURL, height: 140,
+                            width: 140,
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -180,7 +212,7 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                         height: 40, width: 40,
                         child: GestureDetector(
                           child: Icon(Icons.add_a_photo, color: Colors.white,),
-                          onTap: _uploadProfileImage,
+                          onTap: _getProfileImage,
                         ),
                         decoration: BoxDecoration(
                             color: Colors.deepOrange,
@@ -193,6 +225,7 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
                   Text(_nickname, style: TextStyle(fontSize: 20),),
                   SizedBox(height: 5,),
                   Text(_userInfo['email'], style: TextStyle(fontSize: 15),),
+                  SizedBox(height: 15,),
                   Container(
                     child: Text('기본정보 변경'),
                     alignment: Alignment.centerLeft,
@@ -380,8 +413,7 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
 
 
   void _getUserInfo() async {
-    _token =
-    _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
+    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
     final response = await http.get('${MyApp.commonUrl}/token/user',
         headers: {
           'Authorization': 'Bearer $_token'
@@ -396,10 +428,10 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
       _selectedYear = _userInfo['age'];
     });
 
-    _getProfileImage();
+    _downloadProfileImage();
   }
 
-  Future<String> _getProfileImage() async {
+  Future<String> _downloadProfileImage() async {
     StorageReference storageReference = _firebaseStorage.ref().child("profile/${_userInfo['id']}");
 
     try {
@@ -416,36 +448,39 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
     }
 
   }
-  Future _uploadProfileImage() async {
+
+  Future _getProfileImage() async {
     File image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
     if(image != null) {
       setState(() {
         _image = image;
+        isProfileChanged = true;
+        isChanged = true;
       });
-
-      // 프로필 사진을 업로드할 경로와 파일명을 정의. 사용자의 uid를 이용하여 파일명의 중복 가능성 제거
-      StorageReference storageReference =
-      _firebaseStorage.ref().child("profile/${_userInfo['id']}");
-
-      // 파일 업로드
-      StorageUploadTask storageUploadTask = storageReference.putFile(_image);
-
-      // 파일 업로드 완료까지 대기
-      await storageUploadTask.onComplete;
-
-      // 업로드한 사진의 URL 획득
-      String downloadURL = await storageReference.getDownloadURL();
-
-      // 업로드된 사진의 URL을 페이지에 반영
-      setState(() {
-        _profileImageURL = downloadURL;
-      });
-      return _profileImageURL;
     } else {
-      print('선택이 안되었습니다..');
-      return null;
+      print('이미지가 선택되지 않음');
     }
+  }
 
+  Future _uploadProfileImage() async {
+    // 프로필 사진을 업로드할 경로와 파일명을 정의. 사용자의 uid를 이용하여 파일명의 중복 가능성 제거
+    StorageReference storageReference =
+    _firebaseStorage.ref().child("profile/${_userInfo['id']}");
+
+    // 파일 업로드
+    StorageUploadTask storageUploadTask = storageReference.putFile(_image);
+
+    // 파일 업로드 완료까지 대기
+    await storageUploadTask.onComplete;
+
+    // 업로드한 사진의 URL 획득
+    String downloadURL = await storageReference.getDownloadURL();
+
+    // 업로드된 사진의 URL을 페이지에 반영
+    setState(() {
+      _profileImageURL = downloadURL;
+    });
+    return _profileImageURL;
   }
 }
