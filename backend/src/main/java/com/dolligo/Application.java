@@ -6,7 +6,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
+@EnableCaching//캐시 사용하겠다
+@EnableScheduling//background task executor 생성 => for @Scheduled 
 @ServletComponentScan//filter사용
 @SpringBootApplication
 @MapperScan(value = "com.dolligo.repository")

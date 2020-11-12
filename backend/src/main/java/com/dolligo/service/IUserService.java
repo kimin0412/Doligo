@@ -2,14 +2,13 @@ package com.dolligo.service;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.dolligo.dto.PointLog;
 import com.dolligo.dto.User;
 
 public interface IUserService {
     //id로유저 정보 가져옴
 	@Transactional
-    User getUserInfo(long id) throws Exception;//남의 정보
-	@Transactional
-	User getMyInfo(long id) throws Exception;//내 정보
+	User getMyInfo(int id) throws Exception;//내 정보
 	@Transactional
 	User getUserInfo(String email) throws Exception;
     @Transactional
@@ -24,5 +23,9 @@ public interface IUserService {
 	//비번 확인
 	public boolean checkPassword(String uid, String password) throws Exception;
 	public void sendTmpPasswordEmail(String password, String email) throws Exception;
+	
+	// 현금화 하기
+	@Transactional
+	PointLog makeCash(String uid, int amount);
 
 }

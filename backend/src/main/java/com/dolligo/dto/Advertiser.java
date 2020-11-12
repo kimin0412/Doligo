@@ -1,24 +1,64 @@
 package com.dolligo.dto;
 
-import java.time.LocalDateTime;
+import java.io.Serializable;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.IntSequenceGenerator;
+
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 //광고주 유저
+@Entity
+@Getter
 @Data
-public class Advertiser {
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.ALWAYS)
+@JsonIdentityInfo(generator = IntSequenceGenerator.class, property = "id") // 무한루프방지
+public class Advertiser implements Serializable{
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+	@Column
     private int id;						//pk
     private int mtid;					//fk : 상권종류 아이디(MarketTypeId)
     private String email;				//이메일
     private String password;			//비밀번호
     private String marketname;			//가게이름
+    private String marketbranch;		//가게지점
     private String marketnumber;		//가게번호
     private String marketaddress;		//가게주소
     private String marketurl;			//가게 url
     private String lat;					//위도
     private String lon;					//경도
     private int point;					//포인트
+    
+//    @OneToMany(mappedBy = "advertiser")
+//    private List<Paper> papers;
+    
+    @Transient
+    private String mediumcode;
+    
+	public String getMediumcode() {
+		return mediumcode;
+	}
+	public void setMediumcode(String mediumcode) {
+		this.mediumcode = mediumcode;
+	}
 	public int getId() {
 		return id;
 	}
@@ -48,6 +88,12 @@ public class Advertiser {
 	}
 	public void setMarketname(String marketname) {
 		this.marketname = marketname;
+	}
+	public String getMarketbranch() {
+		return marketbranch;
+	}
+	public void setMarketbranch(String marketbranch) {
+		this.marketbranch = marketbranch;
 	}
 	public String getMarketnumber() {
 		return marketnumber;
@@ -85,14 +131,21 @@ public class Advertiser {
 	public void setPoint(int point) {
 		this.point = point;
 	}
+//	
+//	public List<Paper> getPapers() {
+//		return papers;
+//	}
+//	public void setPapers(List<Paper> papers) {
+//		this.papers = papers;
+//	}
 	@Override
 	public String toString() {
 		return "Advertiser [id=" + id + ", mtid=" + mtid + ", email=" + email + ", password=" + password
-				+ ", marketname=" + marketname + ", marketnumber=" + marketnumber + ", marketaddress=" + marketaddress
-				+ ", marketurl=" + marketurl + ", lat=" + lat + ", lon=" + lon + ", point=" + point + "]";
+				+ ", marketname=" + marketname + ", marketbranch=" + marketbranch + ", marketnumber=" + marketnumber
+				+ ", marketaddress=" + marketaddress + ", marketurl=" + marketurl + ", lat=" + lat + ", lon=" + lon
+				+ ", point=" + point + ", mediumcode=" + mediumcode + "]";
 	}
-    
-    
-    
-    
+	
+	
+	
 }
