@@ -69,6 +69,19 @@ public class UserGifticonController {
 		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
 	}
 	
+	//기프티콘 구매내역에서 상세 조회
+		@ApiOperation(value = "기프티콘 '구매내역에서' 상세 조회")
+		@GetMapping("purchase/detail/{purchase_id}")
+		public ResponseEntity<HashMap<String, Object>> getPurchaseDetail(@PathVariable("purchase_id") int id, HttpServletRequest request) throws Exception {
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			
+			String uid = getUid(request.getHeader("Authorization"));
+			GifticonPurchase gp = uGiftService.getGifticonDetail(Integer.parseInt(uid), id);
+			
+			map.put("data", gp);
+			return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
+		}
+	
 	//기프티콘 구매
 	@ApiOperation(value = "기프티콘 구매")
 	@PostMapping("/{gifticon_id}")
