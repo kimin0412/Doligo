@@ -107,6 +107,12 @@ public class UserGifticonService implements IUserGifticonService {
 		return list;
 	}
 
+	@Override
+	public GifticonPurchase getGifticonDetail(int uid, int id) {
+		GifticonPurchase gp = giftPurchaseRepo.selectPurchaseDetail(uid, id);
+		return gp;
+	}
+
 	public static String numberGen() {
 		Random rand = new Random();
 		String numStr = ""; // 난수가 저장될 변수
@@ -120,5 +126,6 @@ public class UserGifticonService implements IUserGifticonService {
 		}
 		return numStr;
 	}
+
 
 }
