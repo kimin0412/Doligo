@@ -9,6 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.apache.milagro.amcl.RSA2048.private_key;
+import org.hibernate.annotations.ColumnDefault;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.AllArgsConstructor;
@@ -37,6 +40,8 @@ public class Gifticon {
 	private String image;				// 기프티콘 이미지 url
 	private String code;				// 기프티콘 코드(쿠폰번호)
 	private int category;				// 기프티콘 카테고리 1~6
+	@ColumnDefault(value = "0")
+	private int stock;					// 기프티콘 재고 수
 	
 	public int getId() {
 		return id;
@@ -88,18 +93,17 @@ public class Gifticon {
 	public void setCategory(int category) {
 		this.category = category;
 	}
+	public int getStock() {
+		return stock;
+	}
+	public void setStock(int stock) {
+		this.stock = stock;
+	}
 	@Override
 	public String toString() {
 		return "Gifticon [id=" + id + ", name=" + name + ", price=" + price + ", validDate=" + validDate + ", purchase="
-				+ purchase + ", image=" + image + ", code=" + code + ", category=" + category + "]";
+				+ purchase + ", image=" + image + ", code=" + code + ", category=" + category + ", stock=" + stock
+				+ "]";
 	}
-	
-	
-	
-    
-    
-    
-    
-	
     
 }
