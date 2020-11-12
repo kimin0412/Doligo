@@ -17,6 +17,8 @@ class _AdblockSettingPageState extends State<AdblockSettingPage> {
 
   var _blockedAdList = [];
 
+  String _token;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -50,17 +52,32 @@ class _AdblockSettingPageState extends State<AdblockSettingPage> {
                 return Column(
                   children: <Widget>[
                     InkWell(
-                      onTap: () {
+                      onTap: () async {
                         print('$position 해제할거임?');
-                        Fluttertoast.showToast(
-                            msg: '${_blockedAdList[position]['advertiser']['marketname']} 차단이 해제되었습니다.',
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.BOTTOM,
-                            timeInSecForIosWeb: 1,
-                            backgroundColor: Colors.grey,
-                            textColor: Colors.white,
-                            fontSize: 16.0
+                        _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
+                        final response = await http.delete('${MyApp.commonUrl}/token/user/block/${_blockedAdList[position]['advertiser']['id']}',
+                            headers: {
+                              'Authorization' : 'Bearer $_token'
+                            }
                         );
+
+                        print('url : ${MyApp.commonUrl}/token/user/block/${_blockedAdList[position]['advertiser']['id']}');
+                        print('code : ${response.statusCode}');
+                        if(response.statusCode == 200) {
+                          Fluttertoast.showToast(
+                              msg: '${_blockedAdList[position]['advertiser']['marketname']} 차단이 해제되었습니다.',
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.BOTTOM,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.grey,
+                              textColor: Colors.white,
+                              fontSize: 16.0
+                          );
+
+                          setState(() {
+                            _blockedAdList.removeAt(position);
+                          });
+                        }
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -118,7 +135,7 @@ class _AdblockSettingPageState extends State<AdblockSettingPage> {
   }
 
   void getBlockedAdList() async {
-    String _token = await FlutterSecureStorage().read(key: 'token');
+    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
     final response = await http.get('${MyApp.commonUrl}/token/user/block',
         headers: {
           'Authorization' : 'Bearer $_token'

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dolligo.dto.Gifticon;
+import com.dolligo.dto.GifticonPurchase;
 import com.dolligo.dto.PointLog;
 import com.dolligo.service.IJwtService;
 import com.dolligo.service.IUserGifticonService;
@@ -78,6 +79,25 @@ public class UserGifticonController {
 		PointLog pl = uGiftService.purchaseGifticon(uid, gid);
 		
 		map.put("data", pl);
+		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
+	}
+	
+	//회원이 구매한 기프티콘 목록 조회
+	@ApiOperation(value = "회원이 구매한 기프티콘 목록 조회(카테고리별)", notes = "Authorization header => 'Bearer [token]'")
+	@GetMapping("/purchase")
+	public ResponseEntity<HashMap<String, Object>> getPurchaseList(HttpServletRequest request) throws Exception {
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		
+      	String token = request.getHeader("Authorization").split(" ")[1];
+
+      	Map<String, Object> claims = jwtService.get(token);
+  		String uid = (String)claims.get("uid");
+  		
+		List<GifticonPurchase> list = uGiftService.getPurchaseList(Integer.parseInt(uid));
+		for (GifticonPurchase l : list) {
+			System.out.println(l.toString());
+		}
+		map.put("data", list);
 		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
 	}
 

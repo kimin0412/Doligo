@@ -3,6 +3,7 @@ package com.dolligo.service;
 import java.util.List;
 
 import com.dolligo.dto.Gifticon;
+import com.dolligo.dto.GifticonPurchase;
 import com.dolligo.dto.PointLog;
 
 public interface IUserGifticonService {
@@ -15,4 +16,7 @@ public interface IUserGifticonService {
 	
 	//기프티콘 구매
 	public PointLog purchaseGifticon(String uid, int gid);
+	
+	//기프티콘 구매 목록 조회
+	public List<GifticonPurchase> getPurchaseList(int uid);
 }
