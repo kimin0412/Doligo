@@ -9,8 +9,17 @@ import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:userApp/constants.dart';
 import 'package:userApp/market_page_detail.dart';
+import 'package:userApp/point_history_page.dart';
+import 'package:userApp/purchase_list.dart';
 
 import 'main.dart';
+
+class Menus {
+  static const String purchaseList = '구매 목록'; // 삭제
+  static const String pointLog = '포인트 적립 내역'; // 차단
+
+  static const List<String> choices = <String>[purchaseList, pointLog];
+}
 
 class Category {
   Category({this.title, this.icon, this.isSelected});
@@ -76,8 +85,22 @@ class _MarketPage extends State<MarketPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("모바일 전단지",
+        title: Text("쇼핑하기",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: choiceAction,
+            itemBuilder: (BuildContext context) {
+              return Menus.choices.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+            icon: Icon(Icons.menu),
+          )
+        ],
       ),
       body: _buildBody(),
     );
@@ -234,6 +257,27 @@ class _MarketPage extends State<MarketPage> {
       // TODO
       print('에러가 났어요.');
       return null;
+    }
+  }
+
+  void choiceAction(String choice) async {
+    switch (choice) {
+      case Menus.purchaseList:
+        print('$choice WORKING');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PurchaseList()),
+        );
+        // await dislike(choice);
+        break;
+      case Menus.pointLog:
+        print('$choice WORKING');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PointHistoryPage()),
+        );
+        // await dislike(choice);
+        break;
     }
   }
 }

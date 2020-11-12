@@ -9,19 +9,20 @@ import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
 import 'package:userApp/constants.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:slimy_card/slimy_card.dart';
 
 import 'package:userApp/main.dart';
 
-class PurchaseList extends StatefulWidget {
-  static const routeName = '/purchaselist';
+class PurchaseListDetail extends StatefulWidget {
+  static const routeName = '/purchaselistdetail';
 
   @override
-  _PurchaseList createState() => _PurchaseList();
+  _PurchaseListDetail createState() => _PurchaseListDetail();
 }
 
-class _PurchaseList extends State<PurchaseList> {
+class _PurchaseListDetail extends State<PurchaseListDetail> {
   var _userInfo;
-  var itemList = [];
+  var detail;
   String _token = null;
   int args = -1;
   FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
@@ -34,15 +35,14 @@ class _PurchaseList extends State<PurchaseList> {
 
     // 로그인한 유저의 정보를 가져와 환영 문구와 적립 포인트 들을 초기화 한다.
     _getUserInfo();
-    itemList = [];
-    _getPurchaseInfo();
-    // itemList
+    detail;
+    _getPurchaseDetailInfo();
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    // args = ModalRoute.of(context).settings.arguments;
+    args = ModalRoute.of(context).settings.arguments;
     // args++;
 
     return Scaffold(
@@ -52,6 +52,57 @@ class _PurchaseList extends State<PurchaseList> {
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: _buildBody(),
+    );
+  }
+
+  Widget topCardWidget() {
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            height: 150.0,
+            padding: EdgeInsets.all(8.0),
+            child: SizedBox(
+                width: 300.0,
+                height: 350.0,
+                child: detail['gifticon']['image'] == null
+                    ? Image.network(
+                        'https://plog-image.s3.ap-northeast-2.amazonaws.com/q.png')
+                    : Image.network(detail['gifticon']['image'])),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              detail['gifticon']['name'],
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              detail['gifticon']['validDate'],
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20.0,
+              ),
+            ),
+          )
+        ]);
+  }
+
+  Widget bottomCardWidget() {
+    return Text(
+      detail['code'] == null ? '바코드 정보가 없습니다.' : detail['code'],
+      style: TextStyle(
+        color: Colors.white,
+        fontSize: 20,
+        fontWeight: FontWeight.w500,
+      ),
+      textAlign: TextAlign.center,
     );
   }
 
@@ -120,70 +171,25 @@ class _PurchaseList extends State<PurchaseList> {
                     Padding(padding: EdgeInsets.all(8.0)),
                     Center(
                         child: Container(
-                            height: 500,
-                            width: 350,
-                            alignment: Alignment.center,
-                            child: GridView.count(
-                              crossAxisCount: 1,
-                              childAspectRatio:
-                                  MediaQuery.of(context).size.width /
-                                      (MediaQuery.of(context).size.height / 8),
-                              children: List.generate(itemList.length, (index) {
-                                return Center(
-                                    child: Card(
-                                  color: Colors.white,
-                                  elevation: 5.0,
-                                  child: InkWell(
-                                      splashColor: kPrimaryColor,
-                                      onTap: () => {
-                                      Navigator.pushNamed(
-                                      context,
-                                      PurchaseListDetail.routeName,
-                                      arguments: index,
-                                      ).then(refreshPage);
-                                          },
-                                      child: Center(
-                                        child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              ListTile(
-                                                  leading: SizedBox(
-                                                      width: 60.0,
-                                                      height: 60.0,
-                                                      child: itemList[index]['gifticon']
-                                                                  ['image'] ==
-                                                              null
-                                                          ? Image.network(
-                                                              'https://plog-image.s3.ap-northeast-2.amazonaws.com/q.png',
-                                                              fit: BoxFit.cover,
-                                                              height: 80)
-                                                          : Image.network(
-                                                              itemList[index]['gifticon']
-                                                                  ['image'],
-                                                              fit: BoxFit.cover,
-                                                              height: 80)),
-                                                  title: Text(
-                                                      itemList[index]['gifticon']['name'],
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.bold)),
-                                                  subtitle:
-                                                      Row(children: <Widget>[
-                                                    Text(
-                                                      itemList[index]['gifticon']['validDate']
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 14),
-                                                    ),
-                                                  ])),
-                                            ]),
-                                      )),
-                                ));
-                              }),
-                            ))),
+                      height: 500,
+                      width: 400,
+                      alignment: Alignment.center,
+                      child: ListView(
+                        children: <Widget>[
+                          SlimyCard(
+                            color: kPrimaryColor,
+                            width: 280,
+                            topCardHeight: 300,
+                            bottomCardHeight: 100,
+                            borderRadius: 15,
+                            topCardWidget: topCardWidget(),
+                            bottomCardWidget: bottomCardWidget(),
+                            slimeEnabled: true,
+                          ),
+                          // ),
+                        ],
+                      ),
+                    )),
                   ],
                 ),
               ),
@@ -201,26 +207,28 @@ class _PurchaseList extends State<PurchaseList> {
 
     setState(() {
       _userInfo = json.decode(response.body)['data'];
-      // print('userInfo : $_userInfo');
     });
   }
 
-  void _getPurchaseInfo() async {
+  void _getPurchaseDetailInfo() async {
     _token = await FlutterSecureStorage().read(key: 'token');
     print('token : $_token');
-    final response = await http.get('${MyApp.commonUrl}/token/gifticon/purchase',
+    print('args : $args');
+    final response = await http.get(
+        '${MyApp.commonUrl}/token/gifticon/purchase/detail/$args',
         headers: {'Authorization': 'Bearer $_token'});
 
     setState(() {
-      itemList = json.decode(response.body)['data'];
-      print('itemList : $itemList');
+      // print(json.decode(response.body)['data']);
+      detail = json.decode(response.body)['data'];
+      print('detail : $detail');
       // print(itemList.length);
     });
   }
 
   FutureOr refreshPage(Object value) {
     _getUserInfo();
-    _getPurchaseInfo();
+    _getPurchaseDetailInfo();
   }
 
   Future<String> _getProfileImage() async {
@@ -240,5 +248,4 @@ class _PurchaseList extends State<PurchaseList> {
       return null;
     }
   }
-
 }

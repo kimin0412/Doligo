@@ -22,6 +22,7 @@ class Item {
 
 class MarketPageDetail extends StatefulWidget {
   static const routeName = '/marketDetail';
+
   @override
   _MarketPageDetail createState() => _MarketPageDetail();
 }
@@ -55,7 +56,7 @@ class _MarketPageDetail extends State<MarketPageDetail> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("모바일 전단지",
+        title: Text("쇼핑하기",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: _buildBody(),
@@ -85,24 +86,24 @@ class _MarketPageDetail extends State<MarketPageDetail> {
                           margin: EdgeInsets.all(5),
                           child: ListTile(
                             leading: SizedBox(
-                                width: 50.0,
-                                height: 50.0,
+                              width: 50.0,
+                              height: 50.0,
                               child: CircleAvatar(
                                 radius: 70,
                                 child: ClipOval(
                                   child: _profileImageURL == null
                                       ? Image.network(
-                                    'https://i.pinimg.com/474x/7d/56/56/7d5656879b5d6ed45779f89c4e89c91a.jpg',
-                                    height: 150,
-                                    width: 150,
-                                    fit: BoxFit.cover,
-                                  )
+                                          'https://i.pinimg.com/474x/7d/56/56/7d5656879b5d6ed45779f89c4e89c91a.jpg',
+                                          height: 150,
+                                          width: 150,
+                                          fit: BoxFit.cover,
+                                        )
                                       : Image.network(
-                                    _profileImageURL,
-                                    height: 150,
-                                    width: 150,
-                                    fit: BoxFit.cover,
-                                  ),
+                                          _profileImageURL,
+                                          height: 150,
+                                          width: 150,
+                                          fit: BoxFit.cover,
+                                        ),
                                 ),
                               ),
                             ),
@@ -213,7 +214,9 @@ class _MarketPageDetail extends State<MarketPageDetail> {
   }
 
   void _getUserInfo() async {
-    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
+    _token = _token == null
+        ? await FlutterSecureStorage().read(key: 'token')
+        : _token;
     print('token : $_token');
     final response = await http.get('${MyApp.commonUrl}/token/user',
         headers: {'Authorization': 'Bearer $_token'});
@@ -247,21 +250,52 @@ class _MarketPageDetail extends State<MarketPageDetail> {
   }
 
   Future pay(int gid) async {
-    final response = await http.post('${MyApp.commonUrl}/token/gifticon',
-      body: jsonEncode({
-        "gifticon_id": gid,
-      }),
+    _token = await FlutterSecureStorage().read(key: 'token');
+    var res;
+    final response = await http.post(
+      '${MyApp.commonUrl}/token/gifticon/$gid',
       headers: {
-        'Authorization' : 'Bearer $_token',
-        'Content-Type' : 'application/json'
+        'Authorization': 'Bearer $_token',
       },
     );
-    print('구매됨');
+    setState(() {
+      res = json.decode(response.body)['data'];
+    });
+    if (res != null) {
+      AwesomeDialog(
+        context: context,
+        animType: AnimType.SCALE,
+        headerAnimationLoop: false,
+        dialogType: DialogType.SUCCES,
+        title: '구매 성공!',
+        desc: '구매가 확인되었습니다!',
+        btnOkIcon: Icons.check_circle,
+        btnOkOnPress: () {
+          debugPrint('OnClcik');
+        },
+      )..show();
+    }
+    else{
+      AwesomeDialog(
+        context: context,
+        animType: AnimType.SCALE,
+        headerAnimationLoop: false,
+        dialogType: DialogType.ERROR,
+        title: '구매 실패...',
+        desc: '포인트가 부족하지는 않으신가요?',
+        btnOkOnPress: () {},
+        btnOkIcon: Icons.cancel,
+        btnOkColor: Colors.red,
+      )..show();
+    }
+    _getGiftInfo();
+    _getUserInfo();
+    // print('구매됨');
   }
 
   Future<String> _getProfileImage() async {
     StorageReference storageReference =
-    _firebaseStorage.ref().child("profile/${_userInfo['id']}");
+        _firebaseStorage.ref().child("profile/${_userInfo['id']}");
 
     try {
       String _src = await storageReference.getDownloadURL();
