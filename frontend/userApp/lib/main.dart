@@ -7,6 +7,8 @@ import 'package:userApp/market_page_detail.dart';
 import 'package:userApp/leaflet_detail_page.dart';
 import 'package:userApp/market_page.dart';
 import 'package:userApp/private_info_setting_page.dart';
+import 'package:userApp/purchase_list.dart';
+import 'package:userApp/purchase_list_detail.dart';
 import 'package:userApp/root_page.dart';
 
 import 'Screens/Signup/signup_screen_3.dart';
@@ -42,6 +44,9 @@ class MyApp extends StatelessWidget {
         SignUpScreen3.routeName:(context) => SignUpScreen3(),
         MarketPage.routeName:(context) => MarketPage(),
         MarketPageDetail.routeName:(context) => MarketPageDetail(),
+        PurchaseList.routeName:(context) => PurchaseList(),
+        PurchaseListDetail.routeName:(context) => PurchaseListDetail(),
+
       },
     );
   }

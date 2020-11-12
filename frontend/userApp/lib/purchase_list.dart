@@ -11,23 +11,16 @@ import 'package:userApp/constants.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
 import 'package:userApp/main.dart';
+import 'package:userApp/purchase_list_detail.dart';
 
-class Item {
-  Item({this.title, this.icon, this.isSelected});
-
-  String title;
-  String icon;
-  bool isSelected;
-}
-
-class MarketPageDetail extends StatefulWidget {
-  static const routeName = '/marketDetail';
+class PurchaseList extends StatefulWidget {
+  static const routeName = '/purchaselist';
 
   @override
-  _MarketPageDetail createState() => _MarketPageDetail();
+  _PurchaseList createState() => _PurchaseList();
 }
 
-class _MarketPageDetail extends State<MarketPageDetail> {
+class _PurchaseList extends State<PurchaseList> {
   var _userInfo;
   var itemList = [];
   String _token = null;
@@ -43,20 +36,20 @@ class _MarketPageDetail extends State<MarketPageDetail> {
     // 로그인한 유저의 정보를 가져와 환영 문구와 적립 포인트 들을 초기화 한다.
     _getUserInfo();
     itemList = [];
-    _getGiftInfo();
+    _getPurchaseInfo();
     // itemList
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    args = ModalRoute.of(context).settings.arguments;
-    args++;
+    // args = ModalRoute.of(context).settings.arguments;
+    // args++;
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("모바일 전단지",
+        title: Text("기프티콘 구매 목록",
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
       body: _buildBody(),
@@ -144,25 +137,12 @@ class _MarketPageDetail extends State<MarketPageDetail> {
                                   child: InkWell(
                                       splashColor: kPrimaryColor,
                                       onTap: () => {
-                                            AwesomeDialog(
-                                              context: context,
-                                              dialogType: DialogType.INFO,
-                                              buttonsBorderRadius:
-                                                  BorderRadius.all(
-                                                      Radius.circular(2)),
-                                              headerAnimationLoop: false,
-                                              animType: AnimType.SCALE,
-                                              title: '구매 확인',
-                                              desc: '포인트로 구매하시겠습니까?',
-                                              // btnCancelIcon: Icons.cancel,
-                                              // btnOkIcon: Icons.check,
-                                              btnOkColor: kPrimaryColor,
-                                              btnCancelColor: Colors.grey,
-                                              btnCancelOnPress: () {},
-                                              btnOkOnPress: () {
-                                                payGift(itemList[index]['id']);
-                                              },
-                                            )..show()
+                                            Navigator.pushNamed(
+                                              context,
+                                              PurchaseListDetail.routeName,
+                                              arguments: itemList[index]
+                                              ['id'],
+                                            ).then(refreshPage)
                                           },
                                       child: Center(
                                         child: Column(
@@ -174,7 +154,7 @@ class _MarketPageDetail extends State<MarketPageDetail> {
                                                   leading: SizedBox(
                                                       width: 60.0,
                                                       height: 60.0,
-                                                      child: itemList[index]
+                                                      child: itemList[index]['gifticon']
                                                                   ['image'] ==
                                                               null
                                                           ? Image.network(
@@ -183,19 +163,20 @@ class _MarketPageDetail extends State<MarketPageDetail> {
                                                               height: 80)
                                                           : Image.network(
                                                               itemList[index]
+                                                                      ['gifticon']
                                                                   ['image'],
                                                               fit: BoxFit.cover,
                                                               height: 80)),
-                                                  title: Text(
-                                                      itemList[index]['name'],
+                                                  title: Text(itemList[index]['gifticon']['name'],
                                                       style: TextStyle(
                                                           color: Colors.black,
                                                           fontWeight:
                                                               FontWeight.bold)),
-                                                  subtitle:
-                                                      Row(children: <Widget>[
+                                                  subtitle: Row(children: <Widget>[
                                                     Text(
-                                                      itemList[index]['price']
+                                                      itemList[index]
+                                                                  ['gifticon']
+                                                              ['validDate']
                                                           .toString(),
                                                       style: TextStyle(
                                                           fontSize: 14),
@@ -227,38 +208,23 @@ class _MarketPageDetail extends State<MarketPageDetail> {
     });
   }
 
-  void _getGiftInfo() async {
+  void _getPurchaseInfo() async {
     _token = await FlutterSecureStorage().read(key: 'token');
     print('token : $_token');
-    final response = await http.get('${MyApp.commonUrl}/token/gifticon/$args',
+    final response = await http.get(
+        '${MyApp.commonUrl}/token/gifticon/purchase',
         headers: {'Authorization': 'Bearer $_token'});
 
     setState(() {
       itemList = json.decode(response.body)['data'];
-      // print('itemList : $itemList');
+      print('itemList : $itemList');
       // print(itemList.length);
     });
   }
 
   FutureOr refreshPage(Object value) {
     _getUserInfo();
-    _getGiftInfo();
-  }
-
-  void payGift(int gid) async {
-    pay(gid);
-  }
-
-  Future pay(int gid) async {
-    _token = await FlutterSecureStorage().read(key: 'token');
-    final response = await http.post(
-      '${MyApp.commonUrl}/token/gifticon/$gid',
-      headers: {
-        'Authorization': 'Bearer $_token',
-      },
-    );
-    _getGiftInfo();
-    // print('구매됨');
+    _getPurchaseInfo();
   }
 
   Future<String> _getProfileImage() async {
@@ -278,5 +244,4 @@ class _MarketPageDetail extends State<MarketPageDetail> {
       return null;
     }
   }
-
 }
