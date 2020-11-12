@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:userApp/leaflet_detail_page.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -19,35 +21,25 @@ class LeafletPage extends StatefulWidget {
 }
 
 class _LeafletPageState extends State<LeafletPage> {
+  final pageController = PageController(viewportFraction: 0.8);
 
   Set<Circle> circles;
 
 
-  Container MyArticles(String imageVal, String heading, String subHeading) {
-    return Container(
-      width: 160,
-      child: Card(
-        child: Wrap(
-          children: [
-            SizedBox(
-              width: 160,
-              height: 170,
-              child: Image.network(imageVal),
-            ),
-            ListTile(
-              title: Text(heading),
-              subtitle: Text(subHeading),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  var _listviewData = null;
+  List _listviewData = [];
   var _userInfo;
 
-  var url = 'http://k3a401.p.ssafy.io:8080/create';
+  int _currentIndex = 0;
+
+  List<T> map<T>(List list, Function handler) {
+    List<T> result = [];
+    for (var i = 0; i < list.length; i++) {
+      result.add(handler(i, list[i]));
+    }
+    return result;
+  }
+
+
 
   Completer<GoogleMapController> _controller = Completer(); // ?
   MapType _googleMapType = MapType.normal;
@@ -171,27 +163,106 @@ class _LeafletPageState extends State<LeafletPage> {
                     ),
                   ),
                 ),  // 지도 부분
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 10),
-                  height: 250,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _listviewData == null ? 0 : _listviewData.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        child: MyArticles(_listviewData[index]['p_image'], _listviewData[index]['marketname'], _listviewData[index]['marketaddress']),
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            LeafletDetailPage.routeName,
-                            arguments: _listviewData[index]['p_id'],
-                          ).then(refreshPage);
+                // Container(
+                //   margin: EdgeInsets.symmetric(vertical: 10),
+                //   height: 250,
+                //   child: ListView.builder(
+                //     scrollDirection: Axis.horizontal,
+                //     itemCount: _listviewData == null ? 0 : _listviewData.length,
+                //     itemBuilder: (BuildContext context, int index) {
+                //       return GestureDetector(
+                //         child: MyArticles(_listviewData[index]['p_image'], _listviewData[index]['marketname'], _listviewData[index]['marketaddress']),
+                //         onTap: () {
+                //           Navigator.pushNamed(
+                //             context,
+                //             LeafletDetailPage.routeName,
+                //             arguments: _listviewData[index]['p_id'],
+                //           ).then(refreshPage);
+                //         },
+                //       );
+                //     },
+                //
+                //   ),
+                // ),  // 전단지 리스트뷰
+                Column(
+                  children: [
+                    CarouselSlider(
+                      options: CarouselOptions(
+                        height: 230.0,
+                        enlargeCenterPage: true,
+                        autoPlay: false,
+                        autoPlayInterval: Duration(seconds: 3),
+                        autoPlayAnimationDuration: Duration(milliseconds: 800),
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        pauseAutoPlayOnTouch: true,
+                        aspectRatio: 2.0,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            _currentIndex = index;
+                          });
                         },
-                      );
-                    },
-
-                  ),
-                ),  // 전단지 리스트뷰
+                      ),
+                      items: _listviewData.map((card){
+                        return Builder(
+                            builder:(BuildContext context){
+                              return Container(
+                                height: MediaQuery.of(context).size.height*0.30,
+                                width: MediaQuery.of(context).size.width,
+                                child: GestureDetector(
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                    elevation: 10,
+                                    child: Stack(
+                                      children: [
+                                        Positioned.fill(child: card),
+                                        Align(
+                                          alignment: Alignment.bottomCenter,
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            color: Color(0x99000000),
+                                            width: MediaQuery.of(context).size.width,
+                                            height: MediaQuery.of(context).size.height*0.085,
+                                            child: SizedBox(
+                                              child: ListTile(
+                                                title: Text(card._heading, style: TextStyle(color: Colors.white),),
+                                                subtitle: Text(card._subHeading, style: TextStyle(color: Colors.white),),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      LeafletDetailPage.routeName,
+                                      arguments: card._id,
+                                    ).then(refreshPage);
+                                  },
+                                ),
+                              );
+                            }
+                        );
+                      }).toList(),
+                    ),
+                    SizedBox(height: 5,),
+                    SmoothPageIndicator(
+                        controller: pageController,  // PageController
+                        count:  6,
+                        effect: ScrollingDotsEffect(
+                          activeDotColor: Color(0xff7C4CFF),
+                          dotHeight: 10,
+                          dotWidth: 10,
+                        ),  // your preferred effect
+                    ),
+                    AnimatedSmoothInidcator(
+                      activeIndex: _currentIndex,
+                      count:  6,
+                      effect:  WormEffect(),
+                    )
+                  ],
+                ),
               ],
             ),
           ),
@@ -228,17 +299,17 @@ class _LeafletPageState extends State<LeafletPage> {
     print(currentPostion.toString());
     print('leaflet List : ${response.body}');
 
+    var tmp = json.decode(response.body)['data'];
+
     setState(() {
-      _listviewData = json.decode(response.body)['data'];
-
-
-      // print('길이? : ${_listviewData.length}');
-      for(int i = 0; i < _listviewData.length; i++) {
+      // print('길이? : ${tmp.length}');
+      for(int i = 0; i < tmp.length; i++) {
         _markers.add(Marker(
           markerId: MarkerId('$i'),
-          position: LatLng(double.parse(_listviewData[i]['lat']), double.parse(_listviewData[i]['lon'])),
-          infoWindow: InfoWindow(title: _listviewData[i]['marketname']),
+          position: LatLng(double.parse(tmp[i]['lat']), double.parse(tmp[i]['lon'])),
+          infoWindow: InfoWindow(title: tmp[i]['marketname']),
         ));
+        _listviewData.add(MyArticles(tmp[i]['p_image'], tmp[i]['marketname'], tmp[i]['marketaddress'], tmp[i]['p_id']));
       }
 
     });
@@ -258,5 +329,16 @@ class _LeafletPageState extends State<LeafletPage> {
     _getNearLeafletList();
   }
 }
+class MyArticles extends StatelessWidget {
+  final String _imageVal;
+  final String _heading;
+  final String _subHeading;
+  final int _id;
 
+  @override
+  Widget build(BuildContext context) {
+    return Image.network(_imageVal, fit: BoxFit.cover,);
+  }
 
+  MyArticles(this._imageVal, this._heading, this._subHeading, this._id);
+}
