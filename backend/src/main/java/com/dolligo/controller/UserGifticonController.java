@@ -94,9 +94,6 @@ public class UserGifticonController {
   		String uid = (String)claims.get("uid");
   		
 		List<GifticonPurchase> list = uGiftService.getPurchaseList(Integer.parseInt(uid));
-		for (GifticonPurchase l : list) {
-			System.out.println(l.toString());
-		}
 		map.put("data", list);
 		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
 	}
