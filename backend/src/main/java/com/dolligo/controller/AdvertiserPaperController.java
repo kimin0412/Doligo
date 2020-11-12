@@ -92,6 +92,9 @@ public class AdvertiserPaperController {
 		String aid = getAid(request.getHeader("Authorization"));
 		
 		List<Paperanalysis> paList = apaperService.getAllAnalysis(aid);
+		for (Paperanalysis p : paList) {
+			System.out.println(p.toString());
+		}
 		map.put("data", paList);
 		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.OK);
 	}
