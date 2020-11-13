@@ -47,9 +47,11 @@ class _AdblockSettingPageState extends State<AdblockSettingPage> {
       padding: const EdgeInsets.all(2),
       child: SafeArea(
         child: SingleChildScrollView(
+          physics: ScrollPhysics(),
           child: Container(
             height: 900,
             child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, position) {
                 return Column(
                   children: <Widget>[
@@ -77,10 +79,9 @@ class _AdblockSettingPageState extends State<AdblockSettingPage> {
                             btnOkOnPress: () {
                               debugPrint('OnClcik');
                             },
-                          )..show();
-                          setState(() {
+                          )..show().then((value) => setState(() {
                             _blockedAdList.removeAt(position);
-                          });
+                          }));
                         }
                       },
                       child: Row(

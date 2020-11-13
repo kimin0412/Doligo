@@ -363,7 +363,7 @@ class _LeafletPageState extends State<LeafletPage> {
                     child: SizedBox(
                       child: ListTile(
                         title: Text(_listviewData[index]._heading, style: TextStyle(color: Colors.white),),
-                        subtitle: Text(_listviewData[index]._subHeading, style: TextStyle(color: Colors.white),),
+                        subtitle: Text(_listviewData[index]._subHeading, style: TextStyle(color: Colors.white), overflow: TextOverflow.ellipsis,),
                       ),
                     ),
                   ),

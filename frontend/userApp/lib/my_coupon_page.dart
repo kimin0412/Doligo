@@ -76,6 +76,7 @@ class _MyCouponPageState extends State<MyCouponPage> {
       padding: EdgeInsets.all(15.0),
       child: SafeArea(
         child: SingleChildScrollView(
+          physics: ScrollPhysics(),
           child: Column(
             children: [
               Container(
@@ -90,6 +91,7 @@ class _MyCouponPageState extends State<MyCouponPage> {
                   height: 900,
                   margin: EdgeInsets.symmetric(vertical: 10),
                   child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
                     scrollDirection: Axis.vertical,
                     itemCount: _couponList.length,
                     itemBuilder: (BuildContext context, int index) {
