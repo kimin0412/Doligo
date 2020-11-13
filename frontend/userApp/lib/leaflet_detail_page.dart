@@ -125,20 +125,21 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
 
     print('차단 결과 : ${response.statusCode}');
 
-    AwesomeDialog(
-      context: context,
-      animType: AnimType.SCALE,
-      headerAnimationLoop: false,
-      dialogType: DialogType.SUCCES,
-      title: '차단 성공!',
-      desc: _toastMessage,
-      btnOkIcon: Icons.check_circle,
-      btnOkOnPress: () {
-        debugPrint('OnClcik');
-      },
-    )..show();
+    if(response.statusCode == 200) {
+      AwesomeDialog(
+        context: context,
+        animType: AnimType.SCALE,
+        headerAnimationLoop: false,
+        dialogType: DialogType.SUCCES,
+        title: '차단 성공!',
+        desc: _toastMessage,
+        btnOkIcon: Icons.check_circle,
+        btnOkOnPress: () {
+          debugPrint('OnClcik');
+        },
+      )..show().then((value) => Navigator.pop(context));
+    }
 
-    Navigator.pop(context);
   }
 
   _buildBody(var _detailLeaflet) {
