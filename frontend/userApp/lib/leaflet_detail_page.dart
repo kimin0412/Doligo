@@ -355,20 +355,36 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
 
                     print('포인트 받기 : ${response.statusCode}');
 
-                    AwesomeDialog(
-                      context: context,
-                      animType: AnimType.SCALE,
-                      headerAnimationLoop: false,
-                      dialogType: DialogType.SUCCES,
-                      title: '적립 성공!',
-                      desc: '포인트가 적립되었습니다!',
-                      btnOkIcon: Icons.check_circle,
-                      btnOkOnPress: () {
-                        debugPrint('OnClcik');
-                      },
-                    )..show();
+                    if(response.statusCode == 200 || response.statusCode == 200) {
+                      AwesomeDialog(
+                        context: context,
+                        animType: AnimType.SCALE,
+                        headerAnimationLoop: false,
+                        dialogType: DialogType.SUCCES,
+                        title: '적립 성공!',
+                        desc: '포인트가 적립되었습니다!',
+                        btnOkIcon: Icons.check_circle,
+                        btnOkOnPress: () {
+                          debugPrint('OnClcik');
+                        },
+                      )..show();
 
-                    Navigator.pop(context);
+                      setState(() {
+                        _isPointButtonDisable = true;
+                      });
+                    } else {
+                      AwesomeDialog(
+                        context: context,
+                        animType: AnimType.SCALE,
+                        headerAnimationLoop: false,
+                        dialogType: DialogType.ERROR,
+                        title: '적립 실패...',
+                        desc: '적립이 실패했습니다...\n잠시 후 다시 시도해주세요!',
+                        btnOkOnPress: () {},
+                        btnOkIcon: Icons.cancel,
+                        btnOkColor: Colors.red,
+                      )..show();
+                    }
                   },
                   color: Color(0xff7C4CFF),
                   textColor: Colors.white,
@@ -383,8 +399,46 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
     );
   }
 
-  _getCoupon()  {
-    showAlertDialog(context);
+  _getCoupon() async {
+    _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
+    final response = await http.post('${MyApp.commonUrl}/token/user/coupon/${_detailLeaflet['p_id']}',
+        headers: {
+          'Authorization' : 'Bearer $_token'
+        }
+    );
+
+    if(response.statusCode == 200 || response.statusCode == 201) {
+      AwesomeDialog(
+        context: context,
+        animType: AnimType.SCALE,
+        headerAnimationLoop: false,
+        dialogType: DialogType.SUCCES,
+        title: '쿠폰 획득!',
+        desc: '쿠폰을 획득하셨습니다!',
+        btnOkIcon: Icons.check_circle,
+        btnOkOnPress: () {
+          debugPrint('OnClcik');
+        },
+      )..show();
+      setState(() {
+        print('Coupon : $_isCouponButtonDisable');
+        _isCouponButtonDisable = true;
+        print('Coupon : $_isCouponButtonDisable');
+      });
+    } else {
+      AwesomeDialog(
+        context: context,
+        animType: AnimType.SCALE,
+        headerAnimationLoop: false,
+        dialogType: DialogType.ERROR,
+        title: '쿠폰 획득 실패...',
+        desc: '쿠폰을 못 얻었어요...\n잠시 후 다시 시도해주세요!',
+        btnOkOnPress: () {},
+        btnOkIcon: Icons.cancel,
+        btnOkColor: Colors.red,
+      )..show();
+    }
+    // showAlertDialog(context);
   }
 
   void showAlertDialog(BuildContext context) async {
