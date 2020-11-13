@@ -244,6 +244,8 @@ class _MarketPage extends State<MarketPage> {
       _userInfo = json.decode(response.body)['data'];
       // print('userInfo : $_userInfo');
     });
+
+    _getProfileImage();
   }
 
   FutureOr refreshPage(Object value) {

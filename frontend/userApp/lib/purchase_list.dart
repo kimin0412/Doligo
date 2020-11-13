@@ -214,6 +214,8 @@ class _PurchaseList extends State<PurchaseList> {
       _userInfo = json.decode(response.body)['data'];
       // print('userInfo : $_userInfo');
     });
+
+    _getProfileImage();
   }
 
   void _getPurchaseInfo() async {
