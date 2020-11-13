@@ -42,6 +42,7 @@ class _LeafletPageState extends State<LeafletPage> {
   }
 
 
+  bool markerBugProtect;
 
   Completer<GoogleMapController> _controller = Completer();
   MapType _googleMapType = MapType.normal;
@@ -62,6 +63,8 @@ class _LeafletPageState extends State<LeafletPage> {
       viewportFraction: 0.8,
     );
     _zoom = 17;
+
+    markerBugProtect = false;
 
     // 현재 위치를 얻어와 초기화 한다.
     _getUserLocation();
@@ -263,14 +266,15 @@ class _LeafletPageState extends State<LeafletPage> {
             markerId: MarkerId('$i'),
             position: LatLng(double.parse(tmp[i-1]['lat']), double.parse(tmp[i-1]['lon'])),
             infoWindow: InfoWindow(title: tmp[i-1]['marketname'], snippet: tmp[i-1]['marketaddress']),
-            onTap: () {
+            onTap: () async {
+              markerBugProtect = true;      // marker가 눌렸을 땐 이게 켜지면서 page가 넘어가면서 마커가 수시로 바뀌지 않도록 한다.
               // print('$i가 눌렸다..');
-              _pageController.animateToPage(
+              await _pageController.animateToPage(
                 i,
                 duration: Duration(milliseconds: 500),
                 curve: Curves.fastOutSlowIn,
               );
-              _goMarkingAreaAndZoomIn(i - 1);
+              markerBugProtect = false;
             }
         ));
         _listviewData.add(MyArticles(tmp[i-1]['p_image'], tmp[i-1]['marketname'], tmp[i-1]['marketaddress'], tmp[i-1]['p_id']));
@@ -379,14 +383,16 @@ class _LeafletPageState extends State<LeafletPage> {
     );
   }
 
-  void _goMarkingAreaAndZoomIn(int value) async{
-    final GoogleMapController googleMapController = await _controller.future;
-    if(value > 0) {
-      googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: _markers[value].position, zoom: 19)));
-      googleMapController.showMarkerInfoWindow(_markers[value].markerId);
-    } else {
-      googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: currentPostion, zoom: _zoom)));
-      googleMapController.showMarkerInfoWindow(_markers[value].markerId);
+  void _goMarkingAreaAndZoomIn(int value) async {
+    if(!markerBugProtect) {
+      final GoogleMapController googleMapController = await _controller.future;
+      if(value > 0) {
+        googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: _markers[value].position, zoom: 19)));
+        googleMapController.showMarkerInfoWindow(_markers[value].markerId);
+      } else {
+        googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: currentPostion, zoom: _zoom)));
+        googleMapController.showMarkerInfoWindow(_markers[value].markerId);
+      }
     }
   }
 }
