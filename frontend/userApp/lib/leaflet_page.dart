@@ -195,7 +195,6 @@ class _LeafletPageState extends State<LeafletPage> {
                     itemCount: _listviewData.length,
                     reverse: false,
                     pageSnapping: true,
-                    physics: BouncingScrollPhysics(),
 
                   ) : Container(),
                 ),  // 전단지 리스트 부분
@@ -247,13 +246,21 @@ class _LeafletPageState extends State<LeafletPage> {
     print('leaflet List : ${response.body}');
 
     var tmp = json.decode(response.body)['data'];
+    _listviewData.clear();
+    _markers.clear();
 
     setState(() {
       // print('길이? : ${tmp.length}');
       _listviewData.add(MyArticles('', '', '', 0));
+      _markers.add(Marker(
+          markerId: MarkerId('0'),
+          position: currentPostion,
+          infoWindow: InfoWindow(title: '내 위치'),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+      ));
       for(int i = 1; i <= tmp.length; i++) {
         _markers.add(Marker(
-            markerId: MarkerId('${i-1}'),
+            markerId: MarkerId('$i'),
             position: LatLng(double.parse(tmp[i-1]['lat']), double.parse(tmp[i-1]['lon'])),
             infoWindow: InfoWindow(title: tmp[i-1]['marketname'], snippet: tmp[i-1]['marketaddress']),
             onTap: () {
@@ -263,7 +270,7 @@ class _LeafletPageState extends State<LeafletPage> {
                 duration: Duration(milliseconds: 500),
                 curve: Curves.fastOutSlowIn,
               );
-              _goMarkingAreaAndZoomIn(i-1);
+              _goMarkingAreaAndZoomIn(i - 1);
             }
         ));
         _listviewData.add(MyArticles(tmp[i-1]['p_image'], tmp[i-1]['marketname'], tmp[i-1]['marketaddress'], tmp[i-1]['p_id']));
@@ -283,7 +290,7 @@ class _LeafletPageState extends State<LeafletPage> {
   FutureOr refreshPage(Object value) {
     _getUserLocation();
     _getUserInfo();
-    _getNearLeafletList();
+    _goMarkingAreaAndZoomIn(0);
   }
 
   listviewBuilder(int index) {
@@ -318,12 +325,12 @@ class _LeafletPageState extends State<LeafletPage> {
                 children: [
                   Text('내 주변에', style: TextStyle(fontSize: 20),),
                   Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(text:'${_listviewData.length - 1}', style: TextStyle(fontSize: 30)),
-                          TextSpan(text:'개의 전단지가 있습니다!', style: TextStyle(fontSize: 20)),
-                        ],
-                      ),
+                    TextSpan(
+                      children: [
+                        TextSpan(text:'${_listviewData.length - 1}', style: TextStyle(fontSize: 30)),
+                        TextSpan(text:'개의 전단지가 있습니다!', style: TextStyle(fontSize: 20)),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -337,14 +344,14 @@ class _LeafletPageState extends State<LeafletPage> {
                     alignment: Alignment.center,
                     decoration: new BoxDecoration(
                       gradient: new LinearGradient(
-                          colors: [
-                            const Color(0xaaaaaaaa),
-                            const Color(0xbb000000),
-                          ],
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          stops: [0.0, 1.0],
-                          tileMode: TileMode.clamp,
+                        colors: [
+                          const Color(0xaaaaaaaa),
+                          const Color(0xbb000000),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: [0.0, 1.0],
+                        tileMode: TileMode.clamp,
                       ),
                     ),
                     width: MediaQuery.of(context).size.width,
@@ -373,10 +380,12 @@ class _LeafletPageState extends State<LeafletPage> {
   }
 
   void _goMarkingAreaAndZoomIn(int value) async{
-    print('value : ${value--}');
-    if(value >= 0) {
-      final GoogleMapController googleMapController = await _controller.future;
+    final GoogleMapController googleMapController = await _controller.future;
+    if(value > 0) {
       googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: _markers[value].position, zoom: 19)));
+      googleMapController.showMarkerInfoWindow(_markers[value].markerId);
+    } else {
+      googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: currentPostion, zoom: _zoom)));
       googleMapController.showMarkerInfoWindow(_markers[value].markerId);
     }
   }
