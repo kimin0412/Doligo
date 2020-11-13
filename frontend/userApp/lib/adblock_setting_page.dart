@@ -6,6 +6,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:userApp/main.dart';
 
+import 'leaflet_page.dart';
+
 class AdblockSettingPage extends StatefulWidget {
   static const String routeName = '/adblockSetting';
 
@@ -41,7 +43,7 @@ class _AdblockSettingPageState extends State<AdblockSettingPage> {
   }
 
   Widget _buildBody() {
-    return Padding(
+    return _blockedAdList.length > 0 ? Padding(
       padding: const EdgeInsets.all(2),
       child: SafeArea(
         child: SingleChildScrollView(
@@ -131,6 +133,28 @@ class _AdblockSettingPageState extends State<AdblockSettingPage> {
           ),
         ),
       ),
+    ) : Stack(
+      children: [
+        Positioned.fill(
+          child: Align(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('차단한 광고가 없습니다👀', style: TextStyle(fontSize: 30),),
+                RaisedButton(
+                  child: Text('😍차단하러 광고보러가기😍'),
+                  onPressed: () {
+                    // Navigator.popAndPushNamed(context, LeafletPage.routeName);
+                    // Navigator.pushNamed(context, LeafletPage.routeName);
+                    Navigator.pushReplacementNamed(context, LeafletPage.routeName);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
