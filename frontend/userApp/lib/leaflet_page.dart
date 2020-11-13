@@ -21,7 +21,6 @@ class LeafletPage extends StatefulWidget {
 }
 
 class _LeafletPageState extends State<LeafletPage> {
-  final pageController = PageController(viewportFraction: 0.8);
 
   Set<Circle> circles;
 
@@ -29,7 +28,10 @@ class _LeafletPageState extends State<LeafletPage> {
   List _listviewData = [];
   var _userInfo;
 
-  int _currentIndex = 0;
+  PageController _pageController;
+  int _currentPageIndex;
+
+  double _zoom;
 
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -41,10 +43,10 @@ class _LeafletPageState extends State<LeafletPage> {
 
 
 
-  Completer<GoogleMapController> _controller = Completer(); // ?
+  Completer<GoogleMapController> _controller = Completer();
   MapType _googleMapType = MapType.normal;
   int _mapType = 0;
-  Set<Marker> _markers = Set();
+  List<Marker> _markers = <Marker>[];
   GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
 
   LatLng currentPostion;
@@ -53,9 +55,24 @@ class _LeafletPageState extends State<LeafletPage> {
   void initState() {
     super.initState();
 
+    _currentPageIndex = 0;
+    _pageController = new PageController(
+      initialPage: _currentPageIndex,
+      keepPage: false,
+      viewportFraction: 0.8,
+    );
+    _zoom = 17;
+
     // 현재 위치를 얻어와 초기화 한다.
     _getUserLocation();
     _getUserInfo();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _pageController.dispose();
   }
 
   void _getUserLocation() async {
@@ -150,11 +167,11 @@ class _LeafletPageState extends State<LeafletPage> {
                             mapType: _googleMapType,
                             initialCameraPosition: CameraPosition(
                               target: currentPostion,
-                              zoom: 17,
+                              zoom: _zoom,
                             ),
                             onMapCreated: _onMapCreated,
                             myLocationEnabled: true,
-                            markers: _markers,
+                            markers: Set<Marker>.of(_markers),
                             zoomControlsEnabled: true,
                             circles: circles,
                           ),
@@ -163,106 +180,36 @@ class _LeafletPageState extends State<LeafletPage> {
                     ),
                   ),
                 ),  // 지도 부분
-                // Container(
-                //   margin: EdgeInsets.symmetric(vertical: 10),
-                //   height: 250,
-                //   child: ListView.builder(
-                //     scrollDirection: Axis.horizontal,
-                //     itemCount: _listviewData == null ? 0 : _listviewData.length,
-                //     itemBuilder: (BuildContext context, int index) {
-                //       return GestureDetector(
-                //         child: MyArticles(_listviewData[index]['p_image'], _listviewData[index]['marketname'], _listviewData[index]['marketaddress']),
-                //         onTap: () {
-                //           Navigator.pushNamed(
-                //             context,
-                //             LeafletDetailPage.routeName,
-                //             arguments: _listviewData[index]['p_id'],
-                //           ).then(refreshPage);
-                //         },
-                //       );
-                //     },
-                //
-                //   ),
-                // ),  // 전단지 리스트뷰
-                Column(
-                  children: [
-                    CarouselSlider(
-                      options: CarouselOptions(
-                        height: 230.0,
-                        enlargeCenterPage: true,
-                        autoPlay: false,
-                        autoPlayInterval: Duration(seconds: 3),
-                        autoPlayAnimationDuration: Duration(milliseconds: 800),
-                        autoPlayCurve: Curves.fastOutSlowIn,
-                        pauseAutoPlayOnTouch: true,
-                        aspectRatio: 2.0,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            _currentIndex = index;
-                          });
-                        },
-                      ),
-                      items: _listviewData.map((card){
-                        return Builder(
-                            builder:(BuildContext context){
-                              return Container(
-                                height: MediaQuery.of(context).size.height*0.30,
-                                width: MediaQuery.of(context).size.width,
-                                child: GestureDetector(
-                                  child: Card(
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                    elevation: 10,
-                                    child: Stack(
-                                      children: [
-                                        Positioned.fill(child: card),
-                                        Align(
-                                          alignment: Alignment.bottomCenter,
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            color: Color(0x99000000),
-                                            width: MediaQuery.of(context).size.width,
-                                            height: MediaQuery.of(context).size.height*0.085,
-                                            child: SizedBox(
-                                              child: ListTile(
-                                                title: Text(card._heading, style: TextStyle(color: Colors.white),),
-                                                subtitle: Text(card._subHeading, style: TextStyle(color: Colors.white),),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    Navigator.pushNamed(
-                                      context,
-                                      LeafletDetailPage.routeName,
-                                      arguments: card._id,
-                                    ).then(refreshPage);
-                                  },
-                                ),
-                              );
-                            }
-                        );
-                      }).toList(),
-                    ),
-                    SizedBox(height: 5,),
-                    SmoothPageIndicator(
-                        controller: pageController,  // PageController
-                        count:  6,
-                        effect: ScrollingDotsEffect(
-                          activeDotColor: Color(0xff7C4CFF),
-                          dotHeight: 10,
-                          dotWidth: 10,
-                        ),  // your preferred effect
-                    ),
-                    AnimatedSmoothInidcator(
-                      activeIndex: _currentIndex,
-                      count:  6,
-                      effect:  WormEffect(),
-                    )
-                  ],
-                ),
+                Container(
+                  height: 240,
+                  width: MediaQuery.of(context).size.width,
+                  child: _listviewData.length > 0 ? PageView.builder(
+                    onPageChanged: (value) {
+                      setState(() {
+                        _currentPageIndex = value;
+                      });
+                      _goMarkingAreaAndZoomIn(value);
+                    },
+                    controller: _pageController,
+                    itemBuilder: (context, index) => listviewBuilder(index),
+                    itemCount: _listviewData.length,
+                    reverse: false,
+                    pageSnapping: true,
+                    physics: BouncingScrollPhysics(),
+
+                  ) : Container(),
+                ),  // 전단지 리스트 부분
+                SizedBox(height: 5,),
+                _listviewData.length > 0 ? SmoothPageIndicator(
+                  controller: _pageController,  // PageController
+                  count: _listviewData.length,
+                  effect: ScrollingDotsEffect(
+                      activeDotColor: Color(0xff7C4CFF),
+                      dotHeight: 10,
+                      dotWidth: 10,
+                      fixedCenter: true
+                  ),  // your preferred effect
+                ) : Container(),
               ],
             ),
           ),
@@ -303,13 +250,23 @@ class _LeafletPageState extends State<LeafletPage> {
 
     setState(() {
       // print('길이? : ${tmp.length}');
-      for(int i = 0; i < tmp.length; i++) {
+      _listviewData.add(MyArticles('', '', '', 0));
+      for(int i = 1; i <= tmp.length; i++) {
         _markers.add(Marker(
-          markerId: MarkerId('$i'),
-          position: LatLng(double.parse(tmp[i]['lat']), double.parse(tmp[i]['lon'])),
-          infoWindow: InfoWindow(title: tmp[i]['marketname']),
+            markerId: MarkerId('${i-1}'),
+            position: LatLng(double.parse(tmp[i-1]['lat']), double.parse(tmp[i-1]['lon'])),
+            infoWindow: InfoWindow(title: tmp[i-1]['marketname'], snippet: tmp[i-1]['marketaddress']),
+            onTap: () {
+              // print('$i가 눌렸다..');
+              _pageController.animateToPage(
+                i,
+                duration: Duration(milliseconds: 500),
+                curve: Curves.fastOutSlowIn,
+              );
+              _goMarkingAreaAndZoomIn(i-1);
+            }
         ));
-        _listviewData.add(MyArticles(tmp[i]['p_image'], tmp[i]['marketname'], tmp[i]['marketaddress'], tmp[i]['p_id']));
+        _listviewData.add(MyArticles(tmp[i-1]['p_image'], tmp[i-1]['marketname'], tmp[i-1]['marketaddress'], tmp[i-1]['p_id']));
       }
 
     });
@@ -327,6 +284,101 @@ class _LeafletPageState extends State<LeafletPage> {
     _getUserLocation();
     _getUserInfo();
     _getNearLeafletList();
+  }
+
+  listviewBuilder(int index) {
+    return new AnimatedBuilder(
+      animation: _pageController,
+      builder: (context, child) {
+        double value = 1.0;
+        if (_pageController.position.haveDimensions) {
+          value = _pageController.page - index;
+          value = (1 - (value.abs() * .5)).clamp(0.0, 1.0);
+        }
+
+        return new Center(
+          child: new SizedBox(
+            height: Curves.easeOut.transform(value) * 300,
+            width: Curves.easeOut.transform(value) * 400,
+            child: child,
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(top: 3),
+        // heighst: MediaQuery.of(context).size.height*0.30,
+        child: GestureDetector(
+          child: Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            elevation: 10,
+            child: index == 0 ? Container(
+              child: _listviewData.length - 1 == 0 ? Text('내 주변에 전단지가 없습니다!', style: TextStyle(fontSize: 20),) : Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('내 주변에', style: TextStyle(fontSize: 20),),
+                  Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(text:'${_listviewData.length - 1}', style: TextStyle(fontSize: 30)),
+                          TextSpan(text:'개의 전단지가 있습니다!', style: TextStyle(fontSize: 20)),
+                        ],
+                      ),
+                  ),
+                ],
+              ),
+              alignment: Alignment.center,
+            ) : Stack(
+              children: [
+                Positioned.fill(child: _listviewData[index]),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: new BoxDecoration(
+                      gradient: new LinearGradient(
+                          colors: [
+                            const Color(0xaaaaaaaa),
+                            const Color(0xbb000000),
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          stops: [0.0, 1.0],
+                          tileMode: TileMode.clamp,
+                      ),
+                    ),
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height*0.085,
+                    child: SizedBox(
+                      child: ListTile(
+                        title: Text(_listviewData[index]._heading, style: TextStyle(color: Colors.white),),
+                        subtitle: Text(_listviewData[index]._subHeading, style: TextStyle(color: Colors.white),),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              LeafletDetailPage.routeName,
+              arguments: _listviewData[index]._id,
+            ).then(refreshPage);
+          },
+        ),
+      ),
+    );
+  }
+
+  void _goMarkingAreaAndZoomIn(int value) async{
+    print('value : ${value--}');
+    if(value >= 0) {
+      final GoogleMapController googleMapController = await _controller.future;
+      googleMapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: _markers[value].position, zoom: 19)));
+      googleMapController.showMarkerInfoWindow(_markers[value].markerId);
+    }
   }
 }
 class MyArticles extends StatelessWidget {
