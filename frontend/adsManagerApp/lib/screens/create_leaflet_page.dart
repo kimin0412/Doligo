@@ -55,6 +55,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
     _leaflet.endtime = _leaflet.starttime.add(Duration(hours: 1));
 
     _leaflet.sheets = 0;
+    _leaflet.cost = 0;
     _getAdvertiserInfo();
   }
 
