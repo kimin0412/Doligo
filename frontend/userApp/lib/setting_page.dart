@@ -86,11 +86,9 @@ class SettingTile extends StatelessWidget {
             btnOkOnPress: () {
               debugPrint('OnClcik');
             },
-          )..show();
-
-          Navigator.pushAndRemoveUntil(context,
+          )..show().then((value) => Navigator.pushAndRemoveUntil(context,
               MaterialPageRoute(builder: (BuildContext context) => WelcomeScreen()), (route) => false
-          );
+          ));
         }
       },
       leading: SizedBox(

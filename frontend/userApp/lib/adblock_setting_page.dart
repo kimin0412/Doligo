@@ -79,10 +79,9 @@ class _AdblockSettingPageState extends State<AdblockSettingPage> {
                             btnOkOnPress: () {
                               debugPrint('OnClcik');
                             },
-                          )..show();
-                          setState(() {
+                          )..show().then((value) => setState(() {
                             _blockedAdList.removeAt(position);
-                          });
+                          }));
                         }
                       },
                       child: Row(

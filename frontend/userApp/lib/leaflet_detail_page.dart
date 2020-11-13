@@ -368,11 +368,9 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
                         btnOkOnPress: () {
                           debugPrint('OnClcik');
                         },
-                      )..show();
-
-                      setState(() {
+                      )..show().then((value) => setState(() {
                         _isPointButtonDisable = true;
-                      });
+                      }));
                     } else {
                       AwesomeDialog(
                         context: context,
@@ -420,12 +418,11 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
         btnOkOnPress: () {
           debugPrint('OnClcik');
         },
-      )..show();
-      setState(() {
+      )..show().then((value) => setState(() {
         print('Coupon : $_isCouponButtonDisable');
         _isCouponButtonDisable = true;
         print('Coupon : $_isCouponButtonDisable');
-      });
+      }));
     } else {
       AwesomeDialog(
         context: context,
