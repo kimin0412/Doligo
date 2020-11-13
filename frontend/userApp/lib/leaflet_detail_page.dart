@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -124,15 +125,18 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
 
     print('차단 결과 : ${response.statusCode}');
 
-    Fluttertoast.showToast(
-        msg: _toastMessage,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.grey,
-        textColor: Colors.white,
-        fontSize: 16.0
-    );
+    AwesomeDialog(
+      context: context,
+      animType: AnimType.SCALE,
+      headerAnimationLoop: false,
+      dialogType: DialogType.SUCCES,
+      title: '차단 성공!',
+      desc: _toastMessage,
+      btnOkIcon: Icons.check_circle,
+      btnOkOnPress: () {
+        debugPrint('OnClcik');
+      },
+    )..show();
 
     Navigator.pop(context);
   }
@@ -351,15 +355,18 @@ class _LeafletDetailPageState extends State<LeafletDetailPage> {
 
                     print('포인트 받기 : ${response.statusCode}');
 
-                    Fluttertoast.showToast(
-                        msg: '포인트가 적립되었습니다!',
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.grey,
-                        textColor: Colors.white,
-                        fontSize: 16.0
-                    );
+                    AwesomeDialog(
+                      context: context,
+                      animType: AnimType.SCALE,
+                      headerAnimationLoop: false,
+                      dialogType: DialogType.SUCCES,
+                      title: '적립 성공!',
+                      desc: '포인트가 적립되었습니다!',
+                      btnOkIcon: Icons.check_circle,
+                      btnOkOnPress: () {
+                        debugPrint('OnClcik');
+                      },
+                    )..show();
 
                     Navigator.pop(context);
                   },
