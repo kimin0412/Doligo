@@ -217,7 +217,7 @@ class _PointHistoryPage extends State<PointHistoryPage> {
         for(int i = 0; i < tmp.length; i++) {
           int type = tmp[i]['sid'];
           int point = type == 1 ? tmp[i]['point'] : -tmp[i]['point'];
-          String content = type == 1 ? '전단지 받기' : (type == 2 ? '기프티콘 구매' : '현금화(인출)');
+          String content = type == 1 ? '전단지 받기' : (type == 2 ? '기프티콘 구매' : (type == 3 ? '현금화(인출)' : '관리자가 주는 선물'));
 
           items.add(PointHistoryItem(DateFormat("yyyy-MM-ddTHH:mm").parse('${tmp[i]['created']}'.substring(0, 16)).add(new Duration(hours: 9)), content, point, tmp[i]['totalPoint'], type));
           print('$i번째 : ${items[i].toString()}');
