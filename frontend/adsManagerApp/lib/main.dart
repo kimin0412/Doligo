@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:dolligo_ads_manager/screens/root_page.dart';
 import 'package:dolligo_ads_manager/screens/signup/signup_screen_4.dart';
 import 'package:dolligo_ads_manager/screens/signup/signup_screen_5.dart';
@@ -21,54 +19,10 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SplashScreen(),
+      home: RootPage(),
       routes: {
         SignUpScreen4.routeName:(context) => SignUpScreen4(),
         SignUpScreen5.routeName:(context) => SignUpScreen5(),
-      },
-    );
-  }
-}
-
-class SplashScreen extends StatefulWidget {
-  @override
-  _SplashScreenState createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    countDownTime();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(
-          child: Column(
-            children: <Widget>[
-              Container(
-                  child: Image.asset('assets/loadingCoin.gif', width: 500, height: 500)
-              ),
-              Container(
-                  child: Image.asset('assets/loadingText.gif', width: 150, height: 150)
-              ),
-            ],
-          ),
-        )
-    );
-  }
-
-  countDownTime() async {
-    return Timer(
-      Duration(seconds: 3),
-          () async {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => RootPage()),
-        );
       },
     );
   }
