@@ -198,6 +198,17 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
               RoundedButton(
                 text: "다음",
                 press: () {
+
+                  if(_selectedYear == null){
+                    showToast('출생년도를 선택해주세요.');
+                    return;
+                  }
+
+                  if(_selectedSi == null){
+                    showToast('지역을 선택해주세요');
+                    return;
+                  }
+
                   args.isFemail = _isFemale;
                   args.selectedYear = _selectedYear;
                   args.selectedGu = _selectedGu;
@@ -228,6 +239,14 @@ class _SignUpScreen2State extends State<SignUpScreen2> {
           ),
         ),
       ),
+    );
+  }
+
+  void showToast(String message){
+    Fluttertoast.cancel();
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT
     );
   }
 }

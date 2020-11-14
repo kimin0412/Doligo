@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:userApp/Screens/Login/login_screen.dart';
 import 'package:userApp/Screens/Signup/signup_screen_2.dart';
 import 'package:userApp/components/already_have_an_account_acheck.dart';
@@ -58,6 +59,32 @@ class SignUpScreen extends StatelessWidget {
                 RoundedButton(
                   text: "다음",
                   press: () {
+                    print("dd");
+                    if(_email == null || _email.length == 0){
+                      showToast('이메일을 입력해주세요');
+                      return;
+                    }
+
+                    if(_nickname == null || _nickname.length == 0){
+                      showToast('닉네임을 입력해주세요');
+                      return;
+                    }
+
+                    if(_password == null || _password.length == 0){
+                      showToast('비밀번호를 입력해주세요.');
+                      return;
+                    }
+
+                    if(_passwordCheck == null || _passwordCheck.length == 0){
+                      showToast('비밀번호 재확인을 입력해주세요.');
+                      return;
+                    }
+
+                    if(_password != _passwordCheck){
+                      showToast('비밀번호 재확인이 일치하지 않습니다.');
+                      return;
+                    }
+
                     arg.email = _email;
                     arg.nickname = _nickname;
                     arg.password = _password;
@@ -106,6 +133,14 @@ class SignUpScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void showToast(String message){
+    Fluttertoast.cancel();
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT
     );
   }
 }
