@@ -30,7 +30,26 @@ class SettingPage extends StatelessWidget {
           SettingTile(Constants.notifySet, Icons.add_alert),
           SettingTile(Constants.privateInfoSet, Icons.person),
           SettingTile(Constants.adBlockSet, Icons.block),
-          SettingTile(Constants.logout, Icons.logout),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [ ListTile(
+              title: Text(
+                  'dd',
+                  style: TextStyle(fontWeight: FontWeight.bold)
+              ),
+              trailing: Wrap(
+                spacing: 12,
+                children: <Widget>[
+                  SizedBox(
+                      child: Icon(Icons.chevron_right,
+                          color: Colors.deepPurpleAccent,
+                          size: 30.0)
+                  ),
+                ],
+              ),
+            ),]
+          )
+
         ],
       ),
     );

@@ -17,10 +17,23 @@ class _RootPageState extends State<RootPage> {
     return FutureBuilder(
         future: _fetch(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-          //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
+          //해당 부분은 data를 아직 받아 오지 못했을때
           if (snapshot.hasData == false) {
-            //뱅글뱅글
-            return CircularProgressIndicator();
+            return Scaffold(
+                backgroundColor: Colors.white,
+                body: Center(
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                          child: Image.asset('assets/loadingCoin.gif', width: 500, height: 500)
+                      ),
+                      Container(
+                          child: Image.asset('assets/loadingText.gif', width: 150, height: 150)
+                      ),
+                    ],
+                  ),
+                )
+            );
           }
           //error가 발생하게 될 경우 반환하게 되는 부분
           else if (snapshot.hasError) {
@@ -40,6 +53,8 @@ class _RootPageState extends State<RootPage> {
   }
 
   Future<Widget> _fetch() async {
+    await Future.delayed(Duration(seconds: 2), () {});
+
     if(await FlutterSecureStorage().containsKey(key: 'jwt')){
       String jwt = await FlutterSecureStorage().read(key: 'jwt');
 
