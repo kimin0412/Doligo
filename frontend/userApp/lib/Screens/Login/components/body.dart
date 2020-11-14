@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -110,25 +111,31 @@ class _BodyState extends State<Body> {
           MaterialPageRoute(builder: (BuildContext context) => TabPage()), (route) => false
       );
     } else if(responseCode == 400) {
-      Fluttertoast.showToast(
-          msg: "비밀번호가 일치하지 않습니다",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+      AwesomeDialog(
+        context: context,
+        animType: AnimType.SCALE,
+        headerAnimationLoop: false,
+        dialogType: DialogType.WARNING,
+        title: '비밀번호가 일치하지 않습니다!',
+        desc: '비밀번호를 확인해주세요.',
+        btnOkIcon: Icons.check_circle,
+        btnOkOnPress: () {
+          debugPrint('OnClcik');
+        },
+      )..show();
     } else {
-      Fluttertoast.showToast(
-          msg: "해당 아이디가 존재하지 않습니다",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+      AwesomeDialog(
+        context: context,
+        animType: AnimType.SCALE,
+        headerAnimationLoop: false,
+        dialogType: DialogType.WARNING,
+        title: '해당 아이디가 존재하지 않습니다!',
+        desc: '아이디를 확인해주세요.',
+        btnOkIcon: Icons.check_circle,
+        btnOkOnPress: () {
+          debugPrint('OnClcik');
+        },
+      )..show();
     }
 
     return response.statusCode;

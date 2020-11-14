@@ -233,6 +233,8 @@ class _MarketPageDetail extends State<MarketPageDetail> {
       _userInfo = json.decode(response.body)['data'];
       // print('userInfo : $_userInfo');
     });
+
+    _getProfileImage();
   }
 
   void _getGiftInfo() async {

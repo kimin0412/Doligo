@@ -67,149 +67,154 @@ class _CashExchange extends State<CashExchange> {
     return _userInfo == null
         ? Container()
         : Container(
-            child: Padding(
-            padding: EdgeInsets.all(15.0),
-            child: SafeArea(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Card(
-                        elevation: 4.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        child: Container(
-                            height: 150,
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.all(5),
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Text('현재 적립 포인트',
-                                      style: TextStyle(
-                                          color: Colors.black87,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 30)),
-                                  SizedBox(
-                                    width: 10,
-                                    height: 10,
-                                  ),
-                                  Text('${_userInfo['point']} Point',
-                                      style: TextStyle(
-                                          color: kPrimaryColor,
-                                          fontSize: 45,
-                                          fontWeight: FontWeight.bold)),
-                                ]))),
-                    Padding(padding: EdgeInsets.all(8.0)),
-                    Center(
-                        child: Container(
-                      height: 500,
-                      width: 400,
-                      alignment: Alignment.topCenter,
-                      child: Column(children: <Widget>[
-                        Text('출금할 포인트와',
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30)),
-                        Text('계좌를 입력하세요.',
-                            style: TextStyle(
-                                color: Colors.black87,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30)),
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                        ),
+            child: GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: Padding(
+              padding: EdgeInsets.all(15.0),
+              child: SafeArea(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: <Widget>[
+                      Card(
+                          elevation: 4.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: Container(
+                              height: 150,
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.all(5),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text('현재 적립 포인트',
+                                        style: TextStyle(
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 30)),
+                                    SizedBox(
+                                      width: 10,
+                                      height: 10,
+                                    ),
+                                    Text('${_userInfo['point']} Point',
+                                        style: TextStyle(
+                                            color: kPrimaryColor,
+                                            fontSize: 45,
+                                            fontWeight: FontWeight.bold)),
+                                  ]))),
+                      Padding(padding: EdgeInsets.all(8.0)),
+                      Center(
+                          child: Container(
+                        height: 500,
+                        width: 400,
+                        alignment: Alignment.topCenter,
+                        child: Column(children: <Widget>[
+                          Text('출금할 포인트와',
+                              style: TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30)),
+                          Text('계좌를 입력하세요.',
+                              style: TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30)),
+                          SizedBox(
+                            width: 20,
+                            height: 20,
+                          ),
 
-                        TextFormField(
-                          controller: myBank,
-                          decoration: new InputDecoration(
-                            labelText: "은행 정보 입력  ex) 카카오뱅크, 신한은행, ...",
-                            fillColor: Colors.white,
-                            border: new OutlineInputBorder(
-                              borderRadius: new BorderRadius.circular(25.0),
-                              borderSide: new BorderSide(),
+                          TextFormField(
+                            controller: myBank,
+                            decoration: new InputDecoration(
+                              labelText: "은행 정보 입력  ex) 카카오뱅크, 신한은행, ...",
+                              fillColor: Colors.white,
+                              border: new OutlineInputBorder(
+                                borderRadius: new BorderRadius.circular(25.0),
+                                borderSide: new BorderSide(),
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                        ),
-                        TextFormField(
-                          controller: myBankNum,
-                          decoration: new InputDecoration(
-                            labelText: "'-' 를 제외하고 계좌번호 입력",
-                            fillColor: Colors.white,
-                            border: new OutlineInputBorder(
-                              borderRadius: new BorderRadius.circular(25.0),
-                              borderSide: new BorderSide(),
+                          SizedBox(
+                            width: 20,
+                            height: 20,
+                          ),
+                          TextFormField(
+                            controller: myBankNum,
+                            decoration: new InputDecoration(
+                              labelText: "'-' 를 제외하고 계좌번호 입력",
+                              fillColor: Colors.white,
+                              border: new OutlineInputBorder(
+                                borderRadius: new BorderRadius.circular(25.0),
+                                borderSide: new BorderSide(),
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 20,
-                          height: 20,
-                        ),
-                        DropdownButton(
-                          value: _selectedValue,
-                          items: _valueList.map(
-                            (value) {
-                              return DropdownMenuItem(
-                                value: value,
-                                child: Text(value + ' 원', style: TextStyle(fontSize: 20),),
-                              );
-                            },
-                          ).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedValue = value;
-                            });
-                          },
-                        ),
-                        SizedBox(
-                          width: 10,
-                          height: 10,
-                        ),
-                        RoundedButton(
-                          text: "확인",
-                          press: () => {
-                            AwesomeDialog(
-                              context: context,
-                              dialogType: DialogType.INFO,
-                              buttonsBorderRadius:
-                              BorderRadius.all(
-                                  Radius.circular(2)),
-                              headerAnimationLoop: false,
-                              animType: AnimType.SCALE,
-                              title: '현금 인출 확인',
-                              desc: myBank.text + '의' +  myBankNum.text + '으로\n포인트 차감 후 현금으로 인출 하시겠습니까?',
-                              // btnCancelIcon: Icons.cancel,
-                              // btnOkIcon: Icons.check,
-                              btnOkColor: kPrimaryColor,
-                              btnCancelColor: Colors.grey,
-                              btnCancelOnPress: () {},
-                              btnOkOnPress: () {
-                                checkWithdraw(int.parse(_selectedValue));
+                          SizedBox(
+                            width: 20,
+                            height: 20,
+                          ),
+                          DropdownButton(
+                            value: _selectedValue,
+                            items: _valueList.map(
+                              (value) {
+                                return DropdownMenuItem(
+                                  value: value,
+                                  child: Text(value + ' 원', style: TextStyle(fontSize: 20),),
+                                );
                               },
-                            )..show()
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //       builder: (context) => CashExchange()),
-                            // ).then(refreshPage)
-                          },
-                        ),
+                            ).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _selectedValue = value;
+                              });
+                            },
+                          ),
+                          SizedBox(
+                            width: 10,
+                            height: 10,
+                          ),
+                          RoundedButton(
+                            text: "확인",
+                            press: () => {
+                              AwesomeDialog(
+                                context: context,
+                                dialogType: DialogType.INFO,
+                                buttonsBorderRadius:
+                                BorderRadius.all(
+                                    Radius.circular(2)),
+                                headerAnimationLoop: false,
+                                animType: AnimType.SCALE,
+                                title: '현금 인출 확인',
+                                desc: myBank.text + '의' +  myBankNum.text + '으로\n포인트 차감 후 현금으로 인출 하시겠습니까?',
+                                // btnCancelIcon: Icons.cancel,
+                                // btnOkIcon: Icons.check,
+                                btnOkColor: kPrimaryColor,
+                                btnCancelColor: Colors.grey,
+                                btnCancelOnPress: () {},
+                                btnOkOnPress: () {
+                                  checkWithdraw(int.parse(_selectedValue));
+                                },
+                              )..show()
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) => CashExchange()),
+                              // ).then(refreshPage)
+                            },
+                          ),
 
-                      ]),
-                    ))
-                  ],
+                        ]),
+                      ))
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ));
+          ),
+            ));
   }
 
   void _getUserInfo() async {

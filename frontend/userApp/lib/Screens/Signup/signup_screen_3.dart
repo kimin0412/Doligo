@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:userApp/Screens/Signup/signup_screen.dart';
@@ -186,26 +187,30 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
     print('response : $header');
 
     if(response.statusCode == 200 || response.statusCode == 202) {
-      Fluttertoast.showToast(
-          msg: '${args.nickname}님 회원가입을 축하합니다!',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.grey,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
-
+      AwesomeDialog(
+        context: context,
+        animType: AnimType.SCALE,
+        headerAnimationLoop: false,
+        dialogType: DialogType.SUCCES,
+        title: '회원가입 성공!',
+        desc: '${args.nickname}님 회원가입을 축하합니다!',
+        btnOkIcon: Icons.check_circle,
+        btnOkOnPress: () {
+          debugPrint('OnClcik');
+        },
+      )..show();
     } else {
-      Fluttertoast.showToast(
-          msg: '회원가입에 실패하였습니다',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0
-      );
+      AwesomeDialog(
+        context: context,
+        animType: AnimType.SCALE,
+        headerAnimationLoop: false,
+        dialogType: DialogType.ERROR,
+        title: '회원가입 실패...',
+        desc: '회원가입에 실패하였습니다.\n잠시 후 다시 시도해주세요!',
+        btnOkOnPress: () {},
+        btnOkIcon: Icons.cancel,
+        btnOkColor: Colors.red,
+      )..show();
     }
 
     return response.statusCode;
