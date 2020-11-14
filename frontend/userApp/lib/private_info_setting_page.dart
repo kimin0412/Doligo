@@ -30,11 +30,12 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
   bool isProfileChanged;
 
   String _nickname;
-  String _password1, _password2, _password3;
 
   List<Gender> genders = new List<Gender>();
 
   bool _isFemale;
+
+  int check;
 
   int _selectedYear;
 
@@ -90,7 +91,6 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
               child: Icon(Icons.save, color: Color(isDisabled()),),
               onTap: isChanged && _nickname.length > 0 ? () {
                 showAlertDialog(context, 'save');
-
               } : null,
             ),
           )
@@ -115,48 +115,56 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
       title: _title,
       desc: _content,
       btnOkIcon: Icons.check_circle,
-      btnCancelOnPress: () {},
+      btnCancelOnPress: () {
+        check = 400;
+        print('check : $check');
+        debugPrint('cancelClcik');
+      },
       btnOkOnPress: () {
+        check = 200;
+        print('check : $check');
         debugPrint('OnClcik');
       },
     )..show().then((value) async {
-      if(s == 'save') {
-        final response = await http.put('${MyApp.commonUrl}/token/user',
-          headers: {
-            'Authorization' : 'Bearer $_token',
-            'Content-Type' : "application/json"
-          },
-          body: jsonEncode(
-              {
-                "age": _selectedYear,
-                "email": _userInfo['email'],
-                "gender": _isFemale,
-                "id": _userInfo['id'],
-                "nickname": _nickname,
-                "password": null,
-                "point": _userInfo['point'],
-                "prefercode": _userInfo['prefercode'],
-                "preferences": _userInfo['preferences']
-              }
-          ),
-        );
-
-        if(response.statusCode == 200 || response.statusCode == 202) {
-          await _uploadProfileImage();    // 파이어베이스에 이미지 반영
-          Fluttertoast.showToast(
-              msg: '저장되었습니다.',
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.grey,
-              textColor: Colors.white,
-              fontSize: 16.0
+      if(check == 200) {
+        if(s == 'save') {
+          final response = await http.put('${MyApp.commonUrl}/token/user',
+            headers: {
+              'Authorization' : 'Bearer $_token',
+              'Content-Type' : "application/json"
+            },
+            body: jsonEncode(
+                {
+                  "age": _selectedYear,
+                  "email": _userInfo['email'],
+                  "gender": _isFemale,
+                  "id": _userInfo['id'],
+                  "nickname": _nickname,
+                  "password": null,
+                  "point": _userInfo['point'],
+                  "prefercode": _userInfo['prefercode'],
+                  "preferences": _userInfo['preferences']
+                }
+            ),
           );
-        } else {
-          print('Code : ${response.statusCode}');
+
+          if(response.statusCode == 200 || response.statusCode == 202) {
+            await _uploadProfileImage();    // 파이어베이스에 이미지 반영
+            Fluttertoast.showToast(
+                msg: '저장되었습니다.',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.grey,
+                textColor: Colors.white,
+                fontSize: 16.0
+            );
+          } else {
+            print('Code : ${response.statusCode}');
+          }
         }
+        Navigator.pop(context);
       }
-      Navigator.pop(context);
     });
   }
 
@@ -447,23 +455,26 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
   }
 
   Future _uploadProfileImage() async {
-    // 프로필 사진을 업로드할 경로와 파일명을 정의. 사용자의 uid를 이용하여 파일명의 중복 가능성 제거
-    StorageReference storageReference =
-    _firebaseStorage.ref().child("profile/${_userInfo['id']}");
+    if(isProfileChanged) {
+      // 프로필 사진을 업로드할 경로와 파일명을 정의. 사용자의 uid를 이용하여 파일명의 중복 가능성 제거
+      StorageReference storageReference =
+      _firebaseStorage.ref().child("profile/${_userInfo['id']}");
 
-    // 파일 업로드
-    StorageUploadTask storageUploadTask = storageReference.putFile(_image);
+      // 파일 업로드
+      StorageUploadTask storageUploadTask = storageReference.putFile(_image);
 
-    // 파일 업로드 완료까지 대기
-    await storageUploadTask.onComplete;
+      // 파일 업로드 완료까지 대기
+      await storageUploadTask.onComplete;
 
-    // 업로드한 사진의 URL 획득
-    String downloadURL = await storageReference.getDownloadURL();
+      // 업로드한 사진의 URL 획득
+      String downloadURL = await storageReference.getDownloadURL();
 
-    // 업로드된 사진의 URL을 페이지에 반영
-    setState(() {
-      _profileImageURL = downloadURL;
-    });
+      // 업로드된 사진의 URL을 페이지에 반영
+      setState(() {
+        _profileImageURL = downloadURL;
+      });
+      return _profileImageURL;
+    }
     return _profileImageURL;
   }
 }
