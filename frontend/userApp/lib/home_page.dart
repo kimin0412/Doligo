@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -80,48 +81,52 @@ class _HomepageState extends State<Homepage> {
                       child: Column(
                         children: <Widget>[
                           Card(
-                              elevation: 4.0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              child: InkWell(
-                                onTap: null,
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: Container(
-                                  height: 100,
-                                  alignment: Alignment.center,
-                                  margin: EdgeInsets.all(5),
-                                  child: ListTile(
-                                    leading: SizedBox(
-                                      width: 50.0,
-                                      height: 50.0,
-                                      child: CircleAvatar(
-                                        radius: 70,
-                                        child: ClipOval(
-                                          child: _profileImageURL == null
-                                              ? Image.network(
-                                            'https://i.pinimg.com/474x/7d/56/56/7d5656879b5d6ed45779f89c4e89c91a.jpg',
-                                            height: 150,
-                                            width: 150,
-                                            fit: BoxFit.cover,
-                                          )
-                                              : Image.network(
-                                            _profileImageURL,
-                                            height: 150,
-                                            width: 150,
-                                            fit: BoxFit.cover,
-                                          ),
+                            elevation: 4.0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                            ),
+                            child: InkWell(
+                              onTap: null,
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Container(
+                                height: 100,
+                                alignment: Alignment.center,
+                                margin: EdgeInsets.all(5),
+                                child: ListTile(
+                                  leading: SizedBox(
+                                    width: 50.0,
+                                    height: 50.0,
+                                    child: CircleAvatar(
+                                      radius: 70,
+                                      child: ClipOval(
+                                        child: _profileImageURL == null
+                                            ? Image.network(
+                                          'https://i.pinimg.com/474x/7d/56/56/7d5656879b5d6ed45779f89c4e89c91a.jpg',
+                                          height: 150,
+                                          width: 150,
+                                          fit: BoxFit.cover,
+                                        )
+                                            : Image.network(
+                                          _profileImageURL,
+                                          height: 150,
+                                          width: 150,
+                                          fit: BoxFit.cover,
                                         ),
                                       ),
                                     ),
-                                    title: Text('${_userInfo['nickname']}님 어서오세요!',
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold)),
+                                  ),
+                                  title: AutoSizeText.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(text: '${_userInfo['nickname']}', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                                        TextSpan(text: '님 어서오세요!', style: TextStyle(fontSize: 20)),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              )), // 회원 정보 Card
+                              ),
+                            ),
+                          ), // 회원 정보 Card
                           Padding(padding: EdgeInsets.all(8.0)),
                           Card(
                             margin: EdgeInsets.all(5),
@@ -190,32 +195,36 @@ class _HomepageState extends State<Homepage> {
                                               fontSize: 20, color: Colors.black),
                                         ),
                                       ]),
-                                      subtitle: Row(children: [
-                                        Text(
-                                          ' ${co2Cnt.toStringAsFixed(3)}g',
-                                          style: TextStyle(
-                                              fontSize: 25, color: Colors.black),
-                                        ),
-                                        Text(
-                                          '의 CO2를 흡수했습니다 ',
-                                          style: TextStyle(
-                                              fontSize: 20, color: Colors.black),
-                                        ),
-                                        SvgPicture.asset(
-                                          "assets/icons/sprout_1.svg",
-                                          height: 25,
-                                          alignment: Alignment.centerLeft,
-                                        ),
-                                      ])),
+                                      subtitle: Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              AutoSizeText(
+                                                ' ${co2Cnt.toStringAsFixed(3)}g',
+                                                style: TextStyle(
+                                                    fontSize: 25, color: Colors.black),
+                                              ),
+                                              FittedBox(
+                                                fit: BoxFit.fitWidth,
+                                                child: Text('의 CO2를 흡수했습니다 ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                              ),
+                                              SvgPicture.asset(
+                                                "assets/icons/sprout_1.svg",
+                                                height: 25,
+                                                alignment: Alignment.centerLeft,
+                                              ),
+                                            ]),
+                                      )),
                                   Padding(padding: EdgeInsets.all(20.0)),
                                   // Padding(padding: EdgeInsets.all(8.0)),
                                   Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         SizedBox(width: 10.0),
-                                        Text(
+                                        AutoSizeText(
                                           '등급 순서 : ',
-                                          style: TextStyle(color: Colors.black),
+                                          style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.002, color: Colors.black),
                                         ),
                                         SvgPicture.asset(
                                           trees[0],
