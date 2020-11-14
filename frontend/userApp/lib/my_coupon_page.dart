@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -91,7 +92,7 @@ class _MyCouponPageState extends State<MyCouponPage> {
               ),  // 보유쿠폰 현황
               Center(
                 child: Container(
-                  height: 900,
+                  height: 180.0 * _couponList.length,
                   margin: EdgeInsets.symmetric(vertical: 10),
                   child: ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
@@ -116,25 +117,27 @@ class _MyCouponPageState extends State<MyCouponPage> {
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Container(
-                                        child: Text(_couponList[index]['paper']['p_coupon'],
+                                        child: AutoSizeText(_couponList[index]['paper']['p_coupon'],
                                           style: TextStyle(
                                             fontSize: 20,
                                             color: Color(0xff7C4CFF),
                                             fontWeight: FontWeight.bold,
                                           ),
                                           textAlign: TextAlign.left,
+                                          maxLines: 1,
                                         ),
                                         width: 200,
                                       ),  // 메인혜택내용
                                       SizedBox(height: 25,),
                                       Container(
                                         width: 200,
-                                        child: Text(_couponList[index]['paper']['advertiser']['marketname'],
+                                        child: AutoSizeText(_couponList[index]['paper']['advertiser']['marketname'],
                                           style: TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold,
                                           ),
                                           textAlign: TextAlign.left,
+                                          maxLines: 1,
                                         ),
                                       ),  // 가게이름
                                       Container(
