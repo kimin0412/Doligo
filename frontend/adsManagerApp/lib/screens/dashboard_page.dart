@@ -205,7 +205,7 @@ class _AdvDashboardPage extends State<AdvDashboardPage>{
                     Center(
                       child: Container(
                         margin: EdgeInsets.all(15),
-                        child: Text('현재 배포 중인 전단지', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        child: Text('최근 배포 전단지', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                       )
                     ),
                     Divider(
