@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -106,75 +107,57 @@ class _PrivateInfoSettingPageState extends State<PrivateInfoSettingPage> {
     String _title = '내 정보 수정';
     String _content = s == 'exit' ? '저장하지 않고 나가시겠습니까?' : '저장하시겠습니까?';
 
-    String result = await showDialog(
+    AwesomeDialog(
       context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(_title),
-          content: Text(_content),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('OK'),
-              onPressed: () async {
-                if (s == 'save') {
-                  final response = await http.put('${MyApp.commonUrl}/token/user',
-                      headers: {
-                        'Authorization' : 'Bearer $_token',
-                        'Content-Type' : "application/json"
-                      },
-                      body: jsonEncode(
-                          {
-                            "age": _selectedYear,
-                            "email": _userInfo['email'],
-                            "gender": _isFemale,
-                            "id": _userInfo['id'],
-                            "nickname": _nickname,
-                            "password": null,
-                            "point": _userInfo['point'],
-                            "prefercode": _userInfo['prefercode'],
-                            "preferences": _userInfo['preferences']
-                          }
-                      ),
-                  );
-
-                  if(response.statusCode == 200 || response.statusCode == 202) {
-                    _uploadProfileImage();    // 파이어베이스에 이미지 반영
-                    Fluttertoast.showToast(
-                        msg: '저장되었습니다.',
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.BOTTOM,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.grey,
-                        textColor: Colors.white,
-                        fontSize: 16.0
-                    );
-                    setState(() {
-                      isChanged = false;
-                    });
-                  } else {
-                    print('Code : ${response.statusCode}');
-                  }
-                  Navigator.pop(context);
-
-
-                }
-                else {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
-                }
-              },
-            ),
-            FlatButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
+      animType: AnimType.SCALE,
+      headerAnimationLoop: false,
+      dialogType: DialogType.INFO,
+      title: _title,
+      desc: _content,
+      btnOkIcon: Icons.check_circle,
+      btnCancelOnPress: () {},
+      btnOkOnPress: () {
+        debugPrint('OnClcik');
       },
-    );
+    )..show().then((value) async {
+      if(s == 'save') {
+        final response = await http.put('${MyApp.commonUrl}/token/user',
+          headers: {
+            'Authorization' : 'Bearer $_token',
+            'Content-Type' : "application/json"
+          },
+          body: jsonEncode(
+              {
+                "age": _selectedYear,
+                "email": _userInfo['email'],
+                "gender": _isFemale,
+                "id": _userInfo['id'],
+                "nickname": _nickname,
+                "password": null,
+                "point": _userInfo['point'],
+                "prefercode": _userInfo['prefercode'],
+                "preferences": _userInfo['preferences']
+              }
+          ),
+        );
+
+        if(response.statusCode == 200 || response.statusCode == 202) {
+          await _uploadProfileImage();    // 파이어베이스에 이미지 반영
+          Fluttertoast.showToast(
+              msg: '저장되었습니다.',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.grey,
+              textColor: Colors.white,
+              fontSize: 16.0
+          );
+        } else {
+          print('Code : ${response.statusCode}');
+        }
+      }
+      Navigator.pop(context);
+    });
   }
 
   Widget _buildBody() {
