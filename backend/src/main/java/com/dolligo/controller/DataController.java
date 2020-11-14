@@ -83,6 +83,11 @@ public class DataController {
   	public void insertUserAction()throws Exception {
   		service.insertUserAction();
   	}
+  	@ApiOperation(value = "change gps")
+  	@PostMapping(value = "gps")
+  	public void changeGps()throws Exception {
+  		service.changeGps();
+  	}
       
   
       

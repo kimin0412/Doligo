@@ -18,6 +18,7 @@ import com.dolligo.dto.User;
 import com.dolligo.exception.ApplicationException;
 import com.dolligo.exception.NotFoundException;
 import com.dolligo.repository.IMarkettypeRepository;
+import com.dolligo.repository.IPaperStateRepository;
 import com.dolligo.repository.IPointLogRepository;
 import com.dolligo.repository.IPreferenceRepository;
 import com.dolligo.repository.IUserRepository;
@@ -37,6 +38,9 @@ public class UserService implements IUserService {
 
     @Autowired
     private IPointLogRepository pointRepository;
+
+    @Autowired
+    private IPaperStateRepository paperStateRepository;
     
     @Autowired
     private JavaMailSender mailSender;
@@ -186,6 +190,13 @@ public class UserService implements IUserService {
 		pointRepository.save(pl);
 		
 		return pl;
+	}
+
+
+	//이제껏 받은 전단지 개수
+	@Override
+	public int getPaperCount(String uid) {
+		return paperStateRepository.getCountByUid(uid);
 	}
 
 

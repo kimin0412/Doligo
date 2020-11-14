@@ -2,7 +2,6 @@ package com.dolligo.data.service;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,18 +12,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.dolligo.dto.Advertiser;
-import com.dolligo.dto.AdvertiserAnalysis;
 import com.dolligo.dto.Markettype;
 import com.dolligo.dto.Paper;
 import com.dolligo.dto.Paperanalysis;
 import com.dolligo.dto.Paperstate;
 import com.dolligo.dto.Preference;
+import com.dolligo.dto.RandomGps;
 import com.dolligo.dto.State;
 import com.dolligo.dto.User;
 import com.dolligo.repository.IDataInsertRepository;
 import com.dolligo.repository.IPaperAnalysisRepository;
 import com.dolligo.repository.IPaperRepository;
 import com.dolligo.repository.IPaperStateRepository;
+import com.dolligo.repository.IRandomGpsRepository;
 import com.dolligo.service.IAdvertiserPaperService;
 import com.dolligo.service.IUserPaperService;
 import com.dolligo.service.IUserService;
@@ -40,6 +40,8 @@ public class DataInsertService implements IDataInsertService{
 	private IPaperStateRepository psRepo;
 	@Autowired
 	private IPaperAnalysisRepository paRepo;
+	@Autowired
+	private IRandomGpsRepository rgRepo;
 	
 	@Autowired
 	private IUserService userService;
@@ -1104,6 +1106,25 @@ public class DataInsertService implements IDataInsertService{
 			else upaperService.saveState(Integer.toString(u.getId()), s);//삭제 or 차단 or 상세조회
 		}
 		
+		
+	}
+	@Override
+	public void changeGps() throws Exception {
+		//강남역 주변 500m 이내 전단지 가져오기
+		List<Paper> paper = pRepo.findAllByGps();
+		List<RandomGps> rgs = rgRepo.findAllByGps();
+		//gps 값 변경 random
+		int size = paper.size();
+//		System.out.println("개수 : "+size);
+		for(int i = 0; i < 400; i++) {//random_gps id값
+			RandomGps rg = rgs.get(i);
+			Paper p = paper.get(i);
+//			System.out.println(p);
+			p.setLat(Double.toString(37.0 + Double.parseDouble(rg.getLat())));
+			p.setLon(Double.toString(127.0 + Double.parseDouble(rg.getLon())));
+//			System.out.println(p);
+			pRepo.save(p);
+		}
 		
 	}
 	

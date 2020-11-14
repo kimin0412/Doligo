@@ -30,6 +30,14 @@ public interface IPaperRepository extends JpaRepository<Paper, Integer>{
 	@Query(value = "select count(*) from paper where p_aid = ?1 and p_id = ?2 ", nativeQuery = true)
 	int findByAidAndPid(String aid, int pid);
 
+	
+//	@Query(value = "select * from paper where (6371 * acos(cos(radians(37.498095)) * cos(radians(lat)) * " + 
+//			"cos(radians(lon) - radians(127.027610)) + sin(radians(37.498095)) * sin(radians(lat)))) <= 0.2", nativeQuery = true)
+//	List<Paper> findAllByGps();//강남
+	@Query(value = "select * from paper where (6371 * acos(cos(radians(37.500628)) * cos(radians(lat)) * " + 
+			"cos(radians(lon) - radians(127.036436)) + sin(radians(37.500628)) * sin(radians(lat)))) <= 0.2", nativeQuery = true)
+	List<Paper> findAllByGps();//역삼
+
 
 //    List<PaperMapping> findAllBy(Pageable pageable);
     
