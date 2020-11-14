@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:userApp/main.dart';
+
+import 'leaflet_page.dart';
 
 class AdblockSettingPage extends StatefulWidget {
   static const String routeName = '/adblockSetting';
@@ -41,13 +43,15 @@ class _AdblockSettingPageState extends State<AdblockSettingPage> {
   }
 
   Widget _buildBody() {
-    return Padding(
+    return _blockedAdList.length > 0 ? Padding(
       padding: const EdgeInsets.all(2),
       child: SafeArea(
         child: SingleChildScrollView(
+          physics: ScrollPhysics(),
           child: Container(
             height: 900,
             child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, position) {
                 return Column(
                   children: <Widget>[
@@ -64,19 +68,20 @@ class _AdblockSettingPageState extends State<AdblockSettingPage> {
                         print('url : ${MyApp.commonUrl}/token/user/block/${_blockedAdList[position]['advertiser']['id']}');
                         print('code : ${response.statusCode}');
                         if(response.statusCode == 200) {
-                          Fluttertoast.showToast(
-                              msg: '${_blockedAdList[position]['advertiser']['marketname']} 차단이 해제되었습니다.',
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.BOTTOM,
-                              timeInSecForIosWeb: 1,
-                              backgroundColor: Colors.grey,
-                              textColor: Colors.white,
-                              fontSize: 16.0
-                          );
-
-                          setState(() {
+                          AwesomeDialog(
+                            context: context,
+                            animType: AnimType.SCALE,
+                            headerAnimationLoop: false,
+                            dialogType: DialogType.SUCCES,
+                            title: '차단해제 성공!',
+                            desc: '${_blockedAdList[position]['advertiser']['marketname']} 차단이 해제되었습니다.',
+                            btnOkIcon: Icons.check_circle,
+                            btnOkOnPress: () {
+                              debugPrint('OnClcik');
+                            },
+                          )..show().then((value) => setState(() {
                             _blockedAdList.removeAt(position);
-                          });
+                          }));
                         }
                       },
                       child: Row(
@@ -131,6 +136,28 @@ class _AdblockSettingPageState extends State<AdblockSettingPage> {
           ),
         ),
       ),
+    ) : Stack(
+      children: [
+        Positioned.fill(
+          child: Align(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('차단한 광고가 없습니다👀', style: TextStyle(fontSize: 30),),
+                RaisedButton(
+                  child: Text('😍차단하러 광고보러가기😍'),
+                  onPressed: () {
+                    // Navigator.popAndPushNamed(context, LeafletPage.routeName);
+                    // Navigator.pushNamed(context, LeafletPage.routeName);
+                    Navigator.pushReplacementNamed(context, LeafletPage.routeName);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 

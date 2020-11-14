@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:userApp/leaflet_detail_page.dart';
+import 'package:userApp/leaflet_page.dart';
 import 'package:userApp/main.dart';
 
 class MyCouponPage extends StatefulWidget {
@@ -71,10 +72,11 @@ class _MyCouponPageState extends State<MyCouponPage> {
   }
 
   _buildBody() {
-    return Padding(
+    return _couponList.length > 0 ? Padding(
       padding: EdgeInsets.all(15.0),
       child: SafeArea(
         child: SingleChildScrollView(
+          physics: ScrollPhysics(),
           child: Column(
             children: [
               Container(
@@ -89,6 +91,7 @@ class _MyCouponPageState extends State<MyCouponPage> {
                   height: 900,
                   margin: EdgeInsets.symmetric(vertical: 10),
                   child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
                     scrollDirection: Axis.vertical,
                     itemCount: _couponList.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -194,6 +197,28 @@ class _MyCouponPageState extends State<MyCouponPage> {
           ),
         ),
       ),
+    ) : Stack(
+      children: [
+        Positioned.fill(
+          child: Align(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('😂쿠폰이 없습니다😂', style: TextStyle(fontSize: 30),),
+                RaisedButton(
+                  child: Text('쿠폰받으러 가기'),
+                  onPressed: () {
+                    // Navigator.popAndPushNamed(context, LeafletPage.routeName);
+                    // Navigator.pushNamed(context, LeafletPage.routeName);
+                    Navigator.pushReplacementNamed(context, LeafletPage.routeName);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
