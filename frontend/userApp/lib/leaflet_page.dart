@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 
 import 'main.dart';
 
+
 class LeafletPage extends StatefulWidget {
   static const routeName = '/leafFlet';
 
@@ -21,7 +22,6 @@ class LeafletPage extends StatefulWidget {
 class _LeafletPageState extends State<LeafletPage> {
 
   Set<Circle> circles;
-
 
   Container MyArticles(String imageVal, String heading, String subHeading) {
     return Container(

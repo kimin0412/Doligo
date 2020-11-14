@@ -50,7 +50,8 @@ dependencies:
   flutter_signin_button: ^0.2.5
 
   firebase_storage: ^3.0.10
-  workmanager: ^0.2.0
+#  workmanager: ^0.2.0
+  background_fetch: ^0.6.0
 
 
 dev_dependencies:
