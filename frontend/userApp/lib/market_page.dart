@@ -116,6 +116,7 @@ class _MarketPage extends State<MarketPage> {
             padding: EdgeInsets.all(15.0),
             child: SafeArea(
               child: SingleChildScrollView(
+                physics: ScrollPhysics(),
                 child: Column(
                   children: <Widget>[
                     Card(
@@ -182,6 +183,7 @@ class _MarketPage extends State<MarketPage> {
                           width: 350,
                           alignment: Alignment.center,
                           child: GridView.count(
+                            physics: NeverScrollableScrollPhysics(),
                             crossAxisCount: 2,
                             children:
                                 List.generate(categoryList.length, (index) {
