@@ -49,7 +49,7 @@ class _AdblockSettingPageState extends State<AdblockSettingPage> {
         child: SingleChildScrollView(
           physics: ScrollPhysics(),
           child: Container(
-            height: 900,
+            height: MediaQuery.of(context).size.height * 0.12 * _blockedAdList.length,
             child: ListView.builder(
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, position) {
