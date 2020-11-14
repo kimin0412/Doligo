@@ -24,6 +24,7 @@ class LeafletPage extends StatefulWidget {
 class _LeafletPageState extends State<LeafletPage> {
 
   Set<Circle> circles;
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
 
 
   List _listviewData = [];
@@ -33,6 +34,17 @@ class _LeafletPageState extends State<LeafletPage> {
   int _currentPageIndex;
 
   double _zoom;
+
+  Future<Null> refreshList() async {
+    refreshKey.currentState?.show(atTop: false);
+    await _getNearLeafletList();
+
+    setState(() {
+
+    });
+
+    return null;
+  }
 
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -111,109 +123,113 @@ class _LeafletPageState extends State<LeafletPage> {
   }
 
   Widget _buildBody() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 20,),
-      child: SafeArea(
-        child: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
-                  child: SizedBox(
-                    height: 100,
-                    child: Card(
-                      elevation: 6,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.only(left: 15),
-                            width: 400,
-                            child: Text(
-                              '내 적립포인트',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
+    return  RefreshIndicator(
+      backgroundColor: Colors.amberAccent,
+      key: refreshKey,
+      onRefresh: refreshList,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 20,),
+        child: SafeArea(
+          child: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                    child: SizedBox(
+                      height: 100,
+                      child: Card(
+                        elevation: 6,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(left: 15),
+                              width: 400,
+                              child: Text(
+                                '내 적립포인트',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.left,
                               ),
-                              textAlign: TextAlign.left,
                             ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(right: 15),
-                            width: 400,
-                            child: Text(
-                              '${_userInfo['point']} Point',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 25,
-                                fontWeight: FontWeight.normal,
+                            Container(
+                              padding: EdgeInsets.only(right: 15),
+                              width: 400,
+                              child: Text(
+                                '${_userInfo['point']} Point',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                                textAlign: TextAlign.right,
                               ),
-                              textAlign: TextAlign.right,
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ),  // 적립포인트 카드탭
-                Container(
-                  child: SizedBox(
-                    width: 400,
-                    height: 300,
-                    child: Card(
-                      elevation: 4,
-                      child: Stack(
-                        children: [
-                          currentPostion == null ? Container() : GoogleMap(
-                            mapType: _googleMapType,
-                            initialCameraPosition: CameraPosition(
-                              target: currentPostion,
-                              zoom: _zoom,
+                  ),  // 적립포인트 카드탭
+                  Container(
+                    child: SizedBox(
+                      width: 400,
+                      height: 300,
+                      child: Card(
+                        elevation: 4,
+                        child: Stack(
+                          children: [
+                            currentPostion == null ? Container() : GoogleMap(
+                              mapType: _googleMapType,
+                              initialCameraPosition: CameraPosition(
+                                target: currentPostion,
+                                zoom: _zoom,
+                              ),
+                              onMapCreated: _onMapCreated,
+                              myLocationEnabled: true,
+                              markers: Set<Marker>.of(_markers),
+                              zoomControlsEnabled: true,
+                              circles: circles,
                             ),
-                            onMapCreated: _onMapCreated,
-                            myLocationEnabled: true,
-                            markers: Set<Marker>.of(_markers),
-                            zoomControlsEnabled: true,
-                            circles: circles,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ),  // 지도 부분
-                Container(
-                  height: 240,
-                  width: MediaQuery.of(context).size.width,
-                  child: _listviewData.length > 0 ? PageView.builder(
-                    onPageChanged: (value) {
-                      setState(() {
-                        _currentPageIndex = value;
-                      });
-                      _goMarkingAreaAndZoomIn(value);
-                    },
-                    controller: _pageController,
-                    itemBuilder: (context, index) => listviewBuilder(index),
-                    itemCount: _listviewData.length,
-                    reverse: false,
-                    pageSnapping: true,
-
+                  ),  // 지도 부분
+                  Container(
+                    height: 240,
+                    width: MediaQuery.of(context).size.width,
+                    child: _listviewData.length > 0 ? PageView.builder(
+                      onPageChanged: (value) {
+                        setState(() {
+                          _currentPageIndex = value;
+                        });
+                        _goMarkingAreaAndZoomIn(value);
+                      },
+                      controller: _pageController,
+                      itemBuilder: (context, index) => listviewBuilder(index),
+                      itemCount: _listviewData.length,
+                      reverse: false,
+                      pageSnapping: true,
+                    ) : Container(),
+                  ),  // 전단지 리스트 부분
+                  SizedBox(height: 5,),
+                  _listviewData.length > 0 ? SmoothPageIndicator(
+                    controller: _pageController,  // PageController
+                    count: _listviewData.length,
+                    effect: ScrollingDotsEffect(
+                        activeDotColor: Color(0xff7C4CFF),
+                        dotHeight: 10,
+                        dotWidth: 10,
+                        fixedCenter: true
+                    ),  // your preferred effect
                   ) : Container(),
-                ),  // 전단지 리스트 부분
-                SizedBox(height: 5,),
-                _listviewData.length > 0 ? SmoothPageIndicator(
-                  controller: _pageController,  // PageController
-                  count: _listviewData.length,
-                  effect: ScrollingDotsEffect(
-                      activeDotColor: Color(0xff7C4CFF),
-                      dotHeight: 10,
-                      dotWidth: 10,
-                      fixedCenter: true
-                  ),  // your preferred effect
-                ) : Container(),
-              ],
+                ],
+              ),
             ),
           ),
         ),

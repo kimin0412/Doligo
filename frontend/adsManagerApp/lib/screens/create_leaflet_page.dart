@@ -250,24 +250,31 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
                 Container(
                   margin: EdgeInsets.fromLTRB(10,0,10,10),
                   child: Row(
+                    mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        padding: EdgeInsets.all(10.0),
-                        decoration: new BoxDecoration(color: Colors.white),
-                        child: Text(
-                          _leafletImage != null ? "${_leafletImage.path}" : "이미지가 없습니다",
-                          style: TextStyle(fontSize: 15),
-                          overflow: TextOverflow.ellipsis,
+                      Expanded(
+                        flex: 6,
+                        child: Container(
+                          margin: EdgeInsets.all(10.0),
+                          padding: EdgeInsets.all(10.0),
+                          decoration: new BoxDecoration(color: Colors.white),
+                          child: Text(
+                            _leafletImage != null ? "${_leafletImage.path}" : "이미지가 없습니다",
+                            style: TextStyle(fontSize: 15),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+
                         ),
-                        width: size.width * 0.6,
                       ),
-                      FlatButton(
+                    Expanded(flex: 2,
+                      child: FlatButton(
                         padding: EdgeInsets.all(10.0),
                         onPressed: _getImage,
                         child: Text('찾기', style: TextStyle(color: Colors.white),),
                         color: kPrimaryColor,
                       )
+                    )
                     ],
                   )
                 ),
@@ -578,7 +585,7 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
         'cid':'TC0ONETIME',
         'partner_order_id':'partner_order_id',
         'partner_user_id':'partner_user_id',
-        'item_name' : '광고비 결제',
+        'item_name' : '돌리고 광고비 결제',
         'quantity': '1',
         'total_amount': _leaflet.cost,
         'vat_amount' : '0',
@@ -616,6 +623,39 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
       return;
     }
 
+    var res = await http.post(
+        'https://kapi.kakao.com/v1/payment/ready',
+        encoding: Encoding.getByName('utf8'),
+        headers: {
+          'Authorization' : 'KakaoAK $KAKAO_ADMIN_KEY',
+          'Content-type' : 'application/x-www-form-urlencoded;charset=utf-8'
+        },
+        body: {
+          'cid':'TC0ONETIME',
+          'partner_order_id':'partner_order_id',
+          'partner_user_id':'partner_user_id',
+          'item_name' : '돌리고 광고비 결제',
+          'quantity': '1',
+          'total_amount': _leaflet.cost.toString(),
+          'vat_amount' : '0',
+          'tax_free_amount' : '0',
+          'approval_url' : '$SERVER_IP/api' ,
+          'cancel_url' : '$SERVER_IP/api' ,
+          'fail_url' : '$SERVER_IP/api' ,
+        }
+    );
+
+    Map<String, dynamic> result = jsonDecode(res.body);
+
+    print(result);
+    AndroidIntent intent = AndroidIntent(
+      action: 'action_view',
+      data: result['next_redirect_app_url'],
+      arguments: {'txn_id': result['tid']},
+    );
+
+    var r = await intent.launch();
+
     String imageName = _advertiser.id.toString() + '_' + DateTime.now().toIso8601String();
 
     AwsS3 awsS3 = AwsS3(
@@ -630,7 +670,6 @@ class _CreateLeafletPage extends State<CreateLeafletPage> {
 
     _leaflet.p_image = "https://plog-image.s3.ap-northeast-2.amazonaws.com/Upload/Paper/" + imageName;
 
-    _pay_kakao();
     var response = await http.post(
       '$SERVER_IP/api/token/advertiser/paper',
       headers: {'Content-Type': "application/json",

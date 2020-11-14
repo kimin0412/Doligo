@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
         SignUpScreen4.routeName:(context) => SignUpScreen4(),
         SignUpScreen5.routeName:(context) => SignUpScreen5(),
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 }
