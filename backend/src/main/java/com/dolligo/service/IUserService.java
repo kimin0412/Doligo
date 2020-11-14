@@ -27,5 +27,8 @@ public interface IUserService {
 	// 현금화 하기
 	@Transactional
 	PointLog makeCash(String uid, int amount);
+	
+	// 이제껏 받은 전단지 개수
+	int getPaperCount(String uid);
 
 }
