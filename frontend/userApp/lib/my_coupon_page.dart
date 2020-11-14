@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -23,6 +24,8 @@ class _MyCouponPageState extends State<MyCouponPage> {
 
   bool initCheck;
   var _couponList = [];
+
+  int result;
 
   @override
   void initState() {
@@ -173,7 +176,40 @@ class _MyCouponPageState extends State<MyCouponPage> {
                                           style: TextStyle(fontSize: 18),
                                         ),
                                         onPressed: isExpired(index) ? null : () {
-                                          showAlertDialog(context, index);// 쓸건지 한번 물어보는 창으로 연결
+                                          AwesomeDialog(
+                                            context: context,
+                                            animType: AnimType.SCALE,
+                                            headerAnimationLoop: false,
+                                            dialogType: DialogType.INFO,
+                                            title: '쿠폰 사용',
+                                            desc: '쿠폰을 사용하시겠어요?',
+                                            btnCancelOnPress: () {
+                                              result = 400;
+                                            },
+                                            btnOkOnPress: () {
+                                              debugPrint('OnClcik');
+                                              result = 200;
+                                            },
+                                          )..show().then((value) async {
+                                            // print('result~~~ : $result');
+                                            if(result == 200 && await _useCoupon(index, context) == 200) {
+                                              // print('둘다 200');
+                                              scaffoldKey.currentState
+                                                ..hideCurrentSnackBar()
+                                                ..showSnackBar(
+                                                  SnackBar(
+                                                    content: Text("쿠폰을 사용하였습니다!"),
+                                                    backgroundColor: Color(0xff7C4CFF),
+                                                    action: SnackBarAction(
+                                                      label: "Done",
+                                                      textColor: Colors.white,
+                                                      onPressed: () {},
+                                                    ),
+                                                  ),
+                                                );
+                                            }
+                                          });
+                                          // showAlertDialog(context, index);// 쓸건지 한번 물어보는 창으로 연결
                                           //
                                         },
                                         color: Color(0xff7C4CFF),
@@ -271,24 +307,10 @@ class _MyCouponPageState extends State<MyCouponPage> {
       },
     );
 
-    if(result != 'Cancel') {
-      scaffoldKey.currentState
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text("$result"),
-            backgroundColor: Color(0xff7C4CFF),
-            action: SnackBarAction(
-              label: "Done",
-              textColor: Colors.white,
-              onPressed: () {},
-            ),
-          ),
-        );
-    }
+
   }
 
-  Future _useCoupon(int index, BuildContext context) async {
+  Future<int> _useCoupon(int index, BuildContext context) async {
     _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
     final response = await http.delete('${MyApp.commonUrl}/token/user/coupon/${_couponList[index]['id']}',
         headers: {
@@ -300,9 +322,8 @@ class _MyCouponPageState extends State<MyCouponPage> {
       setState(() {
         _couponList.removeAt(index);
       });
-      Navigator.pop(context, "쿠폰을 사용하였습니다!");
-    } else {
-      Navigator.pop(context, "쿠폰이 제대로 사용되지 않았습니다.");
     }
+
+    return response.statusCode;
   }
 }
