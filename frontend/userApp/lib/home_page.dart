@@ -436,19 +436,19 @@ class _HomepageState extends State<Homepage> {
       myPoint = _userInfo['point'];
       print('point : ${_userInfo['point']}');
 
-      if (myPoint < 1000) {
-        myTree = 0;
-      } else if (myPoint >= 1000 && myPoint < 5000) {
-        myTree = 1;
-      } else if (myPoint >= 5000 && myPoint < 10000) {
-        myTree = 2;
-      } else if (myPoint >= 10000 && myPoint < 20000) {
-        myTree = 3;
-      } else if (myPoint >= 20000 && myPoint < 50000) {
-        myTree = 4;
-      } else {
-        myTree = 5;
-      }
+      // if (myPoint < 1000) {
+      //   myTree = 0;
+      // } else if (myPoint >= 1000 && myPoint < 5000) {
+      //   myTree = 1;
+      // } else if (myPoint >= 5000 && myPoint < 10000) {
+      //   myTree = 2;
+      // } else if (myPoint >= 10000 && myPoint < 20000) {
+      //   myTree = 3;
+      // } else if (myPoint >= 20000 && myPoint < 50000) {
+      //   myTree = 4;
+      // } else {
+      //   myTree = 5;
+      // }
     });
 
     countDownTime();
@@ -469,6 +469,21 @@ class _HomepageState extends State<Homepage> {
       co2Cnt = pointCnt * 0.66;
       // print('pointInfo : $_pointInfo');
       // print('pointInfo : $_pointInfo');
+      print('PointCnt : $pointCnt');
+      if (pointCnt < 100) {
+        myTree = 0;
+      } else if (myPoint >= 100 && myPoint < 200) {
+        myTree = 1;
+      } else if (myPoint >= 200 && myPoint < 300) {
+        myTree = 2;
+      } else if (myPoint >= 300 && myPoint < 400) {
+        myTree = 3;
+      } else if (myPoint >= 400 && myPoint < 500) {
+        myTree = 4;
+      } else {
+        myTree = 5;
+      }
+
     });
   }
 
