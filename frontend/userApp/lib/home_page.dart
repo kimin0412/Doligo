@@ -115,13 +115,17 @@ class _HomepageState extends State<Homepage> {
                                       ),
                                     ),
                                   ),
-                                  title: AutoSizeText.rich(
-                                    TextSpan(
-                                      children: [
-                                        TextSpan(text: '${_userInfo['nickname']}', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-                                        TextSpan(text: '님 어서오세요!', style: TextStyle(fontSize: 20)),
-                                      ],
-                                    ),
+                                  title: Text('${_userInfo['nickname']}', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold), maxLines: 1, overflow: TextOverflow.ellipsis,),
+                                  subtitle: Text('${_userInfo['email']}', style: TextStyle(fontSize: 15,), maxLines: 1, overflow: TextOverflow.ellipsis,),
+                                  trailing: Wrap(
+                                    spacing: 12,
+                                    children: <Widget>[
+                                      SizedBox(
+                                        width: 50.0,
+                                        height: 50.0,
+                                        child: Icon(Icons.person_add_rounded),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
