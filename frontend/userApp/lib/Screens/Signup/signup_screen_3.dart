@@ -158,7 +158,7 @@ class _SignUpScreen3State extends State<SignUpScreen3> {
     final response = await http.post('${MyApp.commonUrl}/user/signup',
       body: jsonEncode(
           {
-            "age": DateTime.now().year - args.selectedYear + 1,
+            "age": args.selectedYear,
             "email": args.email,
             "gender": args.isFemail,
             "id": 0,
