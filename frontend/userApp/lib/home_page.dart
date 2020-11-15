@@ -22,7 +22,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   var _userInfo;
-  var _pointInfo = [];
+  var _pointInfo;
   int myTree = 0;
   int pointCnt = 0;
   double co2Cnt = 0.0;
@@ -455,12 +455,13 @@ class _HomepageState extends State<Homepage> {
   void _getPointInfo() async {
     String _token = await FlutterSecureStorage().read(key: 'token');
     print('token : $_token');
-    final response = await http.get('${MyApp.commonUrl}/token/user/point/0',
+    final response = await http.get('${MyApp.commonUrl}/user/token/papercount',
         headers: {'Authorization': 'Bearer $_token'});
 
     setState(() {
       _pointInfo = json.decode(response.body)['data'];
-      pointCnt = _pointInfo.length;
+      print(_pointInfo);
+      pointCnt = _pointInfo;
       co2Cnt = pointCnt * 0.66;
       // print('pointInfo : $_pointInfo');
       // print('pointInfo : $_pointInfo');
