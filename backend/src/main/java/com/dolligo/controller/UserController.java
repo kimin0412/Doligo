@@ -252,6 +252,21 @@ public class UserController {
 	  				
 	  		return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.ACCEPTED);
      }
+
+      //이제껏 받은 전단지 수
+      @ApiOperation(value = "이제껏 받은 전단지 수")
+      @GetMapping("/user/token/papercount")
+      public ResponseEntity<HashMap<String, Object>> getPaperCount(HttpServletRequest request) throws Exception {
+    	  HashMap<String, Object> map = new HashMap<String, Object>();
+    	  
+    	  
+    	  String token = request.getHeader("Authorization").split(" ")[1];
+	  	  String uid = (String)jwtService.get(token).get("uid");
+	  	  
+    	  map.put("data", userService.getPaperCount(uid));
+    	  
+    	  return new ResponseEntity<HashMap<String, Object>>(map, HttpStatus.ACCEPTED);
+      }
       
 
 }

@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -36,6 +37,12 @@ public class GifticonPurchase {
 	private int gid;					// fk 기프티콘 아이디
 	private int uid;					// fk 일반유저 아이디
 	private boolean used;				// 기프티콘 사용 여부 => true : 사용함, false : 사용 안함
+	private String code;				// 기프티콘 코드번호
+	
+	@ManyToOne
+	@JoinColumn(name = "gid", insertable = false, updatable = false)
+    private Gifticon gifticon;
+	
 	public int getId() {
 		return id;
 	}
@@ -60,10 +67,22 @@ public class GifticonPurchase {
 	public void setUsed(boolean used) {
 		this.used = used;
 	}
+	public Gifticon getGifticon() {
+		return gifticon;
+	}
+	public void setGifticon(Gifticon gifticon) {
+		this.gifticon = gifticon;
+	}
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
 	@Override
 	public String toString() {
-		return "GifticonPurchase [id=" + id + ", gid=" + gid + ", uid=" + uid + ", used=" + used + "]";
+		return "GifticonPurchase [id=" + id + ", gid=" + gid + ", uid=" + uid + ", used=" + used + ", code=" + code
+				+ ", gifticon=" + gifticon + "]";
 	}
-	
     
 }

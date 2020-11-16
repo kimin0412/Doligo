@@ -12,4 +12,5 @@ public interface IDataInsertService {
 	public void insertPaper() throws IOException;
 	public void insertOtherUser() throws Exception;
 	public void insertUserAction() throws Exception;
+	public void changeGps() throws Exception;
 }

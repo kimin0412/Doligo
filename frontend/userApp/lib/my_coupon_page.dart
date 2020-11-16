@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:userApp/leaflet_detail_page.dart';
+import 'package:userApp/leaflet_page.dart';
 import 'package:userApp/main.dart';
 
 class MyCouponPage extends StatefulWidget {
@@ -22,6 +25,8 @@ class _MyCouponPageState extends State<MyCouponPage> {
 
   bool initCheck;
   var _couponList = [];
+
+  int result;
 
   @override
   void initState() {
@@ -71,10 +76,11 @@ class _MyCouponPageState extends State<MyCouponPage> {
   }
 
   _buildBody() {
-    return Padding(
+    return _couponList.length > 0 ? Padding(
       padding: EdgeInsets.all(15.0),
       child: SafeArea(
         child: SingleChildScrollView(
+          physics: ScrollPhysics(),
           child: Column(
             children: [
               Container(
@@ -86,9 +92,10 @@ class _MyCouponPageState extends State<MyCouponPage> {
               ),  // 보유쿠폰 현황
               Center(
                 child: Container(
-                  height: 900,
+                  height: 180.0 * _couponList.length,
                   margin: EdgeInsets.symmetric(vertical: 10),
                   child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
                     scrollDirection: Axis.vertical,
                     itemCount: _couponList.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -110,25 +117,27 @@ class _MyCouponPageState extends State<MyCouponPage> {
                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Container(
-                                        child: Text(_couponList[index]['paper']['p_coupon'],
+                                        child: AutoSizeText(_couponList[index]['paper']['p_coupon'],
                                           style: TextStyle(
                                             fontSize: 20,
                                             color: Color(0xff7C4CFF),
                                             fontWeight: FontWeight.bold,
                                           ),
                                           textAlign: TextAlign.left,
+                                          maxLines: 1,
                                         ),
                                         width: 200,
                                       ),  // 메인혜택내용
                                       SizedBox(height: 25,),
                                       Container(
                                         width: 200,
-                                        child: Text(_couponList[index]['paper']['advertiser']['marketname'],
+                                        child: AutoSizeText(_couponList[index]['paper']['advertiser']['marketname'],
                                           style: TextStyle(
                                             fontSize: 17,
                                             fontWeight: FontWeight.bold,
                                           ),
                                           textAlign: TextAlign.left,
+                                          maxLines: 1,
                                         ),
                                       ),  // 가게이름
                                       Container(
@@ -170,7 +179,40 @@ class _MyCouponPageState extends State<MyCouponPage> {
                                           style: TextStyle(fontSize: 18),
                                         ),
                                         onPressed: isExpired(index) ? null : () {
-                                          showAlertDialog(context, index);// 쓸건지 한번 물어보는 창으로 연결
+                                          AwesomeDialog(
+                                            context: context,
+                                            animType: AnimType.SCALE,
+                                            headerAnimationLoop: false,
+                                            dialogType: DialogType.INFO,
+                                            title: '쿠폰 사용',
+                                            desc: '쿠폰을 사용하시겠어요?',
+                                            btnCancelOnPress: () {
+                                              result = 400;
+                                            },
+                                            btnOkOnPress: () {
+                                              debugPrint('OnClcik');
+                                              result = 200;
+                                            },
+                                          )..show().then((value) async {
+                                            // print('result~~~ : $result');
+                                            if(result == 200 && await _useCoupon(index, context) == 200) {
+                                              // print('둘다 200');
+                                              scaffoldKey.currentState
+                                                ..hideCurrentSnackBar()
+                                                ..showSnackBar(
+                                                  SnackBar(
+                                                    content: Text("쿠폰을 사용하였습니다!"),
+                                                    backgroundColor: Color(0xff7C4CFF),
+                                                    action: SnackBarAction(
+                                                      label: "Done",
+                                                      textColor: Colors.white,
+                                                      onPressed: () {},
+                                                    ),
+                                                  ),
+                                                );
+                                            }
+                                          });
+                                          // showAlertDialog(context, index);// 쓸건지 한번 물어보는 창으로 연결
                                           //
                                         },
                                         color: Color(0xff7C4CFF),
@@ -194,6 +236,28 @@ class _MyCouponPageState extends State<MyCouponPage> {
           ),
         ),
       ),
+    ) : Stack(
+      children: [
+        Positioned.fill(
+          child: Align(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('😂쿠폰이 없습니다😂', style: TextStyle(fontSize: 30),),
+                RaisedButton(
+                  child: Text('쿠폰받으러 가기'),
+                  onPressed: () {
+                    // Navigator.popAndPushNamed(context, LeafletPage.routeName);
+                    // Navigator.pushNamed(context, LeafletPage.routeName);
+                    Navigator.pushReplacementNamed(context, LeafletPage.routeName);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -246,24 +310,10 @@ class _MyCouponPageState extends State<MyCouponPage> {
       },
     );
 
-    if(result != 'Cancel') {
-      scaffoldKey.currentState
-        ..hideCurrentSnackBar()
-        ..showSnackBar(
-          SnackBar(
-            content: Text("$result"),
-            backgroundColor: Color(0xff7C4CFF),
-            action: SnackBarAction(
-              label: "Done",
-              textColor: Colors.white,
-              onPressed: () {},
-            ),
-          ),
-        );
-    }
+
   }
 
-  Future _useCoupon(int index, BuildContext context) async {
+  Future<int> _useCoupon(int index, BuildContext context) async {
     _token = _token == null ? await FlutterSecureStorage().read(key: 'token') : _token;
     final response = await http.delete('${MyApp.commonUrl}/token/user/coupon/${_couponList[index]['id']}',
         headers: {
@@ -275,9 +325,8 @@ class _MyCouponPageState extends State<MyCouponPage> {
       setState(() {
         _couponList.removeAt(index);
       });
-      Navigator.pop(context, "쿠폰을 사용하였습니다!");
-    } else {
-      Navigator.pop(context, "쿠폰이 제대로 사용되지 않았습니다.");
     }
+
+    return response.statusCode;
   }
 }

@@ -17,10 +17,11 @@ class PointHistoryPage extends StatefulWidget {
 class PointHistoryItem {
   final DateTime dateTime;
   final String detail;
+  final int type;     // 1:  전단지 받기,   2: 기프티콘 구매,   3: 현금화
   final int accumulation;
   final int total;
 
-  PointHistoryItem(this.dateTime, this.detail, this.accumulation, this.total);
+  PointHistoryItem(this.dateTime, this.detail, this.accumulation, this.total, this.type);
 
   @override
   String toString() {
@@ -151,6 +152,7 @@ class _PointHistoryPage extends State<PointHistoryPage> {
                         subtitle: Text('${items[index].dateTime.hour}'.padLeft(2, '0') + ':' + '${items[index].dateTime.minute}'.padLeft(2, '0')),
                         trailing: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Text.rich(
                                 TextSpan(
@@ -213,8 +215,11 @@ class _PointHistoryPage extends State<PointHistoryPage> {
       items.clear();
       setState(() {
         for(int i = 0; i < tmp.length; i++) {
-          items.add(PointHistoryItem(DateFormat("yyyy-MM-ddTHH:mm").parse('${tmp[i]['created']}'.substring(0, 16)).add(new Duration(hours: 9)), '전단지 받기', tmp[i]['point'], tmp[i]['totalPoint']));
+          int type = tmp[i]['sid'];
+          int point = type == 1 ? tmp[i]['point'] : -tmp[i]['point'];
+          String content = type == 1 ? '전단지 받기' : (type == 2 ? '기프티콘 구매' : (type == 3 ? '현금화(인출)' : '관리자가 주는 선물'));
 
+          items.add(PointHistoryItem(DateFormat("yyyy-MM-ddTHH:mm").parse('${tmp[i]['created']}'.substring(0, 16)).add(new Duration(hours: 9)), content, point, tmp[i]['totalPoint'], type));
           print('$i번째 : ${items[i].toString()}');
         }
       });

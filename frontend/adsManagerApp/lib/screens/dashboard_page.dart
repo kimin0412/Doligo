@@ -30,6 +30,8 @@ class _AdvDashboardPage extends State<AdvDashboardPage>{
   List<TimeStack> sl2 = List();
   List<TimeStack> sl3 = List();
   List<TimeStack> sl4 = List();
+  int byAge = 1;
+  int byGender = 1;
   int iMaxAge;
   String maxAge = "";
   String maxGender = "";
@@ -79,7 +81,7 @@ class _AdvDashboardPage extends State<AdvDashboardPage>{
           measureFn: (Task task, _) => task.taskValue,
           colorFn: (Task task, _) => charts.ColorUtil.fromDartColor(task.color),
           id:'연령별',
-          labelAccessorFn: (Task task, _) => '${task.taskValue}',
+          labelAccessorFn: (Task task, _) => '${(task.taskValue * 100 / byAge).toStringAsFixed(1)}%',
         )
     );
 
@@ -93,7 +95,7 @@ class _AdvDashboardPage extends State<AdvDashboardPage>{
           measureFn: (Task task, _) => task.taskValue,
           colorFn: (Task task, _) => charts.ColorUtil.fromDartColor(task.color),
           id:'성별',
-          labelAccessorFn: (Task task, _) => '${task.taskValue}',
+          labelAccessorFn: (Task task, _) => '${(task.taskValue * 100 / byGender).toStringAsFixed(1)}%',
         )
     );
 
@@ -205,7 +207,7 @@ class _AdvDashboardPage extends State<AdvDashboardPage>{
                     Center(
                       child: Container(
                         margin: EdgeInsets.all(15),
-                        child: Text('현재 배포 중인 전단지', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                        child: Text('최근 배포 전단지', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                       )
                     ),
                     Divider(
@@ -315,7 +317,7 @@ class _AdvDashboardPage extends State<AdvDashboardPage>{
                             arcWidth: 65,
                             arcRendererDecorators: [
                               charts.ArcLabelDecorator(
-                                  labelPosition: charts.ArcLabelPosition.inside
+                                  labelPosition: charts.ArcLabelPosition.inside,
                               )
                             ]
                         ),
@@ -448,10 +450,12 @@ class _AdvDashboardPage extends State<AdvDashboardPage>{
       pieData1.clear();
       pieData2.clear();
 
+      byAge = dashboard.ca.teen + dashboard.ca.second +  dashboard.ca.third + dashboard.ca.forth + dashboard.ca.above;
+      byGender = dashboard.cg.m + dashboard.cg.w;
       pieData1.add(Task("10대", dashboard.ca.teen, Colors.red));
       pieData1.add(Task("20대", dashboard.ca.second, Colors.amber));
       pieData1.add(Task("30대", dashboard.ca.third, Colors.lightBlueAccent));
-      pieData1.add(Task("40대", dashboard.ca.forth, Colors.greenAccent));
+      pieData1.add(Task("40대", dashboard.ca.forth, Colors.green));
       pieData1.add(Task("50대 이상", dashboard.ca.above, Colors.indigo));
 
       pieData2.add(Task("남성", dashboard.cg.m, Colors.blue));
