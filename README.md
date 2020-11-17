@@ -47,6 +47,7 @@
 
 
 * 로그인 / 메인화면 / 설정탭
+
 <div>
     <video width="480" height="320" controls="controls">
       <source src="/uploads/db3bd9226b663e91c377cfbbc46c0a6c/1.mp4" type="video/mp4">
