@@ -16,6 +16,12 @@
   <a href="#" target="_blank"><img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="90"/></a>
 </p>
 
+임시 배포 링크
+- 유저 : https://drive.google.com/file/d/1cOkcQlt2Gf7nweHrJzs6WlbU06PIS_5i/view?usp=sharing
+(test 가능한 계정/패스워드 - nature4@test.com / 12345)
+- 광고주 : https://drive.google.com/file/d/16RiLhzX_k4nzlTv45h7FGkfTD4vcBHuD/view?usp=sharing
+
+
 
 
 ## Tech Stack
