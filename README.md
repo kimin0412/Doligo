@@ -13,7 +13,7 @@
 
 <p align=center>
   <b>종이 전단지는 이제 그만, 모바일 전단지로 환경과 거리를 보호하세요!</b>📱💻🖥<br>
-  <a href="#" target="_blank"><img src="https://play.google.com/store/apps/details?id=com.ssafy.userApp" alt="Get it on Google Play" height="90"/></a>
+  <a href="https://play.google.com/store/apps/details?id=com.ssafy.userApp" target="_blank"><img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="90"/></a>
 </p>
 
 임시 배포 링크
