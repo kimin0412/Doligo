@@ -1,7 +1,7 @@
 <h1 align="center"> Dolligo! 📃</h1>
 <p>
   <a href="#" target="_blank">
-  <img alt="Version" src="https://img.shields.io/badge/version-1.0.1-blue.svg?cacheSeconds=2592000" />
+  <img alt="Version" src="https://img.shields.io/badge/version-1.1.0-blue.svg?cacheSeconds=2592000" />
   </a>
   <a href="#" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
@@ -13,7 +13,7 @@
 
 <p align=center>
   <b>종이 전단지는 이제 그만, 모바일 전단지로 환경과 거리를 보호하세요!</b>📱💻🖥<br>
-  <a href="#" target="_blank"><img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="90"/></a>
+  <a href="#" target="_blank"><img src="https://play.google.com/store/apps/details?id=com.ssafy.userApp" alt="Get it on Google Play" height="90"/></a>
 </p>
 
 임시 배포 링크
@@ -21,7 +21,8 @@
 (test 가능한 계정/패스워드 - nature4@test.com / 12345)
 - 광고주 : https://drive.google.com/file/d/16RiLhzX_k4nzlTv45h7FGkfTD4vcBHuD/view?usp=sharing
 
-
+README - Notion document
+url : https://www.notion.so/SSAFY-b1a8ab566c504c158af4867fe792eb13
 
 
 ## Tech Stack
