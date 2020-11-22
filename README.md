@@ -53,23 +53,23 @@
 
 * 전단지 보기 - 포인트 / 쿠폰 받기
 
-   <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/2.gif" width="300"/>
+   <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/2.gif" width="400"/>
 
 * 포인트 / 쿠폰 확인
 
-  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/3.gif" width="300"/>
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/3.gif" width="400"/>
 
 * 전단지 차단
 
-  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/4.gif" width="300"/>
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/4.gif" width="400"/>
   
 * 포인트 사용
 
-  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/5.gif" width="300"/>
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/5.gif" width="400"/>
 
 * 프로필 수정
 
-  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/6.gif" width="300"/>
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/6.gif" width="400"/>
 
 
 
@@ -77,19 +77,19 @@
 
 * 대시보드 화면
 
-  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/1+(1).gif" width="300"/>
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/1+(1).gif" width="400"/>
 
 * 전단지 관리
 
-  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/2+(1).gif" width="300"/>
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/2+(1).gif" width="400"/>
 
 * qr 방문 인증
 
-  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/3+(1).gif" width="300"/>
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/3+(1).gif" width="400"/>
 
 * 설정
 
-  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/4+(1).gif" width="300"/>
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/4+(1).gif" width="400"/>
 
 
 
