@@ -47,30 +47,30 @@
 
 
 * 로그인 / 메인화면 / 설정탭
-  ![1](/uploads/db3bd9226b663e91c377cfbbc46c0a6c/1.mp4)
+  ![1](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/1.mp4)
 
 
 * 전단지 보기 - 포인트 / 쿠폰 받기
 
-  ![2](/uploads/74d5f61721d8187e630dc2794944168a/2.mp4)
+  ![2](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/2.mp4)
 
 
 * 포인트 / 쿠폰 확인
 
-  ![3](/uploads/deeca177aa60efcfcd1dfa9b686fc31a/3.mp4)
+  ![3](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/3.mp4)
 
 
 * 전단지 차단
 
-  ![4](/uploads/4e93c4d7f3f5a63cde28341420f22ac9/4.mp4)
+  ![4](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/4.mp4)
 
 * 포인트 사용
 
-  ![5](/uploads/623a93739f1d1f39cf57623d23145dc6/5.mp4)
+  ![5](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/5.mp4)
 
 * 프로필 수정
 
-  ![6](/uploads/192ef9c07123231aaccccc77ff494580/6.mp4)
+  ![6](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/6.mp4)
 
 
 
@@ -78,19 +78,19 @@
 
 * 대시보드 화면
 
-  ![1](/uploads/ed2d49bf341bb6258374a3c04ed3a0ea/1.mp4)
+  ![1](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/1+(1).mp4)
 
 * 전단지 관리
 
-  ![2](/uploads/e60208a9264486cf4418739973bb4a65/2.mp4)
+  ![2](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/2+(1).mp4)
 
 * qr 방문 인증
 
-  ![3](/uploads/a1cfa23a34c42112aac5eea87918cb78/3.mp4)
+  ![3](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/3+(1).mp4)
 
 * 설정
 
-  ![4](/uploads/22a21b6e4f071755a70ba2e29d8f6f57/4.mp4)
+  ![4](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/4+(1).mp4)
 
 
 
