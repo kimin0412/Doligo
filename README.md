@@ -46,31 +46,30 @@
 <h3>User App</h3>
 
 
-* 로그인 / 메인화면 / 설정탭
-  ![1](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/1.mp4)
+* 로그인 / 메인화면 / 설정탭 <br>
+
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/1.gif" width="400"/>
 
 
 * 전단지 보기 - 포인트 / 쿠폰 받기
 
-  ![2](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/2.mp4)
-
+   <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/2.gif" width="300"/>
 
 * 포인트 / 쿠폰 확인
 
-  ![3](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/3.mp4)
-
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/3.gif" width="300"/>
 
 * 전단지 차단
 
-  ![4](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/4.mp4)
-
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/4.gif" width="300"/>
+  
 * 포인트 사용
 
-  ![5](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/5.mp4)
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/5.gif" width="300"/>
 
 * 프로필 수정
 
-  ![6](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/6.mp4)
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/6.gif" width="300"/>
 
 
 
@@ -78,19 +77,19 @@
 
 * 대시보드 화면
 
-  ![1](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/1+(1).mp4)
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/1+(1).gif" width="300"/>
 
 * 전단지 관리
 
-  ![2](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/2+(1).mp4)
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/2+(1).gif" width="300"/>
 
 * qr 방문 인증
 
-  ![3](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/3+(1).mp4)
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/3+(1).gif" width="300"/>
 
 * 설정
 
-  ![4](https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/4+(1).mp4)
+  <img src="https://plog-image.s3.ap-northeast-2.amazonaws.com/wiki/doligo/4+(1).gif" width="300"/>
 
 
 
